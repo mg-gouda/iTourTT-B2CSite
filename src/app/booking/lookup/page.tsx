@@ -1,13 +1,13 @@
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
-import { WebsiteLandingClient } from './landing-client';
+import { TrackBookingClient } from './track-client';
 
-export default async function WebsiteLandingPage() {
+export default async function TrackBookingPage() {
   let settings = DEFAULT_SITE_SETTINGS;
   try {
     settings = await fetchSiteSettings();
   } catch {
-    // Use defaults
+    // Use defaults on failure
   }
 
-  return <WebsiteLandingClient settings={settings} />;
+  return <TrackBookingClient settings={settings} />;
 }

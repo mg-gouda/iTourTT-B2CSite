@@ -1,7 +1,7 @@
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
-import { WebsiteLandingClient } from './landing-client';
+import { BookNowClient } from './book-client';
 
-export default async function WebsiteLandingPage() {
+export default async function BookNowPage() {
   let settings = DEFAULT_SITE_SETTINGS;
   try {
     settings = await fetchSiteSettings();
@@ -9,5 +9,5 @@ export default async function WebsiteLandingPage() {
     // Use defaults
   }
 
-  return <WebsiteLandingClient settings={settings} />;
+  return <BookNowClient settings={settings} />;
 }
