@@ -1,0 +1,21 @@
+# B2C site — standalone deployment on the B2C VPS (31.97.45.33).
+# Build + run:  NEXT_PUBLIC_API_URL=https://fulvago.itourtt.cloud docker compose up -d --build
+services:
+  web:
+    build:
+      context: .
+      args:
+        # Baked into the client bundle at build time.
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://fulvago.itourtt.cloud}
+    image: itourtt-b2c:latest
+    container_name: itourtt-b2c
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: 0.0.0.0
+      # Used at runtime for SSR.
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://fulvago.itourtt.cloud}
+    ports:
+      # Exposed on localhost only; nginx on the host terminates TLS and proxies.
+      - "127.0.0.1:3000:3000"
