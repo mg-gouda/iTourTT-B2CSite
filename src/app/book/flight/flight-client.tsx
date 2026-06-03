@@ -78,13 +78,14 @@ export function FlightClient({ settings }: FlightClientProps) {
   // Guard an extra's quantity change against vehicle-type restriction and capacity.
   const changeExtraQty = (ex: CatalogExtra, next: number) => {
     const increasing = next > qtyFor(ex.id);
+    const allowedIds = ex.allowedVehicleTypeIds ?? [];
     if (
       increasing &&
-      ex.allowedVehicleTypeIds.length > 0 &&
-      !ex.allowedVehicleTypeIds.includes(store.vehicleTypeId)
+      allowedIds.length > 0 &&
+      !allowedIds.includes(store.vehicleTypeId)
     ) {
       setSeatAlert(
-        `"${ex.name}" can only be carried by: ${ex.allowedVehicleTypeNames.join(', ')}.` +
+        `"${ex.name}" can only be carried by: ${(ex.allowedVehicleTypeNames ?? []).join(', ')}.` +
           ` Please change your vehicle type to add it.`,
       );
       return;
@@ -214,8 +215,8 @@ export function FlightClient({ settings }: FlightClientProps) {
                         {ex.description ? `${ex.description} · ` : ''}
                         {ex.currency} {ex.price.toFixed(2)}
                         {ex.occupiesSeat ? ' · occupies a seat' : ''}
-                        {ex.allowedVehicleTypeIds.length > 0
-                          ? ` · ${ex.allowedVehicleTypeNames.join('/')} only`
+                        {(ex.allowedVehicleTypeIds ?? []).length > 0
+                          ? ` · ${(ex.allowedVehicleTypeNames ?? []).join('/')} only`
                           : ''}
                       </p>
                     </div>
