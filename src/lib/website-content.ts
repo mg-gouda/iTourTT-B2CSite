@@ -38,6 +38,7 @@ export interface CityPage {
   heroHeadline: string | null;
   heroImageUrl: string | null;
   introText: string | null;
+  contentHtml: string | null;
   bodyJson: CityPageBodySection[] | null;
   faqJson: CityPageFaq[] | null;
   metaTitle: string | null;

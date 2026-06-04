@@ -35,6 +35,7 @@ export function DestinationClient({ dest, cms, settings }: DestinationClientProp
     ? fill('destination.heroDesc', { airport: dest.airportName, iata: dest.iata })
     : `Private airport transfers in ${name}.`;
   const introParas = cms?.introText ? [cms.introText] : dest?.intro ?? [];
+  const contentHtml = cms?.contentHtml?.trim() || '';
   const bodySections = cms?.bodyJson?.filter((s) => s.heading || s.body) ?? [];
   const faq = cms?.faqJson?.filter((f) => f.question || f.answer) ?? [];
   const popularRoutes = dest?.popularRoutes ?? [];
@@ -84,7 +85,7 @@ export function DestinationClient({ dest, cms, settings }: DestinationClientProp
       </section>
 
       {/* ── Body copy ── */}
-      {(introParas.length > 0 || bodySections.length > 0) && (
+      {(introParas.length > 0 || contentHtml || bodySections.length > 0) && (
         <section className="bg-white px-4 pb-16">
           <div className="mx-auto max-w-3xl space-y-5">
             {introParas.map((para, i) => (
@@ -92,6 +93,12 @@ export function DestinationClient({ dest, cms, settings }: DestinationClientProp
                 {para}
               </p>
             ))}
+            {contentHtml && (
+              <div
+                className="blog-content"
+                dangerouslySetInnerHTML={{ __html: contentHtml }}
+              />
+            )}
             {bodySections.map((sec, i) => (
               <div key={i} className="space-y-2">
                 {sec.heading && (
