@@ -24,7 +24,7 @@ export const DESTINATIONS: Destination[] = [
     title: 'Hurghada Airport Transfer | HRG Private Transfers | Transfera',
     h1: 'Hurghada Airport Transfers — HRG Private Transfer Service',
     metaDescription:
-      'Private Hurghada Airport (HRG) transfers to El Gouna, Makadi Bay, Soma Bay, Sahl Hasheesh and your hotel. Fixed price, flight tracking, free cancellation, 24/7 support.',
+      'Private Hurghada Airport (HRG) transfers to El Gouna, Makadi Bay, Soma Bay & Sahl Hasheesh. Fixed price, flight tracking, free cancellation.',
     intro: [
       'Book a private airport transfer from Hurghada International Airport (HRG) to your hotel or resort with Transfera. Our professional, English-speaking drivers meet you in the arrivals hall, help with your luggage and take you directly to your destination — no shared shuttles, no waiting, no haggling over the fare.',
       'Hurghada is the gateway to the Red Sea Riviera, and we cover every popular resort area: El Gouna, Makadi Bay, Soma Bay, Sahl Hasheesh, Sahl Hasheesh and the Hurghada city hotels. We track your flight in real time, so if you land early or late your driver is always there waiting at no extra charge.',
@@ -46,7 +46,7 @@ export const DESTINATIONS: Destination[] = [
     title: 'Cairo Airport Transfer | CAI Private Transfers | Transfera',
     h1: 'Cairo Airport Transfers — CAI Private Transfer Service',
     metaDescription:
-      'Private Cairo Airport (CAI) transfers to Downtown Cairo, Giza, the Pyramids, New Cairo and Heliopolis. Fixed price, flight tracking, free cancellation, 24/7 support.',
+      'Private Cairo Airport (CAI) transfers to Downtown, Giza Pyramids, Zamalek & New Cairo. Fixed price, flight tracking, free cancellation, 24/7.',
     intro: [
       'Arrive in the Egyptian capital stress-free with a private transfer from Cairo International Airport (CAI). Your Transfera driver greets you on arrival, assists with luggage and drives you directly to your hotel or apartment in a comfortable, air-conditioned vehicle.',
       'We serve every part of Greater Cairo: Downtown Cairo, Zamalek, Garden City, Heliopolis, Nasr City, New Cairo, and the Giza and Pyramids area. Whether you are in town for business, a Nile cruise connection, or to see the Pyramids of Giza and the Grand Egyptian Museum, we get you there on time.',
@@ -65,11 +65,10 @@ export const DESTINATIONS: Destination[] = [
     city: 'Sharm El Sheikh',
     iata: 'SSH',
     airportName: 'Sharm El Sheikh International Airport',
-    title:
-      'Sharm El Sheikh Airport Transfer | SSH Private Transfers | Transfera',
+    title: 'Sharm El Sheikh Airport Transfer | SSH Transfers | Transfera',
     h1: 'Sharm El Sheikh Airport Transfers — SSH Private Transfers',
     metaDescription:
-      'Private Sharm El Sheikh Airport (SSH) transfers to Naama Bay, Nabq, Sharks Bay, Ras Um Sid and your resort. Fixed price, flight tracking, free cancellation, 24/7 support.',
+      'Private Sharm El Sheikh Airport (SSH) transfers to Naama Bay, Nabq Bay, Sharks Bay & Ras Um Sid. Fixed price, flight tracking, free cancellation.',
     intro: [
       'Start your Red Sea holiday the easy way with a private transfer from Sharm El Sheikh International Airport (SSH). A professional Transfera driver meets you at arrivals, takes care of your bags and drives you straight to your resort — no shared minibuses and no waiting around.',
       'We cover all of Sharm El Sheikh and the surrounding bays: Naama Bay, Nabq Bay, Sharks Bay, Ras Um Sid, Hadaba and Sharm El Maya. From all-inclusive resorts to diving hotels, your driver knows the area and delivers you door to door.',
@@ -91,7 +90,7 @@ export const DESTINATIONS: Destination[] = [
     title: 'Luxor Airport Transfer | LXR Private Transfers | Transfera',
     h1: 'Luxor Airport Transfers — LXR Private Transfer Service',
     metaDescription:
-      'Private Luxor Airport (LXR) transfers to the East Bank, West Bank, Nile cruise docks and your hotel. Fixed price, flight tracking, free cancellation, 24/7 support.',
+      'Private Luxor Airport (LXR) transfers to East Bank, West Bank, Valley of the Kings & Nile cruise docks. Fixed price, free cancellation, 24/7.',
     intro: [
       "Explore the world's greatest open-air museum without the hassle of arranging transport on arrival. Transfera provides private transfers from Luxor International Airport (LXR) to your hotel, Nile cruise ship or guesthouse, with a friendly driver waiting for you in the arrivals hall.",
       'We serve both sides of the Nile — the East Bank with Luxor Temple and Karnak, and the West Bank with the Valley of the Kings, Hatshepsut Temple and the Colossi of Memnon — as well as the cruise docks for your Nile cruise departure. Your transfer is timed around your flight, which we track in real time.',
@@ -109,10 +108,10 @@ export const DESTINATIONS: Destination[] = [
     city: 'Marsa Alam',
     iata: 'RMF',
     airportName: 'Marsa Alam International Airport',
-    title: 'Marsa Alam Airport Transfer | RMF Private Transfers | Transfera',
+    title: 'Marsa Alam Airport Transfer | RMF Transfers | Transfera',
     h1: 'Marsa Alam Airport Transfers — RMF Private Transfers',
     metaDescription:
-      'Private Marsa Alam Airport (RMF) transfers to Port Ghalib, Abu Dabbab, El Quseir and your resort. Fixed price, flight tracking, free cancellation, 24/7 support.',
+      'Private Marsa Alam Airport (RMF) transfers to Port Ghalib, Abu Dabbab, Coraya Bay & El Quseir. Fixed price, flight tracking, free cancellation.',
     intro: [
       'Reach your Red Sea resort in comfort with a private transfer from Marsa Alam International Airport (RMF). Your Transfera driver meets you at arrivals, loads your luggage and drives you directly to your hotel — ideal after a long flight to this remote stretch of coast.',
       'We cover the whole Marsa Alam region, including Port Ghalib, Abu Dabbab, Coraya Bay, Sahl Hasheesh-style resorts along the coast, and El Quseir to the north. Many resorts are a long drive from the airport, so a reliable private car with a fixed price is the comfortable, predictable way to travel.',

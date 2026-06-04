@@ -3,9 +3,9 @@ import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
 import { TrackBookingClient } from './track-client';
 
 export const metadata: Metadata = {
-  title: 'Track Your Booking | Transfera Egypt Transfers',
+  title: 'Track Your Booking | Egypt Airport Transfers | Transfera',
   description:
-    'Look up and manage your Transfera airport transfer booking. View confirmation, driver details, and pickup information.',
+    'Look up your Transfera Egypt transfer booking. View your confirmation, driver details, pickup time and vehicle information.',
   alternates: { canonical: '/booking/lookup' },
 };
 
