@@ -60,7 +60,7 @@ function Stepper({ value, onChange, min = 0, max = 50, color }: {
       <button type="button" onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min}
         className="flex h-6 w-6 items-center justify-center rounded-full text-white transition disabled:opacity-30 text-sm font-bold"
         style={{ backgroundColor: color }}>−</button>
-      <span className="min-w-[2ch] text-center text-sm font-bold text-gray-900">{value}</span>
+      <span className="min-w-[2ch] text-center text-sm font-bold text-white">{value}</span>
       <button type="button" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}
         className="flex h-6 w-6 items-center justify-center rounded-full text-white transition disabled:opacity-30 text-sm font-bold"
         style={{ backgroundColor: color }}>+</button>
@@ -89,8 +89,8 @@ function DatePicker({ value, onChange, minDate, primaryColor, placeholder }: {
       <PopoverTrigger asChild>
         <button type="button" className="flex h-full w-full flex-col justify-center text-left">
           {selected
-            ? <span className="text-sm font-medium text-gray-900">{format(selected, 'EEE, dd MMM yyyy')}</span>
-            : <span className="text-sm text-gray-400">{placeholder}</span>}
+            ? <span className="text-sm font-medium text-white">{format(selected, 'EEE, dd MMM yyyy')}</span>
+            : <span className="text-sm text-white/50">{placeholder}</span>}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white rounded-2xl shadow-2xl border border-gray-100" align="start" sideOffset={8}>
@@ -170,8 +170,8 @@ function TimePicker({ value, onChange, primaryColor, placeholder }: {
       <PopoverTrigger asChild>
         <button type="button" className="flex h-full w-full flex-col justify-center text-left">
           {value
-            ? <span className="text-sm font-medium text-gray-900">{value}</span>
-            : <span className="text-sm text-gray-400">{placeholder}</span>}
+            ? <span className="text-sm font-medium text-white">{value}</span>
+            : <span className="text-sm text-white/50">{placeholder}</span>}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white rounded-2xl shadow-2xl border border-gray-100" align="start" sideOffset={8}>
@@ -209,7 +209,7 @@ function Cell({ icon: Icon, iconColor, label, children }: {
         <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: iconColor }} />
       </div>
       <div className="min-w-0 flex-1 flex flex-col justify-center">
-        <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">{label}</p>
+        <p className="text-[9px] font-bold uppercase tracking-widest text-white/50 mb-0.5">{label}</p>
         {children}
       </div>
     </div>
@@ -267,10 +267,10 @@ function SearchableSelect({
       <PopoverTrigger asChild disabled={disabled}>
         <button type="button" disabled={disabled}
           className="flex w-full items-center justify-between gap-1 text-left disabled:cursor-not-allowed disabled:opacity-50">
-          <span className={cn('truncate text-sm', selected ? 'font-medium text-gray-900' : 'text-gray-400')}>
+          <span className={cn('truncate text-sm', selected ? 'font-medium text-white' : 'text-white/50')}>
             {selected ? selected.label : placeholder}
           </span>
-          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-white/50" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" sideOffset={8}
@@ -454,17 +454,17 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   const canSearch = airportValue && hotelZone && store.fromZoneId && store.toZoneId && store.jobDate && store.pickupTime && store.paxCount > 0;
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5">
+    <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10" style={{ backgroundColor: 'rgba(25,25,25,0.75)' }}>
 
       {/* Tabs */}
-      <div className="flex items-center justify-center gap-1 border-b border-gray-100 px-3 py-2">
+      <div className="flex items-center justify-center gap-1 border-b border-white/10 px-3 py-2">
         {([
           { key: 'ARR' as Tab, label: t('booking.arrivalTransfer'), Icon: PlaneLanding },
           { key: 'DEP' as Tab, label: t('booking.departureTransfer'), Icon: PlaneTakeoff },
         ] as const).map(({ key, label, Icon }) => (
           <button key={key} type="button" onClick={() => setActiveTab(key)}
             className="flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-semibold transition-all"
-            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { color: '#9ca3af' }}>
+            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { color: 'rgba(255,255,255,0.55)' }}>
             <Icon className="h-3.5 w-3.5" />
             {label}
           </button>
