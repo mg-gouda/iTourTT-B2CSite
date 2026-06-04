@@ -463,9 +463,9 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
           { key: 'DEP' as Tab, label: t('booking.departureTransfer'), Icon: PlaneTakeoff },
         ] as const).map(({ key, label, Icon }) => (
           <button key={key} type="button" onClick={() => setActiveTab(key)}
-            className="flex items-center gap-2 rounded-tl-lg rounded-tr-lg px-5 pt-2.5 pb-0 text-xl font-semibold transition-all mb-0"
+            className="flex items-center gap-1.5 sm:gap-2 rounded-tl-lg rounded-tr-lg px-3 sm:px-5 pt-2 sm:pt-2.5 pb-0 text-xs sm:text-xl font-semibold transition-all mb-0"
             style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { backgroundColor: 'rgba(25,25,25,0.25)', color: 'rgba(255,255,255,0.55)' }}>
-            <Icon className="h-5 w-5" />
+            <Icon className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
             {label}
           </button>
         ))}
@@ -475,8 +475,8 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
       <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10" style={{ backgroundColor: 'rgba(25,25,25,0.75)' }}>
 
       {/* Fields row */}
-      <div className="pl-3">
-        <div className="grid grid-cols-2 sm:[grid-template-columns:2fr_2fr_1fr_1fr_1fr_auto] rounded-xl overflow-hidden">
+      <div className="p-3 sm:py-0 sm:pr-0 sm:pl-3">
+        <div className="grid grid-cols-1 sm:[grid-template-columns:2fr_2fr_1fr_1fr_1fr_auto] rounded-xl overflow-hidden">
 
           <Cell icon={Plane} iconColor={isArr ? '#16a34a' : '#dc2626'}
             label={isArr ? `${t('booking.arrivalAirport')} *` : `${t('booking.departureAirport')} *`}>
@@ -521,7 +521,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
           </Cell>
 
           {/* Search button */}
-          <div className="flex items-stretch col-span-2 sm:col-span-1">
+          <div className="flex items-stretch">
             <button type="button" onClick={handleSearch} disabled={!canSearch}
               className="w-full h-full flex items-center justify-center gap-2 px-5 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
               style={{ backgroundColor: pc }}>
