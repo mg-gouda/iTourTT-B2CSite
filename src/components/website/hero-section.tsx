@@ -1,7 +1,7 @@
 'use client';
 
 import type { SiteSettings } from '@/lib/site-settings';
-import { useWT } from '@/lib/website-i18n';
+import { useWT, useLocaleStore } from '@/lib/website-i18n';
 
 interface HeroSectionProps {
   settings: SiteSettings;
@@ -10,6 +10,9 @@ interface HeroSectionProps {
 
 export function HeroSection({ settings, children }: HeroSectionProps) {
   const t = useWT();
+  const { locale } = useLocaleStore();
+  const heroTitle    = locale === 'en' ? settings.heroTitle    : t('site.heroTitle');
+  const heroSubtitle = locale === 'en' ? settings.heroSubtitle : t('site.heroSubtitle');
   const hasImage = !!settings.heroImageUrl;
 
   return (
@@ -32,10 +35,10 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
             {t('landing.heroBadge')}
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            {settings.heroTitle}
+            {heroTitle}
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base font-bold leading-relaxed text-black sm:text-lg">
-            {settings.heroSubtitle}
+            {heroSubtitle}
           </p>
         </div>
 

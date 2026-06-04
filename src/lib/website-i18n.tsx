@@ -196,6 +196,11 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australia",
 
+    // Admin-configured site content (used as fallback when locale ≠ en)
+    "site.heroTitle": "Book Your Airport Transfer",
+    "site.heroSubtitle": "Safe, comfortable, and reliable private transfers across Egypt. From the airport to your hotel, we have got you covered.",
+    "site.featuresTitle": "Why Choose Us?",
+
     // Booking widget sub-components
     "booking.pickDate": "Pick date",
     "booking.pickTime": "Pick time",
@@ -379,6 +384,11 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.quote": "احترافية عالية. تأخرت رحلتنا ساعتين لكنهم تتبعوها وكان السائق لا يزال في انتظارنا. أنصح بشدة!",
     "testimonial.3.name": "جيمس ك.",
     "testimonial.3.location": "سيدني، أستراليا",
+
+    // Admin-configured site content
+    "site.heroTitle": "احجز نقلتك من المطار",
+    "site.heroSubtitle": "خدمات نقل خاصة آمنة ومريحة وموثوقة في جميع أنحاء مصر. من المطار إلى فندقك، نحن هنا لخدمتك.",
+    "site.featuresTitle": "لماذا تختارنا؟",
 
     // Booking widget sub-components
     "booking.pickDate": "اختر التاريخ",
@@ -566,6 +576,11 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australien",
 
+    // Admin-configured site content
+    "site.heroTitle": "Buchen Sie Ihren Flughafentransfer",
+    "site.heroSubtitle": "Sichere, komfortable und zuverlässige private Transfers in ganz Ägypten. Vom Flughafen direkt zu Ihrem Hotel.",
+    "site.featuresTitle": "Warum uns wählen?",
+
     // Booking widget sub-components
     "booking.pickDate": "Datum wählen",
     "booking.pickTime": "Uhrzeit wählen",
@@ -752,6 +767,11 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australie",
 
+    // Admin-configured site content
+    "site.heroTitle": "Réservez votre transfert aéroport",
+    "site.heroSubtitle": "Des transferts privés sûrs, confortables et fiables dans toute l'Égypte. De l'aéroport à votre hôtel, nous vous couvrons.",
+    "site.featuresTitle": "Pourquoi nous choisir ?",
+
     // Booking widget sub-components
     "booking.pickDate": "Choisir une date",
     "booking.pickTime": "Choisir l'heure",
@@ -937,6 +957,11 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.quote": "Molto professionale. Il nostro volo era in ritardo di 2 ore ma l'hanno monitorato e l'autista era ancora lì. Altamente raccomandato!",
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australia",
+
+    // Admin-configured site content
+    "site.heroTitle": "Prenota il tuo transfer aeroportuale",
+    "site.heroSubtitle": "Transfer privati sicuri, confortevoli e affidabili in tutta l'Egitto. Dall'aeroporto al tuo hotel, ci pensiamo noi.",
+    "site.featuresTitle": "Perché sceglierci?",
 
     // Booking widget sub-components
     "booking.pickDate": "Scegli data",
@@ -1125,6 +1150,11 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australië",
 
+    // Admin-configured site content
+    "site.heroTitle": "Boek uw luchthaventransfer",
+    "site.heroSubtitle": "Veilige, comfortabele en betrouwbare privétransfers door heel Egypte. Van het vliegveld naar uw hotel.",
+    "site.featuresTitle": "Waarom ons kiezen?",
+
     // Booking widget sub-components
     "booking.pickDate": "Kies datum",
     "booking.pickTime": "Kies tijd",
@@ -1311,6 +1341,11 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.quote": "Очень профессионально. Наш рейс задержался на 2 часа, но они отслеживали его и водитель всё равно был на месте. Настоятельно рекомендую!",
     "testimonial.3.name": "Джеймс К.",
     "testimonial.3.location": "Сидней, Австралия",
+
+    // Admin-configured site content
+    "site.heroTitle": "Закажите трансфер из аэропорта",
+    "site.heroSubtitle": "Безопасные, комфортные и надёжные частные трансферы по всему Египту. От аэропорта до вашего отеля.",
+    "site.featuresTitle": "Почему выбирают нас?",
 
     // Booking widget sub-components
     "booking.pickDate": "Выберите дату",
