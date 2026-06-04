@@ -60,6 +60,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.home": "Home",
     "nav.bookNow": "Book Now",
     "nav.trackBooking": "Track Booking",
+    "nav.destinations": "Destinations",
+    "nav.blog": "Blog",
     "nav.myAccount": "My Account",
     "nav.menu": "Menu",
 
@@ -208,6 +210,8 @@ const translations: Record<Locale, Record<string, string>> = {
     // Navigation
     "nav.home": "الرئيسية",
     "nav.bookNow": "احجز الآن",
+    "nav.destinations": "الوجهات",
+    "nav.blog": "المدونة",
     "nav.trackBooking": "تتبع الحجز",
     "nav.myAccount": "حسابي",
     "nav.menu": "القائمة",
