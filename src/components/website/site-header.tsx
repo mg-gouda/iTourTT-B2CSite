@@ -58,7 +58,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       {settings.siteLogoUrl ? (
         <img
           src={settings.siteLogoUrl}
-          alt={settings.siteName}
+          alt={`${settings.siteName} — Egypt Airport Transfer Service`}
           className="h-9 w-auto shrink-0 object-contain"
           style={{ minWidth: '60px' }}
         />
@@ -66,7 +66,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
         <>
           <img
             src="/favicon.svg"
-            alt={settings.siteName}
+            alt={`${settings.siteName} — Egypt Airport Transfer Service`}
             className="h-8 w-8 shrink-0"
           />
           <span className="text-lg font-semibold tracking-tight text-white">

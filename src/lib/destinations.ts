@@ -1,0 +1,132 @@
+// ─── Destination landing-page content ────────────────────────────
+// Data for the /transfers/[city] SEO landing pages. Each entry drives
+// the page metadata, H1, body copy, popular routes and Service schema.
+
+export interface Destination {
+  slug: string;
+  city: string;
+  iata: string;
+  airportName: string;
+  title: string; // <title>
+  h1: string;
+  metaDescription: string;
+  // 2–3 paragraphs of body copy (200+ words total).
+  intro: string[];
+  popularRoutes: string[];
+}
+
+export const DESTINATIONS: Destination[] = [
+  {
+    slug: 'hurghada',
+    city: 'Hurghada',
+    iata: 'HRG',
+    airportName: 'Hurghada International Airport',
+    title: 'Hurghada Airport Transfer | HRG Private Transfers | Transfera',
+    h1: 'Hurghada Airport Transfers — HRG Private Transfer Service',
+    metaDescription:
+      'Private Hurghada Airport (HRG) transfers to El Gouna, Makadi Bay, Soma Bay, Sahl Hasheesh and your hotel. Fixed price, flight tracking, free cancellation, 24/7 support.',
+    intro: [
+      'Book a private airport transfer from Hurghada International Airport (HRG) to your hotel or resort with Transfera. Our professional, English-speaking drivers meet you in the arrivals hall, help with your luggage and take you directly to your destination — no shared shuttles, no waiting, no haggling over the fare.',
+      'Hurghada is the gateway to the Red Sea Riviera, and we cover every popular resort area: El Gouna, Makadi Bay, Soma Bay, Sahl Hasheesh, Sahl Hasheesh and the Hurghada city hotels. We track your flight in real time, so if you land early or late your driver is always there waiting at no extra charge.',
+      'Every transfer is a fixed price confirmed at the time of booking — what you see is what you pay, with no hidden surcharges and free cancellation up to 24 hours before pickup. Modern, air-conditioned vehicles, child seats on request, and 24/7 customer support make Transfera the reliable choice for your Hurghada arrival and departure.',
+    ],
+    popularRoutes: [
+      'Hurghada Airport → El Gouna',
+      'Hurghada Airport → Makadi Bay',
+      'Hurghada Airport → Soma Bay',
+      'Hurghada Airport → Sahl Hasheesh',
+      'Hurghada Airport → Hurghada City & Marina',
+    ],
+  },
+  {
+    slug: 'cairo',
+    city: 'Cairo',
+    iata: 'CAI',
+    airportName: 'Cairo International Airport',
+    title: 'Cairo Airport Transfer | CAI Private Transfers | Transfera',
+    h1: 'Cairo Airport Transfers — CAI Private Transfer Service',
+    metaDescription:
+      'Private Cairo Airport (CAI) transfers to Downtown Cairo, Giza, the Pyramids, New Cairo and Heliopolis. Fixed price, flight tracking, free cancellation, 24/7 support.',
+    intro: [
+      'Arrive in the Egyptian capital stress-free with a private transfer from Cairo International Airport (CAI). Your Transfera driver greets you on arrival, assists with luggage and drives you directly to your hotel or apartment in a comfortable, air-conditioned vehicle.',
+      'We serve every part of Greater Cairo: Downtown Cairo, Zamalek, Garden City, Heliopolis, Nasr City, New Cairo, and the Giza and Pyramids area. Whether you are in town for business, a Nile cruise connection, or to see the Pyramids of Giza and the Grand Egyptian Museum, we get you there on time.',
+      'Cairo traffic is unpredictable — that is exactly why a fixed-price private transfer makes sense. Your fare is locked in at booking with no meter and no surge pricing, we monitor your flight for delays, and free cancellation is available up to 24 hours before pickup. Friendly 24/7 support is on hand for any change of plan.',
+    ],
+    popularRoutes: [
+      'Cairo Airport → Downtown Cairo',
+      'Cairo Airport → Giza & the Pyramids',
+      'Cairo Airport → Zamalek',
+      'Cairo Airport → New Cairo',
+      'Cairo Airport → Heliopolis',
+    ],
+  },
+  {
+    slug: 'sharm-el-sheikh',
+    city: 'Sharm El Sheikh',
+    iata: 'SSH',
+    airportName: 'Sharm El Sheikh International Airport',
+    title:
+      'Sharm El Sheikh Airport Transfer | SSH Private Transfers | Transfera',
+    h1: 'Sharm El Sheikh Airport Transfers — SSH Private Transfers',
+    metaDescription:
+      'Private Sharm El Sheikh Airport (SSH) transfers to Naama Bay, Nabq, Sharks Bay, Ras Um Sid and your resort. Fixed price, flight tracking, free cancellation, 24/7 support.',
+    intro: [
+      'Start your Red Sea holiday the easy way with a private transfer from Sharm El Sheikh International Airport (SSH). A professional Transfera driver meets you at arrivals, takes care of your bags and drives you straight to your resort — no shared minibuses and no waiting around.',
+      'We cover all of Sharm El Sheikh and the surrounding bays: Naama Bay, Nabq Bay, Sharks Bay, Ras Um Sid, Hadaba and Sharm El Maya. From all-inclusive resorts to diving hotels, your driver knows the area and delivers you door to door.',
+      'Each transfer is a fixed, all-in price agreed at booking with no hidden extras, and we track your flight so your driver is ready whenever you land. Free cancellation up to 24 hours before pickup, air-conditioned vehicles, child seats on request and round-the-clock support come as standard with Transfera.',
+    ],
+    popularRoutes: [
+      'Sharm El Sheikh Airport → Naama Bay',
+      'Sharm El Sheikh Airport → Nabq Bay',
+      'Sharm El Sheikh Airport → Sharks Bay',
+      'Sharm El Sheikh Airport → Ras Um Sid',
+      'Sharm El Sheikh Airport → Hadaba',
+    ],
+  },
+  {
+    slug: 'luxor',
+    city: 'Luxor',
+    iata: 'LXR',
+    airportName: 'Luxor International Airport',
+    title: 'Luxor Airport Transfer | LXR Private Transfers | Transfera',
+    h1: 'Luxor Airport Transfers — LXR Private Transfer Service',
+    metaDescription:
+      'Private Luxor Airport (LXR) transfers to the East Bank, West Bank, Nile cruise docks and your hotel. Fixed price, flight tracking, free cancellation, 24/7 support.',
+    intro: [
+      "Explore the world's greatest open-air museum without the hassle of arranging transport on arrival. Transfera provides private transfers from Luxor International Airport (LXR) to your hotel, Nile cruise ship or guesthouse, with a friendly driver waiting for you in the arrivals hall.",
+      'We serve both sides of the Nile — the East Bank with Luxor Temple and Karnak, and the West Bank with the Valley of the Kings, Hatshepsut Temple and the Colossi of Memnon — as well as the cruise docks for your Nile cruise departure. Your transfer is timed around your flight, which we track in real time.',
+      'Prices are fixed at the moment you book, with no surprises on the day and free cancellation up to 24 hours in advance. Comfortable air-conditioned vehicles and 24/7 support make your Luxor arrival and departure smooth from start to finish.',
+    ],
+    popularRoutes: [
+      'Luxor Airport → East Bank hotels (Luxor & Karnak Temples)',
+      'Luxor Airport → West Bank (Valley of the Kings)',
+      'Luxor Airport → Nile cruise docks',
+      'Luxor Airport → Luxor city centre',
+    ],
+  },
+  {
+    slug: 'marsa-alam',
+    city: 'Marsa Alam',
+    iata: 'RMF',
+    airportName: 'Marsa Alam International Airport',
+    title: 'Marsa Alam Airport Transfer | RMF Private Transfers | Transfera',
+    h1: 'Marsa Alam Airport Transfers — RMF Private Transfers',
+    metaDescription:
+      'Private Marsa Alam Airport (RMF) transfers to Port Ghalib, Abu Dabbab, El Quseir and your resort. Fixed price, flight tracking, free cancellation, 24/7 support.',
+    intro: [
+      'Reach your Red Sea resort in comfort with a private transfer from Marsa Alam International Airport (RMF). Your Transfera driver meets you at arrivals, loads your luggage and drives you directly to your hotel — ideal after a long flight to this remote stretch of coast.',
+      'We cover the whole Marsa Alam region, including Port Ghalib, Abu Dabbab, Coraya Bay, Sahl Hasheesh-style resorts along the coast, and El Quseir to the north. Many resorts are a long drive from the airport, so a reliable private car with a fixed price is the comfortable, predictable way to travel.',
+      'Your fare is confirmed at booking with no hidden extras, we track your flight so your driver is always there on time, and free cancellation is available up to 24 hours before pickup. Air-conditioned vehicles, child seats on request and 24/7 support are included with every Marsa Alam transfer.',
+    ],
+    popularRoutes: [
+      'Marsa Alam Airport → Port Ghalib',
+      'Marsa Alam Airport → Abu Dabbab',
+      'Marsa Alam Airport → Coraya Bay',
+      'Marsa Alam Airport → El Quseir',
+    ],
+  },
+];
+
+export function getDestination(slug: string): Destination | undefined {
+  return DESTINATIONS.find((d) => d.slug === slug);
+}

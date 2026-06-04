@@ -1,21 +1,61 @@
 import type { Metadata } from 'next';
 import { Toaster } from 'sonner';
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
+import { JsonLd } from '@/components/JsonLd';
+import {
+  SITE_URL,
+  HOME_TITLE,
+  HOME_DESCRIPTION,
+  OG_DESCRIPTION,
+  OG_IMAGE,
+  BRAND_NAME,
+  localBusinessSchema,
+} from '@/lib/seo';
 import { WebsiteShell } from './website-shell';
 import './globals.css';
 
 export const dynamic = 'force-dynamic';
 
 // ── Dynamic metadata from site settings ──
+// Backend metaTitle/metaDescription win; the geo-targeted strings in
+// @/lib/seo are the static fallbacks.
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await fetchSiteSettings();
 
+  const title = settings.metaTitle ?? HOME_TITLE;
+  const description = settings.metaDescription ?? HOME_DESCRIPTION;
+  const siteName = settings.siteName || BRAND_NAME;
+
   return {
-    title: settings.metaTitle ?? settings.siteName,
-    description:
-      settings.metaDescription ??
-      'Professional airport transfer and transportation services across Egypt.',
+    metadataBase: new URL(SITE_URL),
+    title,
+    description,
+    alternates: {
+      canonical: '/',
+    },
+    openGraph: {
+      type: 'website',
+      locale: 'en_US',
+      url: SITE_URL,
+      siteName,
+      title,
+      description: OG_DESCRIPTION,
+      images: [
+        {
+          url: OG_IMAGE,
+          width: 1200,
+          height: 630,
+          alt: 'Transfera — Egypt Airport Transfers',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: OG_DESCRIPTION,
+      images: [OG_IMAGE],
+    },
     icons: {
       icon: settings.siteFaviconUrl ?? '/favicon.svg',
     },
@@ -88,6 +128,14 @@ export default async function RootLayout({
         />
       </head>
       <body className="antialiased">
+        {/* Site-wide LocalBusiness / TravelAgency structured data */}
+        <JsonLd
+          data={localBusinessSchema({
+            name: settings.siteName,
+            telephone: settings.contactPhone,
+            email: settings.contactEmail,
+          })}
+        />
         <WebsiteShell settings={settings}>{children}</WebsiteShell>
         <Toaster position="top-center" richColors />
       </body>

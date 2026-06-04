@@ -1,4 +1,6 @@
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
+import { JsonLd } from '@/components/JsonLd';
+import { serviceSchema, faqSchema } from '@/lib/seo';
 import { WebsiteLandingClient } from './landing-client';
 
 export default async function WebsiteLandingPage() {
@@ -9,5 +11,11 @@ export default async function WebsiteLandingPage() {
     // Use defaults
   }
 
-  return <WebsiteLandingClient settings={settings} />;
+  return (
+    <>
+      <JsonLd data={serviceSchema()} />
+      <JsonLd data={faqSchema()} />
+      <WebsiteLandingClient settings={settings} />
+    </>
+  );
 }

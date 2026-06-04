@@ -89,7 +89,7 @@ export interface SiteSettings {
 // ── Defaults (used when API call fails) ──
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
-  siteName: 'iTour Transfers',
+  siteName: 'Transfera',
   siteLogoUrl: null,
   siteFaviconUrl: null,
   fontFamily: 'Inter',
@@ -101,7 +101,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   footerBgColor: '#1a1a2e',
   headerPreset: 'default',
   footerPreset: 'default',
-  heroTitle: 'Book Your Airport Transfer',
+  heroTitle: 'Egypt Airport Transfers — Hurghada, Cairo & Sharm El Sheikh',
   heroSubtitle:
     'Safe, comfortable, and reliable private transfers across Egypt. From the airport to your hotel, we have got you covered.',
   heroCta1Text: 'Book Now',
@@ -110,7 +110,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   featuresEnabled: true,
   featuresTitle: 'Why Choose Us?',
   featuresJson: null,
-  contactEmail: 'info@itour-tt.com',
+  contactEmail: 'info@transfera.ae',
   contactPhone: '+20 123 456 7890',
   contactWhatsapp: null,
   socialFacebook: null,
