@@ -1,6 +1,7 @@
 'use client';
 
 import type { SiteSettings } from '@/lib/site-settings';
+import { useWT } from '@/lib/website-i18n';
 
 interface HeroSectionProps {
   settings: SiteSettings;
@@ -8,6 +9,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ settings, children }: HeroSectionProps) {
+  const t = useWT();
   const hasImage = !!settings.heroImageUrl;
 
   return (
@@ -27,7 +29,7 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
             className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-gray-500 shadow-sm"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Private Airport Transfers · Egypt
+            {t('landing.heroBadge')}
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
             {settings.heroTitle}

@@ -496,7 +496,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
               value={selectedDestValue}
               onValueChange={handleDestinationChange}
               options={destZones.flatMap((z) => [
-                { value: `z:${z.id}`, label: `Anywhere in ${z.name}`, group: z.name },
+                { value: `z:${z.id}`, label: `${t('booking.anywhereIn')} ${z.name}`, group: z.name },
                 ...z.hotels.map((h) => ({ value: `h:${h.id}:${z.id}`, label: h.name, group: z.name })),
               ])}
               placeholder={airportValue ? t('booking.searchLocation') : t('booking.selectAirport')}
@@ -526,7 +526,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
               className="w-full h-full flex items-center justify-center gap-2 px-5 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
               style={{ backgroundColor: pc }}>
               <Search className="h-4 w-4" />
-              Search
+              {t('booking.search')}
             </button>
           </div>
 
