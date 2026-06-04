@@ -454,22 +454,25 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   const canSearch = airportValue && hotelZone && store.fromZoneId && store.toZoneId && store.jobDate && store.pickupTime && store.paxCount > 0;
 
   return (
-    <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10" style={{ backgroundColor: 'rgba(25,25,25,0.75)' }}>
+    <div>
 
-      {/* Tabs */}
-      <div className="flex items-center justify-center gap-1 border-b border-white/10 px-3 py-2">
+      {/* Tabs — transparent background, sit above the dark box */}
+      <div className="flex items-center justify-center gap-1 px-3">
         {([
           { key: 'ARR' as Tab, label: t('booking.arrivalTransfer'), Icon: PlaneLanding },
           { key: 'DEP' as Tab, label: t('booking.departureTransfer'), Icon: PlaneTakeoff },
         ] as const).map(({ key, label, Icon }) => (
           <button key={key} type="button" onClick={() => setActiveTab(key)}
-            className="flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-semibold transition-all"
+            className="flex items-center gap-2 rounded-tl-lg rounded-tr-lg px-5 pt-2.5 pb-0 text-xl font-semibold transition-all mb-0"
             style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { color: 'rgba(255,255,255,0.55)' }}>
-            <Icon className="h-3.5 w-3.5" />
+            <Icon className="h-5 w-5" />
             {label}
           </button>
         ))}
       </div>
+
+      {/* Dark widget box */}
+      <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10" style={{ backgroundColor: 'rgba(25,25,25,0.75)' }}>
 
       {/* Fields row */}
       <div className="pl-3 py-3">
@@ -528,6 +531,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
           </div>
 
         </div>
+      </div>
       </div>
     </div>
   );
