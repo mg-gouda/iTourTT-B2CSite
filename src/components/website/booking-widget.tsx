@@ -60,7 +60,7 @@ function Stepper({ value, onChange, min = 0, max = 50, color }: {
       <button type="button" onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min}
         className="flex h-6 w-6 items-center justify-center rounded-full text-white transition disabled:opacity-30 text-sm font-bold"
         style={{ backgroundColor: color }}>−</button>
-      <span className="min-w-[2ch] text-center text-sm font-bold text-gray-900">{value}</span>
+      <span className="min-w-[2ch] text-center text-sm font-bold text-white">{value}</span>
       <button type="button" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}
         className="flex h-6 w-6 items-center justify-center rounded-full text-white transition disabled:opacity-30 text-sm font-bold"
         style={{ backgroundColor: color }}>+</button>
@@ -89,8 +89,8 @@ function DatePicker({ value, onChange, minDate, primaryColor, placeholder }: {
       <PopoverTrigger asChild>
         <button type="button" className="flex h-full w-full flex-col justify-center text-left">
           {selected
-            ? <span className="text-sm font-medium text-gray-900">{format(selected, 'EEE, dd MMM yyyy')}</span>
-            : <span className="text-sm text-gray-400">{placeholder}</span>}
+            ? <span className="text-sm font-medium text-white">{format(selected, 'EEE, dd MMM yyyy')}</span>
+            : <span className="text-sm text-white">{placeholder}</span>}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white rounded-2xl shadow-2xl border border-gray-100" align="start" sideOffset={8}>
@@ -144,6 +144,7 @@ function DatePicker({ value, onChange, minDate, primaryColor, placeholder }: {
 function TimePicker({ value, onChange, primaryColor, placeholder }: {
   value: string; onChange: (v: string) => void; primaryColor: string; placeholder: string;
 }) {
+  const t = useWT();
   const [open, setOpen] = useState(false);
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
   const minutes = ['00','05','10','15','20','25','30','35','40','45','50','55'];
@@ -170,8 +171,8 @@ function TimePicker({ value, onChange, primaryColor, placeholder }: {
       <PopoverTrigger asChild>
         <button type="button" className="flex h-full w-full flex-col justify-center text-left">
           {value
-            ? <span className="text-sm font-medium text-gray-900">{value}</span>
-            : <span className="text-sm text-gray-400">{placeholder}</span>}
+            ? <span className="text-sm font-medium text-white">{value}</span>
+            : <span className="text-sm text-white">{placeholder}</span>}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white rounded-2xl shadow-2xl border border-gray-100" align="start" sideOffset={8}>
@@ -192,7 +193,7 @@ function TimePicker({ value, onChange, primaryColor, placeholder }: {
           </div>
         </div>
         <div className="border-t border-gray-100 px-3 py-2 text-center">
-          <span className="text-xs text-gray-400">Hour · Minute</span>
+          <span className="text-xs text-gray-400">{t('booking.hourMinute')}</span>
         </div>
       </PopoverContent>
     </Popover>
@@ -204,12 +205,12 @@ function Cell({ icon: Icon, iconColor, label, children }: {
   icon: React.ElementType; iconColor: string; label: string; children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-14 items-center gap-2.5 px-3">
+    <div className="flex h-14 sm:h-[74px] items-center gap-2.5 px-3">
       <div className="flex h-full items-center">
         <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: iconColor }} />
       </div>
       <div className="min-w-0 flex-1 flex flex-col justify-center">
-        <p className="text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-0.5">{label}</p>
+        <p className="text-[9px] font-bold uppercase tracking-widest text-white mb-0.5">{label}</p>
         {children}
       </div>
     </div>
@@ -240,6 +241,7 @@ function SearchableSelect({
   disabled?: boolean;
   emptyText?: string;
 }) {
+  const t = useWT();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -267,10 +269,10 @@ function SearchableSelect({
       <PopoverTrigger asChild disabled={disabled}>
         <button type="button" disabled={disabled}
           className="flex w-full items-center justify-between gap-1 text-left disabled:cursor-not-allowed disabled:opacity-50">
-          <span className={cn('truncate text-sm', selected ? 'font-medium text-gray-900' : 'text-gray-400')}>
+          <span className={cn('truncate text-sm', selected ? 'font-medium text-white' : 'text-white')}>
             {selected ? selected.label : placeholder}
           </span>
-          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-white" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" sideOffset={8}
@@ -278,7 +280,7 @@ function SearchableSelect({
         <div className="flex items-center gap-2 border-b px-3 py-2">
           <Search className="h-3.5 w-3.5 shrink-0 text-gray-400" />
           <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search…"
+            placeholder={t('booking.searchPlaceholder')}
             className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400" />
         </div>
         <div className="max-h-64 overflow-y-auto py-1">
@@ -454,26 +456,29 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   const canSearch = airportValue && hotelZone && store.fromZoneId && store.toZoneId && store.jobDate && store.pickupTime && store.paxCount > 0;
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-black/5">
+    <div>
 
-      {/* Tabs */}
-      <div className="flex items-center justify-center gap-1 border-b border-gray-100 px-3 py-2">
+      {/* Tabs — transparent background, sit above the dark box */}
+      <div className="flex items-center justify-center gap-1 px-3">
         {([
           { key: 'ARR' as Tab, label: t('booking.arrivalTransfer'), Icon: PlaneLanding },
           { key: 'DEP' as Tab, label: t('booking.departureTransfer'), Icon: PlaneTakeoff },
         ] as const).map(({ key, label, Icon }) => (
           <button key={key} type="button" onClick={() => setActiveTab(key)}
-            className="flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-semibold transition-all"
-            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { color: '#9ca3af' }}>
-            <Icon className="h-3.5 w-3.5" />
+            className="flex items-center gap-1.5 sm:gap-2 rounded-tl-lg rounded-tr-lg px-3 sm:px-5 pt-2 sm:pt-2.5 pb-0 text-xs sm:text-xl font-semibold transition-all mb-0"
+            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { backgroundColor: 'rgba(25,25,25,0.25)', color: 'rgba(255,255,255,0.55)' }}>
+            <Icon className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
             {label}
           </button>
         ))}
       </div>
 
+      {/* Dark widget box */}
+      <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10" style={{ backgroundColor: 'rgba(25,25,25,0.75)' }}>
+
       {/* Fields row */}
-      <div className="p-3">
-        <div className="grid grid-cols-2 sm:[grid-template-columns:2fr_2fr_1fr_1fr_1fr_auto] rounded-xl overflow-hidden">
+      <div className="p-3 sm:py-0 sm:pr-0 sm:pl-3">
+        <div className="grid grid-cols-1 sm:[grid-template-columns:2fr_2fr_1fr_1fr_1fr_auto] rounded-xl overflow-hidden">
 
           <Cell icon={Plane} iconColor={isArr ? '#16a34a' : '#dc2626'}
             label={isArr ? `${t('booking.arrivalAirport')} *` : `${t('booking.departureAirport')} *`}>
@@ -493,24 +498,24 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
               value={selectedDestValue}
               onValueChange={handleDestinationChange}
               options={destZones.flatMap((z) => [
-                { value: `z:${z.id}`, label: `Anywhere in ${z.name}`, group: z.name },
+                { value: `z:${z.id}`, label: `${t('booking.anywhereIn')} ${z.name}`, group: z.name },
                 ...z.hotels.map((h) => ({ value: `h:${h.id}:${z.id}`, label: h.name, group: z.name })),
               ])}
               placeholder={airportValue ? t('booking.searchLocation') : t('booking.selectAirport')}
               primaryColor={pc}
               disabled={!airportValue}
-              emptyText="No destinations found for this airport."
+              emptyText={t('booking.noDestinations')}
             />
           </Cell>
 
           <Cell icon={CalendarDays} iconColor={pc} label={`${t('booking.date')} *`}>
             <DatePicker value={store.jobDate} onChange={(v) => store.setField('jobDate', v)}
-              minDate={new Date()} primaryColor={pc} placeholder="Pick date" />
+              minDate={new Date()} primaryColor={pc} placeholder={t('booking.pickDate')} />
           </Cell>
 
           <Cell icon={Clock} iconColor={pc} label={`${t('booking.time')} *`}>
             <TimePicker value={store.pickupTime} onChange={(v) => store.setField('pickupTime', v)}
-              primaryColor={pc} placeholder="Pick time" />
+              primaryColor={pc} placeholder={t('booking.pickTime')} />
           </Cell>
 
           <Cell icon={Users} iconColor={pc} label={`${t('booking.passengers')} *`}>
@@ -518,16 +523,17 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
           </Cell>
 
           {/* Search button */}
-          <div className="flex h-14 items-center justify-center px-3 col-span-2 sm:col-span-1">
+          <div className="flex items-stretch">
             <button type="button" onClick={handleSearch} disabled={!canSearch}
-              className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-lg px-5 py-2 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
+              className="w-full h-full flex items-center justify-center gap-2 px-5 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
               style={{ backgroundColor: pc }}>
               <Search className="h-4 w-4" />
-              Search
+              {t('booking.search')}
             </button>
           </div>
 
         </div>
+      </div>
       </div>
     </div>
   );

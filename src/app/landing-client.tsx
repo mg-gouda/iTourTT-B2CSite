@@ -16,7 +16,7 @@ import { BookingWidget } from '@/components/website/booking-widget';
 import { FeaturesSection } from '@/components/website/features-section';
 import type { SiteSettings } from '@/lib/site-settings';
 import { useWT } from '@/lib/website-i18n';
-import { FAQ_ITEMS, AIRPORTS } from '@/lib/seo';
+import { AIRPORTS } from '@/lib/seo';
 
 interface LandingClientProps {
   settings: SiteSettings;
@@ -191,11 +191,10 @@ export function WebsiteLandingClient({ settings }: LandingClientProps) {
         <div className="mx-auto max-w-4xl">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-              Airports We Cover in Egypt
+              {t('landing.airportCoverage')}
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-gray-500">
-              Private arrival and departure transfers from every major Egyptian
-              airport, direct to your hotel or resort.
+              {t('landing.airportCoverageDesc')}
             </p>
           </div>
           <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -222,17 +221,17 @@ export function WebsiteLandingClient({ settings }: LandingClientProps) {
       <section className="bg-gray-50/60 px-4 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="text-center text-2xl font-bold text-gray-900 sm:text-3xl">
-            Frequently Asked Questions
+            {t('landing.faq')}
           </h2>
           <div className="mt-10 divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-            {FAQ_ITEMS.map((item) => (
-              <details key={item.question} className="group px-5 py-4">
+            {([1,2,3,4,5] as const).map((n) => (
+              <details key={n} className="group px-5 py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-gray-900">
-                  {item.question}
+                  {t(`faq.q${n}`)}
                   <Plus className="h-4 w-4 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-45" />
                 </summary>
                 <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                  {item.answer}
+                  {t(`faq.a${n}`)}
                 </p>
               </details>
             ))}

@@ -198,6 +198,47 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australia",
 
+    // Admin-configured site content (used as fallback when locale ≠ en)
+    "site.heroTitle": "Book Your Airport Transfer",
+    "site.heroSubtitle": "Safe, comfortable, and reliable private transfers across Egypt. From the airport to your hotel, we have got you covered.",
+    "site.featuresTitle": "Why Choose Us?",
+
+    // Booking widget sub-components
+    "booking.pickDate": "Pick date",
+    "booking.pickTime": "Pick time",
+    "booking.searchPlaceholder": "Search…",
+    "booking.noDestinations": "No destinations found for this airport.",
+    "booking.hourMinute": "Hour · Minute",
+
+    // Destination landing pages
+    "destination.heroDesc": "Fixed-price private transfers from {airport} ({iata}) to your hotel — flight tracking, free cancellation and 24/7 support.",
+    "destination.popularRoutes": "Popular {city} Transfer Routes",
+    "destination.fixedPrice": "Fixed price — no hidden fees",
+    "destination.freeCancellation": "Free cancellation up to 24h",
+    "destination.flightTracking": "Real-time flight tracking",
+    "destination.ctaTitle": "Book your {city} airport transfer",
+    "destination.ctaDesc": "Instant price, secure booking, and a driver waiting when you land.",
+
+    // Airport Coverage & FAQ sections
+    "landing.heroBadge": "Private Airport Transfers · Egypt",
+    "landing.airportCoverage": "Airports We Cover in Egypt",
+    "landing.airportCoverageDesc": "Private arrival and departure transfers from every major Egyptian airport, direct to your hotel or resort.",
+    "landing.faq": "Frequently Asked Questions",
+    "booking.search": "Search",
+    "booking.anywhereIn": "Anywhere in",
+
+    // FAQ items
+    "faq.q1": "How do I book an airport transfer in Egypt?",
+    "faq.a1": "Enter your pickup airport, destination, date, and number of passengers on our homepage. You will receive an instant price. Book and pay securely online, or choose to pay on arrival.",
+    "faq.q2": "What happens if my flight is delayed?",
+    "faq.a2": "We track all flights in real time. If your flight is delayed, we automatically adjust your driver's pickup time at no extra charge.",
+    "faq.q3": "Can I cancel my transfer?",
+    "faq.a3": "Yes. Free cancellation is available up to 24 hours before your scheduled transfer.",
+    "faq.q4": "Which airports in Egypt do you cover?",
+    "faq.a4": "We cover all major Egyptian airports: Hurghada (HRG), Cairo (CAI), Sharm El Sheikh (SSH), Luxor (LXR), Aswan (ASW), Marsa Alam (RMF), and Alexandria (HBE).",
+    "faq.q5": "Are there any hidden fees?",
+    "faq.a5": "No. The price you see at booking is the price you pay. No surge pricing, no airport surcharges, no hidden extras.",
+
     // Common
     "common.loading": "Loading...",
     "common.error": "Something went wrong",
@@ -348,6 +389,47 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "جيمس ك.",
     "testimonial.3.location": "سيدني، أستراليا",
 
+    // Admin-configured site content
+    "site.heroTitle": "احجز نقلتك من المطار",
+    "site.heroSubtitle": "خدمات نقل خاصة آمنة ومريحة وموثوقة في جميع أنحاء مصر. من المطار إلى فندقك، نحن هنا لخدمتك.",
+    "site.featuresTitle": "لماذا تختارنا؟",
+
+    // Booking widget sub-components
+    "booking.pickDate": "اختر التاريخ",
+    "booking.pickTime": "اختر الوقت",
+    "booking.searchPlaceholder": "بحث...",
+    "booking.noDestinations": "لا توجد وجهات لهذا المطار.",
+    "booking.hourMinute": "ساعة · دقيقة",
+
+    // Destination landing pages
+    "destination.heroDesc": "نقل خاص بسعر ثابت من {airport} ({iata}) إلى فندقك — تتبع الرحلات، إلغاء مجاني، ودعم على مدار الساعة.",
+    "destination.popularRoutes": "مسارات النقل الشائعة في {city}",
+    "destination.fixedPrice": "سعر ثابت — بدون رسوم خفية",
+    "destination.freeCancellation": "إلغاء مجاني حتى 24 ساعة",
+    "destination.flightTracking": "تتبع الرحلات في الوقت الفعلي",
+    "destination.ctaTitle": "احجز نقلك من مطار {city}",
+    "destination.ctaDesc": "سعر فوري، حجز آمن، وسائق في انتظارك عند الهبوط.",
+
+    // Airport Coverage & FAQ sections
+    "landing.heroBadge": "نقل خاص من وإلى المطار · مصر",
+    "landing.airportCoverage": "المطارات التي نخدمها في مصر",
+    "landing.airportCoverageDesc": "خدمات نقل خاصة من وإلى جميع المطارات المصرية الكبرى، مباشرةً إلى فندقك أو منتجعك.",
+    "landing.faq": "الأسئلة الشائعة",
+    "booking.search": "بحث",
+    "booking.anywhereIn": "في أي مكان في",
+
+    // FAQ items
+    "faq.q1": "كيف أحجز نقلاً من المطار في مصر؟",
+    "faq.a1": "أدخل مطار الاستلام والوجهة والتاريخ وعدد الركاب في الصفحة الرئيسية لتحصل على سعر فوري. احجز وادفع بأمان عبر الإنترنت، أو اختر الدفع عند الوصول.",
+    "faq.q2": "ماذا يحدث إذا تأخرت رحلتي الجوية؟",
+    "faq.a2": "نتابع جميع الرحلات في الوقت الفعلي. إذا تأخرت رحلتك، نعدّل تلقائياً موعد استلام السائق دون أي تكلفة إضافية.",
+    "faq.q3": "هل يمكنني إلغاء الحجز؟",
+    "faq.a3": "نعم. الإلغاء مجاني حتى 24 ساعة قبل موعد النقل المحدد.",
+    "faq.q4": "ما المطارات التي تغطيها في مصر؟",
+    "faq.a4": "نغطي جميع المطارات المصرية الرئيسية: الغردقة (HRG)، القاهرة (CAI)، شرم الشيخ (SSH)، الأقصر (LXR)، أسوان (ASW)، مرسى علم (RMF)، والإسكندرية (HBE).",
+    "faq.q5": "هل توجد رسوم خفية؟",
+    "faq.a5": "لا. السعر الذي تراه عند الحجز هو السعر الذي تدفعه. لا توجد أسعار متغيرة أو رسوم مطار أو تكاليف مخفية.",
+
     // Common
     "common.loading": "جارٍ التحميل...",
     "common.error": "حدث خطأ ما",
@@ -497,6 +579,43 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.quote": "Sehr professionell. Unser Flug hatte 2 Stunden Verspätung, aber sie haben ihn verfolgt und der Fahrer war trotzdem da. Sehr empfehlenswert!",
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australien",
+
+    // Admin-configured site content
+    "site.heroTitle": "Buchen Sie Ihren Flughafentransfer",
+    "site.heroSubtitle": "Sichere, komfortable und zuverlässige private Transfers in ganz Ägypten. Vom Flughafen direkt zu Ihrem Hotel.",
+    "site.featuresTitle": "Warum uns wählen?",
+
+    // Booking widget sub-components
+    "booking.pickDate": "Datum wählen",
+    "booking.pickTime": "Uhrzeit wählen",
+    "booking.searchPlaceholder": "Suchen…",
+    "booking.noDestinations": "Keine Ziele für diesen Flughafen gefunden.",
+    "booking.hourMinute": "Stunde · Minute",
+    // Destination landing pages
+    "destination.heroDesc": "Private Transfers zum Festpreis ab {airport} ({iata}) zu Ihrem Hotel — Flugverfolgung, kostenlose Stornierung und 24/7-Support.",
+    "destination.popularRoutes": "Beliebte Transferrouten in {city}",
+    "destination.fixedPrice": "Festpreis — keine versteckten Gebühren",
+    "destination.freeCancellation": "Kostenlose Stornierung bis 24h vorher",
+    "destination.flightTracking": "Echtzeit-Flugverfolgung",
+    "destination.ctaTitle": "Buchen Sie Ihren {city} Flughafentransfer",
+    "destination.ctaDesc": "Sofortpreis, sichere Buchung und ein Fahrer, der bei Ihrer Landung wartet.",
+    // Airport Coverage & FAQ sections
+    "landing.heroBadge": "Private Flughafentransfers · Ägypten",
+    "landing.airportCoverage": "Flughäfen in Ägypten",
+    "landing.airportCoverageDesc": "Private Ankunfts- und Abreisetransfers von allen großen ägyptischen Flughäfen direkt zu Ihrem Hotel oder Resort.",
+    "landing.faq": "Häufig gestellte Fragen",
+    "booking.search": "Suchen",
+    "booking.anywhereIn": "Überall in",
+    "faq.q1": "Wie buche ich einen Flughafentransfer in Ägypten?",
+    "faq.a1": "Geben Sie auf unserer Homepage Ihren Abholflughafen, Ihr Ziel, das Datum und die Anzahl der Passagiere ein. Sie erhalten sofort einen Preis. Buchen und bezahlen Sie sicher online oder wählen Sie die Zahlung bei Ankunft.",
+    "faq.q2": "Was passiert, wenn mein Flug Verspätung hat?",
+    "faq.a2": "Wir verfolgen alle Flüge in Echtzeit. Bei einer Verspätung passen wir die Abholzeit Ihres Fahrers automatisch ohne Aufpreis an.",
+    "faq.q3": "Kann ich meinen Transfer stornieren?",
+    "faq.a3": "Ja. Eine kostenlose Stornierung ist bis zu 24 Stunden vor Ihrem geplanten Transfer möglich.",
+    "faq.q4": "Welche Flughäfen in Ägypten decken Sie ab?",
+    "faq.a4": "Wir decken alle großen ägyptischen Flughäfen ab: Hurghada (HRG), Kairo (CAI), Sharm El Sheikh (SSH), Luxor (LXR), Assuan (ASW), Marsa Alam (RMF) und Alexandria (HBE).",
+    "faq.q5": "Gibt es versteckte Gebühren?",
+    "faq.a5": "Nein. Der bei der Buchung angezeigte Preis ist der Preis, den Sie zahlen. Keine Aufpreise, keine Flughafenzuschläge, keine versteckten Extras.",
 
     // Common
     "common.loading": "Wird geladen...",
@@ -652,6 +771,43 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australie",
 
+    // Admin-configured site content
+    "site.heroTitle": "Réservez votre transfert aéroport",
+    "site.heroSubtitle": "Des transferts privés sûrs, confortables et fiables dans toute l'Égypte. De l'aéroport à votre hôtel, nous vous couvrons.",
+    "site.featuresTitle": "Pourquoi nous choisir ?",
+
+    // Booking widget sub-components
+    "booking.pickDate": "Choisir une date",
+    "booking.pickTime": "Choisir l'heure",
+    "booking.searchPlaceholder": "Rechercher…",
+    "booking.noDestinations": "Aucune destination trouvée pour cet aéroport.",
+    "booking.hourMinute": "Heure · Minute",
+    // Destination landing pages
+    "destination.heroDesc": "Transferts privés à prix fixe depuis {airport} ({iata}) jusqu'à votre hôtel — suivi de vol, annulation gratuite et assistance 24h/24.",
+    "destination.popularRoutes": "Trajets populaires à {city}",
+    "destination.fixedPrice": "Prix fixe — aucun frais caché",
+    "destination.freeCancellation": "Annulation gratuite jusqu'à 24h",
+    "destination.flightTracking": "Suivi des vols en temps réel",
+    "destination.ctaTitle": "Réservez votre transfert à l'aéroport de {city}",
+    "destination.ctaDesc": "Prix instantané, réservation sécurisée et un chauffeur à votre arrivée.",
+    // Airport Coverage & FAQ sections
+    "landing.heroBadge": "Transferts aéroport privés · Égypte",
+    "landing.airportCoverage": "Aéroports desservis en Égypte",
+    "landing.airportCoverageDesc": "Transferts privés à l'arrivée et au départ de tous les grands aéroports égyptiens, directement à votre hôtel ou resort.",
+    "landing.faq": "Questions fréquemment posées",
+    "booking.search": "Rechercher",
+    "booking.anywhereIn": "N'importe où à",
+    "faq.q1": "Comment réserver un transfert aéroport en Égypte ?",
+    "faq.a1": "Saisissez votre aéroport de départ, votre destination, la date et le nombre de passagers sur notre page d'accueil. Vous recevrez un prix instantané. Réservez et payez en ligne en toute sécurité, ou choisissez de payer à l'arrivée.",
+    "faq.q2": "Que se passe-t-il si mon vol est retardé ?",
+    "faq.a2": "Nous suivons tous les vols en temps réel. En cas de retard, nous ajustons automatiquement l'heure de prise en charge de votre chauffeur sans frais supplémentaires.",
+    "faq.q3": "Puis-je annuler mon transfert ?",
+    "faq.a3": "Oui. L'annulation gratuite est possible jusqu'à 24 heures avant votre transfert prévu.",
+    "faq.q4": "Quels aéroports d'Égypte couvrez-vous ?",
+    "faq.a4": "Nous couvrons tous les grands aéroports égyptiens : Hurghada (HRG), Le Caire (CAI), Charm el-Cheikh (SSH), Louxor (LXR), Assouan (ASW), Marsa Alam (RMF) et Alexandrie (HBE).",
+    "faq.q5": "Y a-t-il des frais cachés ?",
+    "faq.a5": "Non. Le prix indiqué lors de la réservation est le prix que vous payez. Pas de tarification dynamique, pas de suppléments aéroport, pas de frais cachés.",
+
     // Common
     "common.loading": "Chargement...",
     "common.error": "Une erreur est survenue",
@@ -805,6 +961,43 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.quote": "Molto professionale. Il nostro volo era in ritardo di 2 ore ma l'hanno monitorato e l'autista era ancora lì. Altamente raccomandato!",
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australia",
+
+    // Admin-configured site content
+    "site.heroTitle": "Prenota il tuo transfer aeroportuale",
+    "site.heroSubtitle": "Transfer privati sicuri, confortevoli e affidabili in tutta l'Egitto. Dall'aeroporto al tuo hotel, ci pensiamo noi.",
+    "site.featuresTitle": "Perché sceglierci?",
+
+    // Booking widget sub-components
+    "booking.pickDate": "Scegli data",
+    "booking.pickTime": "Scegli orario",
+    "booking.searchPlaceholder": "Cerca…",
+    "booking.noDestinations": "Nessuna destinazione trovata per questo aeroporto.",
+    "booking.hourMinute": "Ora · Minuto",
+    // Destination landing pages
+    "destination.heroDesc": "Transfer privati a prezzo fisso da {airport} ({iata}) al tuo hotel — monitoraggio voli, cancellazione gratuita e supporto 24/7.",
+    "destination.popularRoutes": "Percorsi popolari a {city}",
+    "destination.fixedPrice": "Prezzo fisso — nessun costo nascosto",
+    "destination.freeCancellation": "Cancellazione gratuita fino a 24h",
+    "destination.flightTracking": "Monitoraggio voli in tempo reale",
+    "destination.ctaTitle": "Prenota il tuo transfer all'aeroporto di {city}",
+    "destination.ctaDesc": "Prezzo istantaneo, prenotazione sicura e un autista ad aspettarti all'arrivo.",
+    // Airport Coverage & FAQ sections
+    "landing.heroBadge": "Transfer aeroportuali privati · Egitto",
+    "landing.airportCoverage": "Aeroporti coperti in Egitto",
+    "landing.airportCoverageDesc": "Transfer privati all'arrivo e alla partenza da tutti i principali aeroporti egiziani, direttamente al tuo hotel o resort.",
+    "landing.faq": "Domande frequenti",
+    "booking.search": "Cerca",
+    "booking.anywhereIn": "Ovunque a",
+    "faq.q1": "Come prenotare un transfer aeroportuale in Egitto?",
+    "faq.a1": "Inserisci l'aeroporto di partenza, la destinazione, la data e il numero di passeggeri nella nostra homepage. Riceverai un prezzo istantaneo. Prenota e paga online in sicurezza, oppure scegli di pagare all'arrivo.",
+    "faq.q2": "Cosa succede se il mio volo è in ritardo?",
+    "faq.a2": "Monitoriamo tutti i voli in tempo reale. In caso di ritardo, adeguiamo automaticamente l'orario di ritiro del tuo autista senza costi aggiuntivi.",
+    "faq.q3": "Posso cancellare il mio transfer?",
+    "faq.a3": "Sì. La cancellazione gratuita è disponibile fino a 24 ore prima del transfer prenotato.",
+    "faq.q4": "Quali aeroporti in Egitto coprite?",
+    "faq.a4": "Copriamo tutti i principali aeroporti egiziani: Hurghada (HRG), Il Cairo (CAI), Sharm el-Sheikh (SSH), Luxor (LXR), Assuan (ASW), Marsa Alam (RMF) e Alessandria (HBE).",
+    "faq.q5": "Ci sono costi nascosti?",
+    "faq.a5": "No. Il prezzo indicato alla prenotazione è il prezzo che paghi. Nessun sovrapprezzo, nessun supplemento aeroportuale, nessun costo nascosto.",
 
     // Common
     "common.loading": "Caricamento...",
@@ -961,6 +1154,43 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australië",
 
+    // Admin-configured site content
+    "site.heroTitle": "Boek uw luchthaventransfer",
+    "site.heroSubtitle": "Veilige, comfortabele en betrouwbare privétransfers door heel Egypte. Van het vliegveld naar uw hotel.",
+    "site.featuresTitle": "Waarom ons kiezen?",
+
+    // Booking widget sub-components
+    "booking.pickDate": "Kies datum",
+    "booking.pickTime": "Kies tijd",
+    "booking.searchPlaceholder": "Zoeken…",
+    "booking.noDestinations": "Geen bestemmingen gevonden voor deze luchthaven.",
+    "booking.hourMinute": "Uur · Minuut",
+    // Destination landing pages
+    "destination.heroDesc": "Privétransfers tegen vaste prijs vanaf {airport} ({iata}) naar uw hotel — vluchten volgen, gratis annulering en 24/7 ondersteuning.",
+    "destination.popularRoutes": "Populaire transferroutes in {city}",
+    "destination.fixedPrice": "Vaste prijs — geen verborgen kosten",
+    "destination.freeCancellation": "Gratis annulering tot 24u",
+    "destination.flightTracking": "Realtime vluchten volgen",
+    "destination.ctaTitle": "Boek uw luchthaventransfer in {city}",
+    "destination.ctaDesc": "Directe prijs, veilige boeking en een chauffeur die op u wacht bij aankomst.",
+    // Airport Coverage & FAQ sections
+    "landing.heroBadge": "Privé luchthavnetransfers · Egypte",
+    "landing.airportCoverage": "Luchthavens in Egypte",
+    "landing.airportCoverageDesc": "Privétransfers bij aankomst en vertrek van alle grote Egyptische luchthavens, direct naar uw hotel of resort.",
+    "landing.faq": "Veelgestelde vragen",
+    "booking.search": "Zoeken",
+    "booking.anywhereIn": "Overal in",
+    "faq.q1": "Hoe boek ik een luchthaventransfer in Egypte?",
+    "faq.a1": "Voer op onze homepage uw ophaalvliegveld, bestemming, datum en aantal passagiers in. U ontvangt direct een prijs. Boek en betaal veilig online, of kies om bij aankomst te betalen.",
+    "faq.q2": "Wat gebeurt er als mijn vlucht vertraging heeft?",
+    "faq.a2": "Wij volgen alle vluchten in realtime. Bij vertraging passen we automatisch de ophaaltijd van uw chauffeur aan, zonder extra kosten.",
+    "faq.q3": "Kan ik mijn transfer annuleren?",
+    "faq.a3": "Ja. Gratis annulering is mogelijk tot 24 uur voor uw geplande transfer.",
+    "faq.q4": "Welke luchthavens in Egypte dekt u af?",
+    "faq.a4": "Wij bedienen alle grote Egyptische luchthavens: Hurghada (HRG), Caïro (CAI), Sharm el-Sheikh (SSH), Luxor (LXR), Aswan (ASW), Marsa Alam (RMF) en Alexandrië (HBE).",
+    "faq.q5": "Zijn er verborgen kosten?",
+    "faq.a5": "Nee. De prijs die u bij boeking ziet, is de prijs die u betaalt. Geen toeslagen, geen luchthavenheffingen, geen verborgen extra's.",
+
     // Common
     "common.loading": "Laden...",
     "common.error": "Er is iets misgegaan",
@@ -1115,6 +1345,43 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.quote": "Очень профессионально. Наш рейс задержался на 2 часа, но они отслеживали его и водитель всё равно был на месте. Настоятельно рекомендую!",
     "testimonial.3.name": "Джеймс К.",
     "testimonial.3.location": "Сидней, Австралия",
+
+    // Admin-configured site content
+    "site.heroTitle": "Закажите трансфер из аэропорта",
+    "site.heroSubtitle": "Безопасные, комфортные и надёжные частные трансферы по всему Египту. От аэропорта до вашего отеля.",
+    "site.featuresTitle": "Почему выбирают нас?",
+
+    // Booking widget sub-components
+    "booking.pickDate": "Выберите дату",
+    "booking.pickTime": "Выберите время",
+    "booking.searchPlaceholder": "Поиск…",
+    "booking.noDestinations": "Для этого аэропорта направлений не найдено.",
+    "booking.hourMinute": "Час · Минута",
+    // Destination landing pages
+    "destination.heroDesc": "Частные трансферы по фиксированной цене из {airport} ({iata}) до вашего отеля — отслеживание рейсов, бесплатная отмена и поддержка 24/7.",
+    "destination.popularRoutes": "Популярные маршруты из {city}",
+    "destination.fixedPrice": "Фиксированная цена — без скрытых платежей",
+    "destination.freeCancellation": "Бесплатная отмена за 24ч",
+    "destination.flightTracking": "Отслеживание рейсов в реальном времени",
+    "destination.ctaTitle": "Закажите трансфер из аэропорта {city}",
+    "destination.ctaDesc": "Мгновенная цена, безопасное бронирование и водитель, который будет ждать вас при прилёте.",
+    // Airport Coverage & FAQ sections
+    "landing.heroBadge": "Частные трансферы из аэропорта · Египет",
+    "landing.airportCoverage": "Аэропорты в Египте",
+    "landing.airportCoverageDesc": "Частные трансферы при прилёте и вылете из всех крупных египетских аэропортов прямо до вашего отеля или курорта.",
+    "landing.faq": "Часто задаваемые вопросы",
+    "booking.search": "Поиск",
+    "booking.anywhereIn": "Везде в",
+    "faq.q1": "Как заказать трансфер из аэропорта в Египте?",
+    "faq.a1": "Введите на главной странице аэропорт отправления, пункт назначения, дату и количество пассажиров — вы мгновенно получите стоимость. Забронируйте и оплатите онлайн или выберите оплату по прибытии.",
+    "faq.q2": "Что будет, если мой рейс задержится?",
+    "faq.a2": "Мы отслеживаем все рейсы в режиме реального времени. При задержке время подачи водителя корректируется автоматически без дополнительной платы.",
+    "faq.q3": "Могу ли я отменить трансфер?",
+    "faq.a3": "Да. Бесплатная отмена доступна за 24 часа до запланированного трансфера.",
+    "faq.q4": "Какие аэропорты Египта вы обслуживаете?",
+    "faq.a4": "Мы обслуживаем все крупные аэропорты Египта: Хургада (HRG), Каир (CAI), Шарм-эш-Шейх (SSH), Луксор (LXR), Асуан (ASW), Марса-Алам (RMF) и Александрия (HBE).",
+    "faq.q5": "Есть ли скрытые платежи?",
+    "faq.a5": "Нет. Цена при бронировании — это цена, которую вы платите. Никаких надбавок, аэропортовых сборов и скрытых платежей.",
 
     // Common
     "common.loading": "Загрузка...",

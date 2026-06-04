@@ -207,7 +207,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       className={cn('text-white font-semibold', className)}
       style={{ backgroundColor: settings.primaryColor }}
     >
-      <Link href="/book">{settings.heroCta1Text || 'Book Now'}</Link>
+      <Link href="/book">{settings.heroCta1Text || t('nav.bookNow')}</Link>
     </Button>
   );
 

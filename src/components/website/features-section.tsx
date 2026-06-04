@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { SiteSettings, FeatureItem } from '@/lib/site-settings';
-import { useWT } from '@/lib/website-i18n';
+import { useWT, useLocaleStore } from '@/lib/website-i18n';
 
 interface FeaturesSectionProps {
   settings: SiteSettings;
@@ -51,6 +51,8 @@ const DEFAULT_FEATURE_KEYS = [
 
 export function FeaturesSection({ settings }: FeaturesSectionProps) {
   const t = useWT();
+  const { locale } = useLocaleStore();
+  const featuresTitle = locale === 'en' ? settings.featuresTitle : t('site.featuresTitle');
 
   if (!settings.featuresEnabled) return null;
 
@@ -72,7 +74,7 @@ export function FeaturesSection({ settings }: FeaturesSectionProps) {
         {/* Header */}
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">
-            {settings.featuresTitle}
+            {featuresTitle}
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-gray-500">
             {t('features.subtitle')}

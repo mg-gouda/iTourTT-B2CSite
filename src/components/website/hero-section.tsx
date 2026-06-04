@@ -1,6 +1,7 @@
 'use client';
 
 import type { SiteSettings } from '@/lib/site-settings';
+import { useWT, useLocaleStore } from '@/lib/website-i18n';
 
 interface HeroSectionProps {
   settings: SiteSettings;
@@ -8,6 +9,10 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ settings, children }: HeroSectionProps) {
+  const t = useWT();
+  const { locale } = useLocaleStore();
+  const heroTitle    = locale === 'en' ? settings.heroTitle    : t('site.heroTitle');
+  const heroSubtitle = locale === 'en' ? settings.heroSubtitle : t('site.heroSubtitle');
   const hasImage = !!settings.heroImageUrl;
 
   return (
@@ -27,13 +32,13 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
             className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-gray-500 shadow-sm"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Private Airport Transfers · Egypt
+            {t('landing.heroBadge')}
           </div>
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            {settings.heroTitle}
+            {heroTitle}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-500 sm:text-lg">
-            {settings.heroSubtitle}
+          <p className="mx-auto mt-4 max-w-2xl text-base font-bold leading-relaxed text-black sm:text-lg">
+            {heroSubtitle}
           </p>
         </div>
 
