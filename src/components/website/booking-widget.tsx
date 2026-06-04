@@ -464,7 +464,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
         ] as const).map(({ key, label, Icon }) => (
           <button key={key} type="button" onClick={() => setActiveTab(key)}
             className="flex items-center gap-2 rounded-tl-lg rounded-tr-lg px-5 pt-2.5 pb-0 text-xl font-semibold transition-all mb-0"
-            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { backgroundColor: 'rgba(25,25,25,0.75)', color: 'rgba(255,255,255,0.55)' }}>
+            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { backgroundColor: 'rgba(25,25,25,0.25)', color: 'rgba(255,255,255,0.55)' }}>
             <Icon className="h-5 w-5" />
             {label}
           </button>
@@ -475,7 +475,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
       <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10" style={{ backgroundColor: 'rgba(25,25,25,0.75)' }}>
 
       {/* Fields row */}
-      <div className="pl-3 py-3">
+      <div className="pl-3">
         <div className="grid grid-cols-2 sm:[grid-template-columns:2fr_2fr_1fr_1fr_1fr_auto] rounded-xl overflow-hidden">
 
           <Cell icon={Plane} iconColor={isArr ? '#16a34a' : '#dc2626'}
