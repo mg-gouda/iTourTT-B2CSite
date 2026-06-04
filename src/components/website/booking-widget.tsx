@@ -204,7 +204,7 @@ function Cell({ icon: Icon, iconColor, label, children }: {
   icon: React.ElementType; iconColor: string; label: string; children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-14 sm:h-16 items-center gap-2.5 px-3">
+    <div className="flex h-14 sm:h-[74px] items-center gap-2.5 px-3">
       <div className="flex h-full items-center">
         <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: iconColor }} />
       </div>
