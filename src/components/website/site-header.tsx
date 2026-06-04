@@ -2,11 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Menu, X, Globe, User } from 'lucide-react';
+import { Menu, X, Globe, User, ChevronDown, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { SiteSettings, NavLink } from '@/lib/site-settings';
+import { API_BASE } from '@/lib/site-settings';
 import { cn } from '@/lib/utils';
 import { useLocaleStore, LANGUAGES, useWT } from '@/lib/website-i18n';
+
+interface CityMenuItem {
+  slug: string;
+  name: string;
+}
 
 interface SiteHeaderProps {
   settings: SiteSettings;
@@ -29,6 +35,15 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
   const defaultNavLinks = useDefaultNavLinks();
   const navLinks = settings.navLinksJson ?? defaultNavLinks;
   const preset = settings.headerPreset;
+
+  // Destinations mega-menu — published city pages from the CMS.
+  const [cities, setCities] = useState<CityMenuItem[]>([]);
+  useEffect(() => {
+    fetch(`${API_BASE}/api/public/city-pages`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => setCities(j?.data ?? []))
+      .catch(() => {});
+  }, []);
 
   // Track scroll for transparent preset
   useEffect(() => {
@@ -91,6 +106,40 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
           {link.label}
         </Link>
       ))}
+
+      {/* Destinations mega-menu (hover) */}
+      {cities.length > 0 && (
+        <div className="group relative">
+          <button className="flex items-center gap-1 text-sm font-medium text-white/80 transition-colors hover:text-white">
+            {t('nav.destinations') || 'Destinations'}
+            <ChevronDown className="h-3.5 w-3.5" />
+          </button>
+          {/* pt-3 bridges the gap so the menu stays open on hover */}
+          <div className="absolute left-1/2 top-full z-50 hidden -translate-x-1/2 pt-3 group-hover:block">
+            <div className="grid w-[28rem] grid-cols-2 gap-1 rounded-xl border border-gray-100 bg-white p-3 shadow-xl">
+              {cities.map((c) => (
+                <Link
+                  key={c.slug}
+                  href={`/transfers/${c.slug}`}
+                  onClick={onClick}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-emerald-700"
+                >
+                  <MapPin className="h-4 w-4 text-emerald-500" />
+                  {c.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <Link
+        href="/blog"
+        onClick={onClick}
+        className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+      >
+        {t('nav.blog') || 'Blog'}
+      </Link>
     </div>
   );
 
@@ -197,6 +246,37 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
                 {link.label}
               </Link>
             ))}
+
+            {/* Destinations */}
+            {cities.length > 0 && (
+              <div className="mt-1">
+                <span className="px-3 text-xs font-semibold uppercase tracking-wide text-white/40">
+                  {t('nav.destinations') || 'Destinations'}
+                </span>
+                <div className="mt-1 flex flex-col">
+                  {cities.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/transfers/${c.slug}`}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                    >
+                      <MapPin className="h-3.5 w-3.5 text-emerald-400" />
+                      {c.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <Link
+              href="/blog"
+              onClick={() => setMobileOpen(false)}
+              className="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              {t('nav.blog') || 'Blog'}
+            </Link>
+
             <Link
               href="/account"
               onClick={() => setMobileOpen(false)}

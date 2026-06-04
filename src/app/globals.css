@@ -186,3 +186,38 @@ body.has-inner-bg {
 .safe-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Blog post body — standalone typography (no @tailwindcss/typography plugin). */
+.blog-content {
+  color: #374151;
+  line-height: 1.75;
+  font-size: 1.05rem;
+}
+.blog-content > * + * { margin-top: 1.1em; }
+.blog-content h1,
+.blog-content h2,
+.blog-content h3 {
+  color: #111827;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 1.8em;
+}
+.blog-content h2 { font-size: 1.6rem; }
+.blog-content h3 { font-size: 1.3rem; }
+.blog-content a { color: #047857; text-decoration: underline; }
+.blog-content ul,
+.blog-content ol { padding-left: 1.5rem; }
+.blog-content ul { list-style: disc; }
+.blog-content ol { list-style: decimal; }
+.blog-content li + li { margin-top: 0.4em; }
+.blog-content blockquote {
+  border-left: 3px solid #d1d5db;
+  padding-left: 1rem;
+  color: #6b7280;
+  font-style: italic;
+}
+.blog-content img { border-radius: 0.75rem; margin: 1.5em 0; }
+.blog-content strong { color: #111827; font-weight: 600; }
+.blog-content table { width: 100%; border-collapse: collapse; }
+.blog-content th,
+.blog-content td { border: 1px solid #e5e7eb; padding: 0.5rem 0.75rem; text-align: left; }
