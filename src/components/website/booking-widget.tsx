@@ -144,6 +144,7 @@ function DatePicker({ value, onChange, minDate, primaryColor, placeholder }: {
 function TimePicker({ value, onChange, primaryColor, placeholder }: {
   value: string; onChange: (v: string) => void; primaryColor: string; placeholder: string;
 }) {
+  const t = useWT();
   const [open, setOpen] = useState(false);
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
   const minutes = ['00','05','10','15','20','25','30','35','40','45','50','55'];
@@ -192,7 +193,7 @@ function TimePicker({ value, onChange, primaryColor, placeholder }: {
           </div>
         </div>
         <div className="border-t border-gray-100 px-3 py-2 text-center">
-          <span className="text-xs text-gray-400">Hour · Minute</span>
+          <span className="text-xs text-gray-400">{t('booking.hourMinute')}</span>
         </div>
       </PopoverContent>
     </Popover>
@@ -240,6 +241,7 @@ function SearchableSelect({
   disabled?: boolean;
   emptyText?: string;
 }) {
+  const t = useWT();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
 
@@ -278,7 +280,7 @@ function SearchableSelect({
         <div className="flex items-center gap-2 border-b px-3 py-2">
           <Search className="h-3.5 w-3.5 shrink-0 text-gray-400" />
           <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search…"
+            placeholder={t('booking.searchPlaceholder')}
             className="w-full bg-transparent text-sm outline-none placeholder:text-gray-400" />
         </div>
         <div className="max-h-64 overflow-y-auto py-1">
@@ -502,18 +504,18 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
               placeholder={airportValue ? t('booking.searchLocation') : t('booking.selectAirport')}
               primaryColor={pc}
               disabled={!airportValue}
-              emptyText="No destinations found for this airport."
+              emptyText={t('booking.noDestinations')}
             />
           </Cell>
 
           <Cell icon={CalendarDays} iconColor={pc} label={`${t('booking.date')} *`}>
             <DatePicker value={store.jobDate} onChange={(v) => store.setField('jobDate', v)}
-              minDate={new Date()} primaryColor={pc} placeholder="Pick date" />
+              minDate={new Date()} primaryColor={pc} placeholder={t('booking.pickDate')} />
           </Cell>
 
           <Cell icon={Clock} iconColor={pc} label={`${t('booking.time')} *`}>
             <TimePicker value={store.pickupTime} onChange={(v) => store.setField('pickupTime', v)}
-              primaryColor={pc} placeholder="Pick time" />
+              primaryColor={pc} placeholder={t('booking.pickTime')} />
           </Cell>
 
           <Cell icon={Users} iconColor={pc} label={`${t('booking.passengers')} *`}>

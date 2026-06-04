@@ -196,6 +196,22 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australia",
 
+    // Booking widget sub-components
+    "booking.pickDate": "Pick date",
+    "booking.pickTime": "Pick time",
+    "booking.searchPlaceholder": "Search…",
+    "booking.noDestinations": "No destinations found for this airport.",
+    "booking.hourMinute": "Hour · Minute",
+
+    // Destination landing pages
+    "destination.heroDesc": "Fixed-price private transfers from {airport} ({iata}) to your hotel — flight tracking, free cancellation and 24/7 support.",
+    "destination.popularRoutes": "Popular {city} Transfer Routes",
+    "destination.fixedPrice": "Fixed price — no hidden fees",
+    "destination.freeCancellation": "Free cancellation up to 24h",
+    "destination.flightTracking": "Real-time flight tracking",
+    "destination.ctaTitle": "Book your {city} airport transfer",
+    "destination.ctaDesc": "Instant price, secure booking, and a driver waiting when you land.",
+
     // Airport Coverage & FAQ sections
     "landing.heroBadge": "Private Airport Transfers · Egypt",
     "landing.airportCoverage": "Airports We Cover in Egypt",
@@ -363,6 +379,22 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.quote": "احترافية عالية. تأخرت رحلتنا ساعتين لكنهم تتبعوها وكان السائق لا يزال في انتظارنا. أنصح بشدة!",
     "testimonial.3.name": "جيمس ك.",
     "testimonial.3.location": "سيدني، أستراليا",
+
+    // Booking widget sub-components
+    "booking.pickDate": "اختر التاريخ",
+    "booking.pickTime": "اختر الوقت",
+    "booking.searchPlaceholder": "بحث...",
+    "booking.noDestinations": "لا توجد وجهات لهذا المطار.",
+    "booking.hourMinute": "ساعة · دقيقة",
+
+    // Destination landing pages
+    "destination.heroDesc": "نقل خاص بسعر ثابت من {airport} ({iata}) إلى فندقك — تتبع الرحلات، إلغاء مجاني، ودعم على مدار الساعة.",
+    "destination.popularRoutes": "مسارات النقل الشائعة في {city}",
+    "destination.fixedPrice": "سعر ثابت — بدون رسوم خفية",
+    "destination.freeCancellation": "إلغاء مجاني حتى 24 ساعة",
+    "destination.flightTracking": "تتبع الرحلات في الوقت الفعلي",
+    "destination.ctaTitle": "احجز نقلك من مطار {city}",
+    "destination.ctaDesc": "سعر فوري، حجز آمن، وسائق في انتظارك عند الهبوط.",
 
     // Airport Coverage & FAQ sections
     "landing.heroBadge": "نقل خاص من وإلى المطار · مصر",
@@ -534,6 +566,20 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australien",
 
+    // Booking widget sub-components
+    "booking.pickDate": "Datum wählen",
+    "booking.pickTime": "Uhrzeit wählen",
+    "booking.searchPlaceholder": "Suchen…",
+    "booking.noDestinations": "Keine Ziele für diesen Flughafen gefunden.",
+    "booking.hourMinute": "Stunde · Minute",
+    // Destination landing pages
+    "destination.heroDesc": "Private Transfers zum Festpreis ab {airport} ({iata}) zu Ihrem Hotel — Flugverfolgung, kostenlose Stornierung und 24/7-Support.",
+    "destination.popularRoutes": "Beliebte Transferrouten in {city}",
+    "destination.fixedPrice": "Festpreis — keine versteckten Gebühren",
+    "destination.freeCancellation": "Kostenlose Stornierung bis 24h vorher",
+    "destination.flightTracking": "Echtzeit-Flugverfolgung",
+    "destination.ctaTitle": "Buchen Sie Ihren {city} Flughafentransfer",
+    "destination.ctaDesc": "Sofortpreis, sichere Buchung und ein Fahrer, der bei Ihrer Landung wartet.",
     // Airport Coverage & FAQ sections
     "landing.heroBadge": "Private Flughafentransfers · Ägypten",
     "landing.airportCoverage": "Flughäfen in Ägypten",
@@ -706,6 +752,20 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australie",
 
+    // Booking widget sub-components
+    "booking.pickDate": "Choisir une date",
+    "booking.pickTime": "Choisir l'heure",
+    "booking.searchPlaceholder": "Rechercher…",
+    "booking.noDestinations": "Aucune destination trouvée pour cet aéroport.",
+    "booking.hourMinute": "Heure · Minute",
+    // Destination landing pages
+    "destination.heroDesc": "Transferts privés à prix fixe depuis {airport} ({iata}) jusqu'à votre hôtel — suivi de vol, annulation gratuite et assistance 24h/24.",
+    "destination.popularRoutes": "Trajets populaires à {city}",
+    "destination.fixedPrice": "Prix fixe — aucun frais caché",
+    "destination.freeCancellation": "Annulation gratuite jusqu'à 24h",
+    "destination.flightTracking": "Suivi des vols en temps réel",
+    "destination.ctaTitle": "Réservez votre transfert à l'aéroport de {city}",
+    "destination.ctaDesc": "Prix instantané, réservation sécurisée et un chauffeur à votre arrivée.",
     // Airport Coverage & FAQ sections
     "landing.heroBadge": "Transferts aéroport privés · Égypte",
     "landing.airportCoverage": "Aéroports desservis en Égypte",
@@ -878,6 +938,20 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australia",
 
+    // Booking widget sub-components
+    "booking.pickDate": "Scegli data",
+    "booking.pickTime": "Scegli orario",
+    "booking.searchPlaceholder": "Cerca…",
+    "booking.noDestinations": "Nessuna destinazione trovata per questo aeroporto.",
+    "booking.hourMinute": "Ora · Minuto",
+    // Destination landing pages
+    "destination.heroDesc": "Transfer privati a prezzo fisso da {airport} ({iata}) al tuo hotel — monitoraggio voli, cancellazione gratuita e supporto 24/7.",
+    "destination.popularRoutes": "Percorsi popolari a {city}",
+    "destination.fixedPrice": "Prezzo fisso — nessun costo nascosto",
+    "destination.freeCancellation": "Cancellazione gratuita fino a 24h",
+    "destination.flightTracking": "Monitoraggio voli in tempo reale",
+    "destination.ctaTitle": "Prenota il tuo transfer all'aeroporto di {city}",
+    "destination.ctaDesc": "Prezzo istantaneo, prenotazione sicura e un autista ad aspettarti all'arrivo.",
     // Airport Coverage & FAQ sections
     "landing.heroBadge": "Transfer aeroportuali privati · Egitto",
     "landing.airportCoverage": "Aeroporti coperti in Egitto",
@@ -1051,6 +1125,20 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "James K.",
     "testimonial.3.location": "Sydney, Australië",
 
+    // Booking widget sub-components
+    "booking.pickDate": "Kies datum",
+    "booking.pickTime": "Kies tijd",
+    "booking.searchPlaceholder": "Zoeken…",
+    "booking.noDestinations": "Geen bestemmingen gevonden voor deze luchthaven.",
+    "booking.hourMinute": "Uur · Minuut",
+    // Destination landing pages
+    "destination.heroDesc": "Privétransfers tegen vaste prijs vanaf {airport} ({iata}) naar uw hotel — vluchten volgen, gratis annulering en 24/7 ondersteuning.",
+    "destination.popularRoutes": "Populaire transferroutes in {city}",
+    "destination.fixedPrice": "Vaste prijs — geen verborgen kosten",
+    "destination.freeCancellation": "Gratis annulering tot 24u",
+    "destination.flightTracking": "Realtime vluchten volgen",
+    "destination.ctaTitle": "Boek uw luchthaventransfer in {city}",
+    "destination.ctaDesc": "Directe prijs, veilige boeking en een chauffeur die op u wacht bij aankomst.",
     // Airport Coverage & FAQ sections
     "landing.heroBadge": "Privé luchthavnetransfers · Egypte",
     "landing.airportCoverage": "Luchthavens in Egypte",
@@ -1224,6 +1312,20 @@ const translations: Record<Locale, Record<string, string>> = {
     "testimonial.3.name": "Джеймс К.",
     "testimonial.3.location": "Сидней, Австралия",
 
+    // Booking widget sub-components
+    "booking.pickDate": "Выберите дату",
+    "booking.pickTime": "Выберите время",
+    "booking.searchPlaceholder": "Поиск…",
+    "booking.noDestinations": "Для этого аэропорта направлений не найдено.",
+    "booking.hourMinute": "Час · Минута",
+    // Destination landing pages
+    "destination.heroDesc": "Частные трансферы по фиксированной цене из {airport} ({iata}) до вашего отеля — отслеживание рейсов, бесплатная отмена и поддержка 24/7.",
+    "destination.popularRoutes": "Популярные маршруты из {city}",
+    "destination.fixedPrice": "Фиксированная цена — без скрытых платежей",
+    "destination.freeCancellation": "Бесплатная отмена за 24ч",
+    "destination.flightTracking": "Отслеживание рейсов в реальном времени",
+    "destination.ctaTitle": "Закажите трансфер из аэропорта {city}",
+    "destination.ctaDesc": "Мгновенная цена, безопасное бронирование и водитель, который будет ждать вас при прилёте.",
     // Airport Coverage & FAQ sections
     "landing.heroBadge": "Частные трансферы из аэропорта · Египет",
     "landing.airportCoverage": "Аэропорты в Египте",

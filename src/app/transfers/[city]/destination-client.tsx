@@ -1,0 +1,128 @@
+'use client';
+
+import Link from 'next/link';
+import { ArrowRight, MapPin, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import type { SiteSettings } from '@/lib/site-settings';
+import type { Destination } from '@/lib/destinations';
+import { useWT } from '@/lib/website-i18n';
+
+interface DestinationClientProps {
+  dest: Destination;
+  settings: SiteSettings;
+}
+
+export function DestinationClient({ dest, settings }: DestinationClientProps) {
+  const t = useWT();
+
+  const fill = (key: string, vars: Record<string, string>) =>
+    Object.entries(vars).reduce((s, [k, v]) => s.replace(`{${k}}`, v), t(key));
+
+  const perks = [
+    t('destination.fixedPrice'),
+    t('destination.freeCancellation'),
+    t('destination.flightTracking'),
+  ];
+
+  return (
+    <>
+      {/* ── Hero ── */}
+      <section className="bg-white px-4 pt-14 pb-10 sm:pt-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-gray-500 shadow-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            {dest.airportName} · {dest.iata}
+          </div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+            {dest.h1}
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-500 sm:text-lg">
+            {fill('destination.heroDesc', { airport: dest.airportName, iata: dest.iata })}
+          </p>
+          <div className="mt-8">
+            <Button
+              asChild
+              size="lg"
+              className="gap-2 text-white font-semibold"
+              style={{ backgroundColor: settings.primaryColor }}
+            >
+              <Link href="/book">
+                {t('booking.bookNow')}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Body copy ── */}
+      <section className="bg-white px-4 pb-16">
+        <div className="mx-auto max-w-3xl space-y-5">
+          {dest.intro.map((para, i) => (
+            <p key={i} className="text-base leading-relaxed text-gray-600">
+              {para}
+            </p>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Popular routes ── */}
+      <section className="bg-gray-50/60 px-4 py-16 sm:py-20">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-center text-2xl font-bold text-gray-900 sm:text-3xl">
+            {fill('destination.popularRoutes', { city: dest.city })}
+          </h2>
+          <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {dest.popularRoutes.map((route) => (
+              <li
+                key={route}
+                className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3.5 shadow-sm"
+              >
+                <MapPin className="h-4 w-4 shrink-0" style={{ color: settings.primaryColor }} />
+                <span className="text-sm font-medium text-gray-700">{route}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            {perks.map((perk) => (
+              <div
+                key={perk}
+                className="flex items-center gap-2.5 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-sm"
+              >
+                <CheckCircle2 className="h-4 w-4 shrink-0" style={{ color: settings.primaryColor }} />
+                <span className="text-sm font-medium text-gray-700">{perk}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Final CTA ── */}
+      <section
+        className="px-4 py-16 text-center sm:py-20"
+        style={{ background: `linear-gradient(135deg, ${settings.primaryColor}, ${settings.accentColor})` }}
+      >
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">
+            {fill('destination.ctaTitle', { city: dest.city })}
+          </h2>
+          <p className="mt-3 text-lg text-white/80">
+            {t('destination.ctaDesc')}
+          </p>
+          <Button
+            asChild
+            size="lg"
+            className="mt-8 gap-2 bg-white px-10 text-base font-semibold hover:bg-gray-100"
+            style={{ color: settings.primaryColor }}
+          >
+            <Link href="/book">
+              {t('booking.getQuote')}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+    </>
+  );
+}
