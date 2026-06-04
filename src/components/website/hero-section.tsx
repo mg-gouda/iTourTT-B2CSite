@@ -32,7 +32,7 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
             {settings.heroTitle}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-500 sm:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base font-bold leading-relaxed text-black sm:text-lg">
             {settings.heroSubtitle}
           </p>
         </div>

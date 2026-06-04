@@ -464,7 +464,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
         ] as const).map(({ key, label, Icon }) => (
           <button key={key} type="button" onClick={() => setActiveTab(key)}
             className="flex items-center gap-2 rounded-tl-lg rounded-tr-lg px-5 pt-2.5 pb-0 text-xl font-semibold transition-all mb-0"
-            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { color: 'rgba(255,255,255,0.55)' }}>
+            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { backgroundColor: 'rgba(25,25,25,0.75)', color: 'rgba(255,255,255,0.55)' }}>
             <Icon className="h-5 w-5" />
             {label}
           </button>
@@ -523,7 +523,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
           {/* Search button */}
           <div className="flex items-stretch col-span-2 sm:col-span-1">
             <button type="button" onClick={handleSearch} disabled={!canSearch}
-              className="flex flex-1 items-center justify-center gap-2 px-5 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
+              className="w-full h-full flex items-center justify-center gap-2 px-5 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
               style={{ backgroundColor: pc }}>
               <Search className="h-4 w-4" />
               Search
