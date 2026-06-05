@@ -25,7 +25,10 @@ export async function generateMetadata({ params }: Omit<Props, 'children'>): Pro
   LOCALES.forEach((loc) => { languages[loc] = `${SITE_URL}/${loc}`; });
 
   return {
-    title: { template: `%s | ${siteName}`, default: siteName },
+    // No title template — every page's generateMetadata provides a complete
+    // title already including the brand name. The layout default is used as
+    // a last-resort fallback for routes that export no metadata of their own.
+    title: { default: siteName, template: '%s' },
     description:
       settings.metaDescription ??
       'Book safe, private airport transfers across Egypt. Fixed price, free cancellation, 24/7 support.',

@@ -23,14 +23,16 @@ export function middleware(request: NextRequest) {
   }
 
   // Detect preferred locale from Accept-Language header.
+  // Parse segments in the browser's preference order (first = highest quality).
+  // Strip quality values and region tags: "ar-EG;q=0.9" → "ar".
   const accept = request.headers.get('accept-language') ?? '';
+  const acceptLocales = accept
+    .toLowerCase()
+    .split(',')
+    .map((s) => s.trim().split(';')[0].trim().split('-')[0].trim());
   const preferred =
-    (LOCALES as readonly string[]).find((l) =>
-      accept
-        .toLowerCase()
-        .split(',')
-        .some((seg) => seg.trim().startsWith(l)),
-    ) ?? DEFAULT_LOCALE;
+    acceptLocales.find((l) => (LOCALES as readonly string[]).includes(l)) ??
+    DEFAULT_LOCALE;
 
   // Redirect to locale-prefixed URL (308 Permanent).
   const url = request.nextUrl.clone();
