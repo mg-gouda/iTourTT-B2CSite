@@ -7,11 +7,6 @@ const API_HOST = process.env.NEXT_PUBLIC_API_URL
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  experimental: {
-    // Use the project's .browserslistrc to skip transpiling/polyfilling
-    // features that are natively supported in all modern browsers.
-    browsersListForSwc: true,
-  },
   async headers() {
     return [
       {
