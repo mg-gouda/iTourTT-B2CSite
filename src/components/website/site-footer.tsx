@@ -23,7 +23,7 @@ function SocialLinks({ settings }: { settings: SiteSettings }) {
     { url: settings.socialFacebook, Icon: Facebook, label: 'Facebook' },
     { url: settings.socialInstagram, Icon: Instagram, label: 'Instagram' },
     { url: settings.socialTwitter, Icon: Twitter, label: 'Twitter' },
-  ].filter((s) => s.url);
+  ].filter((s) => s.url && s.url !== '#');
 
   if (socials.length === 0) return null;
 

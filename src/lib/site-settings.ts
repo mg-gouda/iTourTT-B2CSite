@@ -18,6 +18,16 @@ export function resolveAssetUrl(path?: string | null): string | undefined {
   return path;
 }
 
+// The logo SVG has been downloaded locally. Map the CDN upload path to the
+// local public asset so we don't depend on the fulvago.itourtt.cloud CDN.
+const CDN_LOGO_PATH = '/uploads/1780605779569-Transfera-Logo-Yellow-w-v1.svg';
+function normalizeLogo(url: string | null): string | null {
+  if (!url) return url;
+  // Matches both the absolute CDN URL and the bare /uploads path.
+  if (url.endsWith(CDN_LOGO_PATH)) return '/logo.svg';
+  return url;
+}
+
 // ── TypeScript interface matching the WebsiteSettings model ──
 
 export interface NavLink {
@@ -146,10 +156,17 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
     const prefixUrl = (url: string | null): string | null =>
       url && url.startsWith('/uploads/') ? `${PUBLIC_URL}${url}` : url;
 
+    // Normalize contact email — replace old brand email if backend still has it.
+    const contactEmail: string | null =
+      (data.contactEmail ?? DEFAULT_SITE_SETTINGS.contactEmail) === 'info@fulvago.com'
+        ? 'info@transfera.ae'
+        : (data.contactEmail ?? DEFAULT_SITE_SETTINGS.contactEmail);
+
     return {
       ...DEFAULT_SITE_SETTINGS,
       ...data,
-      siteLogoUrl: prefixUrl(data.siteLogoUrl ?? null),
+      contactEmail,
+      siteLogoUrl: normalizeLogo(prefixUrl(data.siteLogoUrl ?? null)),
       siteFaviconUrl: prefixUrl(data.siteFaviconUrl ?? null),
       heroImageUrl: prefixUrl(data.heroImageUrl ?? null),
       // Normalize presets to valid values

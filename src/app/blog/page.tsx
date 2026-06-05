@@ -1,24 +1,19 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, CalendarDays } from 'lucide-react';
-import { fetchBlogList, fetchPageSeo } from '@/lib/website-content';
+import { fetchBlogList } from '@/lib/website-content';
 import { resolveAssetUrl } from '@/lib/site-settings';
-import { SITE_URL } from '@/lib/seo';
+import { buildPageMetadata } from '@/lib/page-metadata';
 
 export const revalidate = 120;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await fetchPageSeo('blog');
-  const title = seo?.metaTitle ?? 'Blog | Travel Tips & Egypt Transfer Guides | Transfera';
-  const description =
-    seo?.metaDescription ??
-    'Travel tips, destination guides and airport transfer advice for your trip to Egypt.';
-  return {
-    title,
-    description,
-    alternates: { canonical: '/blog' },
-    openGraph: { type: 'website', url: `${SITE_URL}/blog`, title, description },
-  };
+  return buildPageMetadata('blog', {
+    canonical: '/blog',
+    fallbackTitle: 'Blog | Travel Tips & Egypt Transfer Guides | Transfera',
+    fallbackDescription:
+      'Travel tips, destination guides and airport transfer advice for your trip to Egypt.',
+  });
 }
 
 interface Props {

@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { JsonLd } from '@/components/JsonLd';
-import { serviceSchema, SITE_URL } from '@/lib/seo';
+import { serviceSchema, faqSchema, SITE_URL } from '@/lib/seo';
+import type { FaqItem } from '@/lib/seo';
 import { DESTINATIONS, getDestination } from '@/lib/destinations';
-import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
+import { fetchSiteSettings, DEFAULT_SITE_SETTINGS, resolveAssetUrl } from '@/lib/site-settings';
 import { fetchCityPage } from '@/lib/website-content';
 import { DestinationClient } from './destination-client';
 
@@ -32,12 +33,45 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     cms?.introText ??
     `Private airport transfers in ${name}. Fixed price, flight tracking, free cancellation, 24/7 support.`;
   const canonical = `/transfers/${cms?.slug ?? dest?.slug ?? city}`;
+  const heroImage = resolveAssetUrl(cms?.heroImageUrl);
+
   return {
     title,
     description,
     alternates: { canonical },
-    openGraph: { type: 'website', url: `${SITE_URL}${canonical}`, title, description },
-    twitter: { card: 'summary_large_image', title, description },
+    openGraph: {
+      type: 'website',
+      url: `${SITE_URL}${canonical}`,
+      siteName: 'Transfera',
+      title,
+      description,
+      images: heroImage
+        ? [{ url: heroImage, width: 1200, height: 630, alt: title }]
+        : [{ url: '/og-image.jpg', width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [heroImage ?? '/og-image.jpg'],
+    },
+  };
+}
+
+function breadcrumbSchema(name: string, slug: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Destinations', item: `${SITE_URL}/destinations` },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: `${name} Airport Transfers`,
+        item: `${SITE_URL}/transfers/${slug}`,
+      },
+    ],
   };
 }
 
@@ -55,6 +89,14 @@ export default async function DestinationPage({ params }: Props) {
   }
 
   const name = cms?.city?.name ?? dest?.city ?? city;
+  const slug = cms?.slug ?? dest?.slug ?? city;
+
+  // Build FAQ items for JSON-LD from CMS data (fall back to site-wide FAQ).
+  const cmsFaqs = cms?.faqJson?.filter((f) => f.question && f.answer) ?? [];
+  const faqItems: FaqItem[] =
+    cmsFaqs.length > 0
+      ? cmsFaqs.map((f) => ({ question: f.question!, answer: f.answer! }))
+      : [];
 
   return (
     <>
@@ -64,6 +106,8 @@ export default async function DestinationPage({ params }: Props) {
           areaServed: name,
         })}
       />
+      <JsonLd data={breadcrumbSchema(name, slug)} />
+      {faqItems.length > 0 && <JsonLd data={faqSchema(faqItems)} />}
       <DestinationClient dest={dest ?? null} cms={cms} settings={settings} />
     </>
   );

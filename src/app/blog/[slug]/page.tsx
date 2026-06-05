@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, CalendarDays, User } from 'lucide-react';
 import { fetchBlogPost } from '@/lib/website-content';
 import { resolveAssetUrl } from '@/lib/site-settings';
-import { SITE_URL } from '@/lib/seo';
+import { JsonLd } from '@/components/JsonLd';
+import { SITE_URL, BRAND_NAME } from '@/lib/seo';
 
 export const revalidate = 120;
 
@@ -36,14 +37,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       type: 'article',
       url: `${SITE_URL}${canonical}`,
+      siteName: BRAND_NAME,
       title,
       description,
-      images: image ? [image] : undefined,
+      images: image ? [{ url: image, alt: title }] : ['/og-image.jpg'],
     },
     twitter: {
-      card: image ? 'summary_large_image' : 'summary',
+      card: 'summary_large_image',
       title,
       description,
+      images: [image ?? '/og-image.jpg'],
     },
   };
 }
@@ -53,8 +56,38 @@ export default async function BlogPostPage({ params }: Props) {
   const post = await fetchBlogPost(slug);
   if (!post) notFound();
 
+  const canonical = `/blog/${post.slug}`;
+  const image = resolveAssetUrl(post.coverImageUrl);
+
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `${SITE_URL}${canonical}` },
+    ],
+  };
+
+  const article = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt ?? undefined,
+    image: image ? [image] : undefined,
+    author: post.author
+      ? { '@type': 'Person', name: post.author }
+      : { '@type': 'Organization', name: BRAND_NAME },
+    publisher: { '@type': 'Organization', name: BRAND_NAME, url: SITE_URL },
+    datePublished: post.publishedAt ?? undefined,
+    url: `${SITE_URL}${canonical}`,
+  };
+
   return (
     <article className="bg-white">
+      <JsonLd data={breadcrumb} />
+      <JsonLd data={article} />
+
       <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
         <Link
           href="/blog"
@@ -89,7 +122,7 @@ export default async function BlogPostPage({ params }: Props) {
         {post.coverImageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={resolveAssetUrl(post.coverImageUrl)}
+            src={image}
             alt={post.title}
             className="mt-8 w-full rounded-2xl object-cover"
           />
