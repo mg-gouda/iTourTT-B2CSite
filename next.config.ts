@@ -42,9 +42,9 @@ const nextConfig: NextConfig = {
               // Fonts: self + Google Fonts CDN
               "font-src 'self' https://fonts.gstatic.com",
               // Images: self + backend CDN + data URIs
-              `img-src 'self' data: blob: https://${API_HOST} https://fulvago.itourtt.cloud`,
+              `img-src 'self' data: blob: https://${API_HOST}`,
               // Fetch/XHR: self + backend API + Google Maps API
-              `connect-src 'self' https://${API_HOST} https://fulvago.itourtt.cloud https://maps.googleapis.com`,
+              `connect-src 'self' https://${API_HOST} https://maps.googleapis.com`,
               // iframes: only self (payment widgets if any)
               "frame-src 'self'",
               // Media
