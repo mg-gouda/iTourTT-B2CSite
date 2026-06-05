@@ -208,8 +208,21 @@ export function WebsiteLandingClient({ settings }: LandingClientProps) {
                   style={{ color: settings.primaryColor }}
                 />
                 <span className="text-sm font-medium text-gray-700">
-                  {airport.name}{' '}
-                  <span className="text-gray-400">({airport.iata})</span>
+                  {airport.slug ? (
+                    <Link
+                      href={`/transfers/${airport.slug}`}
+                      className="hover:underline"
+                      style={{ color: 'inherit' }}
+                    >
+                      {airport.name}{' '}
+                      <span className="text-gray-400">({airport.iata})</span>
+                    </Link>
+                  ) : (
+                    <>
+                      {airport.name}{' '}
+                      <span className="text-gray-400">({airport.iata})</span>
+                    </>
+                  )}
                 </span>
               </li>
             ))}

@@ -7,13 +7,20 @@ import { buildPageMetadata } from '@/lib/page-metadata';
 
 export const revalidate = 120;
 
-export async function generateMetadata(): Promise<Metadata> {
-  return buildPageMetadata('blog', {
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { page } = await searchParams;
+  const base = await buildPageMetadata('blog', {
     canonical: '/blog',
     fallbackTitle: 'Blog | Travel Tips & Egypt Transfer Guides | Transfera',
     fallbackDescription:
       'Travel tips, destination guides and airport transfer advice for your trip to Egypt.',
   });
+  // Paginated variants (?page=2, ?page=3 …) canonicalise back to /blog so
+  // they don't compete with the main listing page in search results.
+  if (page && parseInt(page, 10) > 1) {
+    return { ...base, alternates: { canonical: '/blog' } };
+  }
+  return base;
 }
 
 interface Props {

@@ -74,6 +74,8 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
         <img
           src={settings.siteLogoUrl}
           alt={`${settings.siteName} — Egypt Airport Transfer Service`}
+          width={180}
+          height={36}
           className="h-9 w-auto shrink-0 object-contain"
           style={{ minWidth: '60px' }}
         />
@@ -82,6 +84,8 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
           <img
             src="/favicon.svg"
             alt={`${settings.siteName} — Egypt Airport Transfer Service`}
+            width={32}
+            height={32}
             className="h-8 w-8 shrink-0"
           />
           <span className="text-lg font-semibold tracking-tight text-white">
@@ -107,13 +111,18 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
         </Link>
       ))}
 
-      {/* Destinations mega-menu (hover) */}
+      {/* Destinations mega-menu (hover) — the trigger is a real link to /destinations
+          so it's crawlable; hovering expands the city sub-menu. */}
       {cities.length > 0 && (
         <div className="group relative">
-          <button className="flex items-center gap-1 text-sm font-medium text-white/80 transition-colors hover:text-white">
+          <Link
+            href="/destinations"
+            onClick={onClick}
+            className="flex items-center gap-1 text-sm font-medium text-white/80 transition-colors hover:text-white"
+          >
             {t('nav.destinations') || 'Destinations'}
             <ChevronDown className="h-3.5 w-3.5" />
-          </button>
+          </Link>
           {/* pt-3 bridges the gap so the menu stays open on hover */}
           <div className="absolute left-1/2 top-full z-50 hidden -translate-x-1/2 pt-3 group-hover:block">
             <div className="grid w-[28rem] grid-cols-2 gap-1 rounded-xl border border-gray-100 bg-white p-3 shadow-xl">

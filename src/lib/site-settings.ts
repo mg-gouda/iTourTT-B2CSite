@@ -162,10 +162,18 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
         ? 'info@transfera.ae'
         : (data.contactEmail ?? DEFAULT_SITE_SETTINGS.contactEmail);
 
+    // Normalize heroTitle — the backend admin has a non-geo-targeted default;
+    // replace it with the SEO-correct copy so the H1 contains Egypt + city names.
+    const heroTitle: string =
+      !data.heroTitle || data.heroTitle === 'Book Your Airport Transfer'
+        ? DEFAULT_SITE_SETTINGS.heroTitle
+        : data.heroTitle;
+
     return {
       ...DEFAULT_SITE_SETTINGS,
       ...data,
       contactEmail,
+      heroTitle,
       siteLogoUrl: normalizeLogo(prefixUrl(data.siteLogoUrl ?? null)),
       siteFaviconUrl: prefixUrl(data.siteFaviconUrl ?? null),
       heroImageUrl: prefixUrl(data.heroImageUrl ?? null),

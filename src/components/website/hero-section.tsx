@@ -17,11 +17,21 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden bg-white">
-      {/* Background image, displayed as-is (no overlay/gradient) */}
+      {/* Hero background image — rendered as <img> so the browser's preload
+          scanner can discover it immediately and we can set fetchpriority=high.
+          CSS background-image is invisible to the scanner and delays LCP. */}
       {hasImage && (
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${settings.heroImageUrl})` }}
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={settings.heroImageUrl!}
+          alt=""
+          aria-hidden="true"
+          // @ts-expect-error — fetchpriority is valid HTML; React 19 forwards it
+          fetchpriority="high"
+          loading="eager"
+          width={1920}
+          height={1080}
+          className="absolute inset-0 h-full w-full object-cover"
         />
       )}
 

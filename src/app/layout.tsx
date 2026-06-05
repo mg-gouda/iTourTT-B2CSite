@@ -14,7 +14,9 @@ import {
 import { WebsiteShell } from './website-shell';
 import './globals.css';
 
-export const dynamic = 'force-dynamic';
+// ISR: revalidate layout (site settings / theme) every 60 s — matches
+// fetchSiteSettings's own revalidation period.
+export const revalidate = 60;
 
 // ── Dynamic metadata from site settings ──
 // Backend metaTitle/metaDescription win; the geo-targeted strings in
@@ -72,20 +74,20 @@ export const viewport = {
 
 const FONT_CSS_MAP: Record<string, string> = {
   Inter:
-    'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap',
+    'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=optional',
   'Open Sans':
-    'https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap',
+    'https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=optional',
   Poppins:
-    'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap',
+    'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=optional',
   Roboto:
-    'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap',
-  Lato: 'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap',
+    'https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=optional',
+  Lato: 'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=optional',
   Montserrat:
-    'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap',
+    'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=optional',
   'DM Sans':
-    'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap',
+    'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=optional',
   'Plus Jakarta Sans':
-    'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap',
+    'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=optional',
 };
 
 export default async function RootLayout({
@@ -135,6 +137,23 @@ export default async function RootLayout({
             telephone: settings.contactPhone,
             email: settings.contactEmail,
           })}
+        />
+        {/* WebSite schema enables Google Sitelinks Searchbox for branded queries */}
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: settings.siteName || BRAND_NAME,
+            url: SITE_URL,
+            potentialAction: {
+              '@type': 'SearchAction',
+              target: {
+                '@type': 'EntryPoint',
+                urlTemplate: `${SITE_URL}/book?q={search_term_string}`,
+              },
+              'query-input': 'required name=search_term_string',
+            },
+          }}
         />
         <WebsiteShell settings={settings}>{children}</WebsiteShell>
         <Toaster position="top-center" richColors />

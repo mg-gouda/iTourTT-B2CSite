@@ -7,6 +7,11 @@ const API_HOST = process.env.NEXT_PUBLIC_API_URL
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  experimental: {
+    // Use the project's .browserslistrc to skip transpiling/polyfilling
+    // features that are natively supported in all modern browsers.
+    browsersListForSwc: true,
+  },
   async headers() {
     return [
       {
@@ -33,25 +38,15 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value: [
-              // Default: only self
               "default-src 'self'",
-              // Scripts: self + inline (Next.js hydration) + Google Maps
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com",
-              // Styles: self + inline (Tailwind / dynamic theming) + Google Fonts
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-              // Fonts: self + Google Fonts CDN
               "font-src 'self' https://fonts.gstatic.com",
-              // Images: self + backend CDN + data URIs
               `img-src 'self' data: blob: https://${API_HOST}`,
-              // Fetch/XHR: self + backend API + Google Maps API
               `connect-src 'self' https://${API_HOST} https://maps.googleapis.com`,
-              // iframes: only self (payment widgets if any)
               "frame-src 'self'",
-              // Media
               "media-src 'self'",
-              // Prevent clickjacking via frame-ancestors
               "frame-ancestors 'self'",
-              // Upgrade insecure requests in production
               "upgrade-insecure-requests",
             ].join("; "),
           },

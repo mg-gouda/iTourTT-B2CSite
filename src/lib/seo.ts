@@ -25,23 +25,25 @@ export const HOME_DESCRIPTION =
 export const OG_DESCRIPTION =
   'Book safe, private airport transfers across Egypt. Fixed price, free cancellation, 24/7 support.';
 
-// Social-share preview image. Asset must live at /public/og-image.jpg
-// (1200×630). Resolved against SITE_URL via metadataBase.
-export const OG_IMAGE = '/og-image.jpg';
+// Social-share preview image — generated dynamically at /opengraph-image
+// via app/opengraph-image.tsx (Next.js ImageResponse, 1200×630).
+export const OG_IMAGE = '/opengraph-image';
 
 // ── Airport coverage (homepage list + FAQ + landing pages) ──
 export interface Airport {
   name: string;
   iata: string;
+  /** /transfers/[slug] destination page slug — undefined if no page exists yet. */
+  slug?: string;
 }
 
 export const AIRPORTS: Airport[] = [
-  { name: 'Hurghada International Airport', iata: 'HRG' },
-  { name: 'Cairo International Airport', iata: 'CAI' },
-  { name: 'Sharm El Sheikh International Airport', iata: 'SSH' },
-  { name: 'Luxor International Airport', iata: 'LXR' },
+  { name: 'Hurghada International Airport', iata: 'HRG', slug: 'hurghada' },
+  { name: 'Cairo International Airport', iata: 'CAI', slug: 'cairo' },
+  { name: 'Sharm El Sheikh International Airport', iata: 'SSH', slug: 'sharm-el-sheikh' },
+  { name: 'Luxor International Airport', iata: 'LXR', slug: 'luxor' },
   { name: 'Aswan International Airport', iata: 'ASW' },
-  { name: 'Marsa Alam International Airport', iata: 'RMF' },
+  { name: 'Marsa Alam International Airport', iata: 'RMF', slug: 'marsa-alam' },
   { name: 'Alexandria Borg El Arab Airport', iata: 'HBE' },
 ];
 

@@ -98,6 +98,7 @@ function useQuickLinks() {
   return [
     { label: t('nav.home'), href: '/' },
     { label: t('nav.bookNow'), href: '/book' },
+    { label: t('nav.destinations') || 'Destinations', href: '/destinations' },
     { label: t('nav.trackBooking'), href: '/booking/lookup' },
     { label: t('nav.myAccount'), href: '/account' },
   ];
