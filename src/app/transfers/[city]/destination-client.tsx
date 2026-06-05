@@ -7,7 +7,7 @@ import type { SiteSettings } from '@/lib/site-settings';
 import { resolveAssetUrl } from '@/lib/site-settings';
 import type { Destination } from '@/lib/destinations';
 import type { CityPage } from '@/lib/website-content';
-import { useWT } from '@/lib/website-i18n';
+import { useWT, useLocalePath } from '@/lib/website-i18n';
 
 interface DestinationClientProps {
   dest: Destination | null;
@@ -17,6 +17,7 @@ interface DestinationClientProps {
 
 export function DestinationClient({ dest, cms, settings }: DestinationClientProps) {
   const t = useWT();
+  const localePath = useLocalePath();
 
   const fill = (key: string, vars: Record<string, string>) =>
     Object.entries(vars).reduce((s, [k, v]) => s.replace(`{${k}}`, v), t(key));
@@ -64,7 +65,7 @@ export function DestinationClient({ dest, cms, settings }: DestinationClientProp
               className="gap-2 text-white font-semibold"
               style={{ backgroundColor: settings.primaryColor }}
             >
-              <Link href="/book">
+              <Link href={localePath('/book')}>
                 {t('booking.bookNow')}
                 <ArrowRight className="h-4 w-4" />
               </Link>
@@ -182,7 +183,7 @@ export function DestinationClient({ dest, cms, settings }: DestinationClientProp
             className="mt-8 gap-2 bg-white px-10 text-base font-semibold hover:bg-gray-100"
             style={{ color: settings.primaryColor }}
           >
-            <Link href="/book">
+            <Link href={localePath('/book')}>
               {t('booking.getQuote')}
               <ArrowRight className="h-4 w-4" />
             </Link>

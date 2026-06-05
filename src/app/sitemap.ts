@@ -1,43 +1,65 @@
 import type { MetadataRoute } from 'next';
 import { SITE_URL } from '@/lib/seo';
 import { DESTINATIONS } from '@/lib/destinations';
+import { LOCALES } from '@/lib/i18n-config';
 import { fetchBlogList } from '@/lib/website-content';
 
 export const revalidate = 3600;
 
+// Core paths (excluding locale-invariant routes like /login, /account).
+const CORE_PATHS = [
+  { path: '/', changeFrequency: 'weekly' as const, priority: 1.0 },
+  { path: '/book', changeFrequency: 'monthly' as const, priority: 0.9 },
+  { path: '/destinations', changeFrequency: 'weekly' as const, priority: 0.8 },
+  { path: '/blog', changeFrequency: 'weekly' as const, priority: 0.7 },
+  { path: '/booking/lookup', changeFrequency: 'monthly' as const, priority: 0.5 },
+];
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const core: MetadataRoute.Sitemap = [
-    { url: SITE_URL, lastModified: now, changeFrequency: 'weekly', priority: 1 },
-    { url: `${SITE_URL}/book`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${SITE_URL}/destinations`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${SITE_URL}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
-    { url: `${SITE_URL}/booking/lookup`, lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
-  ];
-
-  const destinations: MetadataRoute.Sitemap = DESTINATIONS.map((d) => ({
-    url: `${SITE_URL}/transfers/${d.slug}`,
-    lastModified: now,
-    changeFrequency: 'monthly' as const,
-    priority: 0.8,
-  }));
-
-  // Include published blog posts (fail-soft — skip on API error).
-  let blogPosts: MetadataRoute.Sitemap = [];
+  // Blog posts fetched from API (fail-soft).
+  let blogSlugs: { slug: string; publishedAt: string | null }[] = [];
   try {
     const data = await fetchBlogList({ page: 1 });
-    if (data?.items) {
-      blogPosts = data.items.map((post) => ({
-        url: `${SITE_URL}/blog/${post.slug}`,
-        lastModified: post.publishedAt ? new Date(post.publishedAt) : now,
-        changeFrequency: 'monthly' as const,
-        priority: 0.6,
-      }));
-    }
+    blogSlugs = data?.items?.map((p) => ({ slug: p.slug, publishedAt: p.publishedAt })) ?? [];
   } catch {
-    // Not critical — sitemap still works without blog posts.
+    // Sitemap still valid without blog posts
   }
 
-  return [...core, ...destinations, ...blogPosts];
+  const entries: MetadataRoute.Sitemap = [];
+
+  for (const locale of LOCALES) {
+    // Core pages
+    for (const { path, changeFrequency, priority } of CORE_PATHS) {
+      entries.push({
+        url: `${SITE_URL}/${locale}${path === '/' ? '' : path}`,
+        lastModified: now,
+        changeFrequency,
+        priority: locale === 'en' ? priority : priority * 0.8, // slightly lower for non-primary
+      });
+    }
+
+    // Destination pages
+    for (const dest of DESTINATIONS) {
+      entries.push({
+        url: `${SITE_URL}/${locale}/transfers/${dest.slug}`,
+        lastModified: now,
+        changeFrequency: 'monthly',
+        priority: locale === 'en' ? 0.8 : 0.65,
+      });
+    }
+
+    // Blog posts
+    for (const post of blogSlugs) {
+      entries.push({
+        url: `${SITE_URL}/${locale}/blog/${post.slug}`,
+        lastModified: post.publishedAt ? new Date(post.publishedAt) : now,
+        changeFrequency: 'monthly',
+        priority: locale === 'en' ? 0.6 : 0.5,
+      });
+    }
+  }
+
+  return entries;
 }

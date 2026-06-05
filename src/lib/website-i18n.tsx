@@ -1,7 +1,6 @@
 "use client";
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import { useCallback } from "react";
 
 /* ------------------------------------------------------------------ */
@@ -39,15 +38,13 @@ interface LocaleStore {
   setLocale: (locale: Locale) => void;
 }
 
-export const useLocaleStore = create<LocaleStore>()(
-  persist(
-    (set) => ({
-      locale: "en",
-      setLocale: (locale: Locale) => set({ locale }),
-    }),
-    { name: "website-locale" }
-  )
-);
+// No persistence — the URL segment is the source of truth.
+// LocaleSetup (in app/[locale]/layout.tsx) initialises this from the URL on
+// every page load, overriding any previous in-memory value.
+export const useLocaleStore = create<LocaleStore>()((set) => ({
+  locale: "en",
+  setLocale: (locale: Locale) => set({ locale }),
+}));
 
 /* ------------------------------------------------------------------ */
 /*  Translations                                                       */
@@ -1412,4 +1409,19 @@ export function useWT(): (key: string) => string {
     },
     [locale]
   );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Locale-aware path helper                                           */
+/* ------------------------------------------------------------------ */
+
+// Returns a function that prepends the current locale to any internal path.
+// e.g. useLocalePath()('/book') → '/en/book'
+// Use in client components instead of hard-coded href values.
+export function useLocalePath(): (path: string) => string {
+  const locale = useLocaleStore((s) => s.locale);
+  return (path: string) => {
+    if (!path.startsWith('/')) return path; // External URL — leave as-is.
+    return `/${locale}${path}`;
+  };
 }

@@ -15,7 +15,7 @@ import { HeroSection } from '@/components/website/hero-section';
 import { BookingWidget } from '@/components/website/booking-widget';
 import { FeaturesSection } from '@/components/website/features-section';
 import type { SiteSettings } from '@/lib/site-settings';
-import { useWT } from '@/lib/website-i18n';
+import { useWT, useLocalePath } from '@/lib/website-i18n';
 import { AIRPORTS } from '@/lib/seo';
 
 interface LandingClientProps {
@@ -24,6 +24,7 @@ interface LandingClientProps {
 
 export function WebsiteLandingClient({ settings }: LandingClientProps) {
   const t = useWT();
+  const localePath = useLocalePath();
 
   return (
     <>
@@ -272,7 +273,7 @@ export function WebsiteLandingClient({ settings }: LandingClientProps) {
             className="mt-8 gap-2 bg-white px-10 text-base font-semibold hover:bg-gray-100"
             style={{ color: settings.primaryColor }}
           >
-            <Link href="/book">
+            <Link href={localePath('/book')}>
               {t('booking.bookNow')}
               <ArrowRight className="h-4 w-4" />
             </Link>

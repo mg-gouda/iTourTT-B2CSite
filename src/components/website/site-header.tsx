@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { Menu, X, Globe, User, ChevronDown, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { SiteSettings, NavLink } from '@/lib/site-settings';
 import { API_BASE } from '@/lib/site-settings';
 import { cn } from '@/lib/utils';
-import { useLocaleStore, LANGUAGES, useWT } from '@/lib/website-i18n';
+import { useLocaleStore, LANGUAGES, useWT, useLocalePath } from '@/lib/website-i18n';
 
 interface CityMenuItem {
   slug: string;
@@ -32,6 +33,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
   const [scrolled, setScrolled] = useState(false);
 
   const t = useWT();
+  const localePath = useLocalePath();
   const defaultNavLinks = useDefaultNavLinks();
   const navLinks = settings.navLinksJson ?? defaultNavLinks;
   const preset = settings.headerPreset;
@@ -101,7 +103,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       {navLinks.map((link) => (
         <Link
           key={link.href}
-          href={link.href}
+          href={link.external ? link.href : localePath(link.href)}
           onClick={onClick}
           target={link.external ? '_blank' : undefined}
           rel={link.external ? 'noopener noreferrer' : undefined}
@@ -111,25 +113,23 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
         </Link>
       ))}
 
-      {/* Destinations mega-menu (hover) — the trigger is a real link to /destinations
-          so it's crawlable; hovering expands the city sub-menu. */}
+      {/* Destinations mega-menu — trigger is a real link so Google can crawl it. */}
       {cities.length > 0 && (
         <div className="group relative">
           <Link
-            href="/destinations"
+            href={localePath('/destinations')}
             onClick={onClick}
             className="flex items-center gap-1 text-sm font-medium text-white/80 transition-colors hover:text-white"
           >
             {t('nav.destinations') || 'Destinations'}
             <ChevronDown className="h-3.5 w-3.5" />
           </Link>
-          {/* pt-3 bridges the gap so the menu stays open on hover */}
           <div className="absolute left-1/2 top-full z-50 hidden -translate-x-1/2 pt-3 group-hover:block">
             <div className="grid w-[28rem] grid-cols-2 gap-1 rounded-xl border border-gray-100 bg-white p-3 shadow-xl">
               {cities.map((c) => (
                 <Link
                   key={c.slug}
-                  href={`/transfers/${c.slug}`}
+                  href={localePath(`/transfers/${c.slug}`)}
                   onClick={onClick}
                   className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-emerald-700"
                 >
@@ -143,7 +143,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       )}
 
       <Link
-        href="/blog"
+        href={localePath('/blog')}
         onClick={onClick}
         className="text-sm font-medium text-white/80 transition-colors hover:text-white"
       >
@@ -153,7 +153,9 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
   );
 
   const LanguageSwitcher = () => {
-    const { locale, setLocale } = useLocaleStore();
+    const { locale } = useLocaleStore();
+    const router = useRouter();
+    const pathname = usePathname();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const current = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0];
@@ -165,6 +167,15 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       document.addEventListener('mousedown', handler);
       return () => document.removeEventListener('mousedown', handler);
     }, []);
+
+    const switchLocale = (newLocale: string) => {
+      // Replace the current locale segment in the URL, e.g. /en/book → /ar/book
+      const segments = pathname.split('/');
+      if (segments.length > 1) segments[1] = newLocale;
+      const newPath = segments.join('/') || `/${newLocale}`;
+      router.push(newPath);
+      setOpen(false);
+    };
 
     return (
       <div ref={ref} className="relative">
@@ -180,7 +191,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
             {LANGUAGES.map((lang) => (
               <button
                 key={lang.code}
-                onClick={() => { setLocale(lang.code); setOpen(false); }}
+                onClick={() => switchLocale(lang.code)}
                 className={cn(
                   'flex w-full items-center gap-2 px-3 py-2 text-sm transition-colors hover:bg-white/10',
                   locale === lang.code ? 'text-white font-medium' : 'text-white/60',
@@ -198,7 +209,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
 
   const AccountBtn = ({ className }: { className?: string }) => (
     <Link
-      href="/account"
+      href={localePath('/account')}
       className={cn(
         'flex items-center gap-1.5 text-sm font-medium text-white/80 transition-colors hover:text-white',
         className,
@@ -216,7 +227,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       className={cn('text-white font-semibold', className)}
       style={{ backgroundColor: settings.primaryColor }}
     >
-      <Link href="/book">{settings.heroCta1Text || t('nav.bookNow')}</Link>
+      <Link href={localePath('/book')}>{settings.heroCta1Text || t('nav.bookNow')}</Link>
     </Button>
   );
 
@@ -248,7 +259,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={link.external ? link.href : localePath(link.href)}
                 onClick={() => setMobileOpen(false)}
                 className="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
               >
@@ -259,14 +270,18 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
             {/* Destinations */}
             {cities.length > 0 && (
               <div className="mt-1">
-                <span className="px-3 text-xs font-semibold uppercase tracking-wide text-white/40">
+                <Link
+                  href={localePath('/destinations')}
+                  onClick={() => setMobileOpen(false)}
+                  className="block px-3 text-xs font-semibold uppercase tracking-wide text-white/40 hover:text-white/70"
+                >
                   {t('nav.destinations') || 'Destinations'}
-                </span>
+                </Link>
                 <div className="mt-1 flex flex-col">
                   {cities.map((c) => (
                     <Link
                       key={c.slug}
-                      href={`/transfers/${c.slug}`}
+                      href={localePath(`/transfers/${c.slug}`)}
                       onClick={() => setMobileOpen(false)}
                       className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white"
                     >
@@ -279,7 +294,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
             )}
 
             <Link
-              href="/blog"
+              href={localePath('/blog')}
               onClick={() => setMobileOpen(false)}
               className="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             >
@@ -287,7 +302,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
             </Link>
 
             <Link
-              href="/account"
+              href={localePath('/account')}
               onClick={() => setMobileOpen(false)}
               className="flex items-center gap-2 rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
             >

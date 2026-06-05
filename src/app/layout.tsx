@@ -1,76 +1,21 @@
-import type { Metadata } from 'next';
-import { Toaster } from 'sonner';
+// Root layout — provides <html>/<body> and dynamic font/theme CSS.
+// Site chrome (header, footer, schemas) lives in app/[locale]/layout.tsx.
+
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
-import { JsonLd } from '@/components/JsonLd';
-import {
-  SITE_URL,
-  HOME_TITLE,
-  HOME_DESCRIPTION,
-  OG_DESCRIPTION,
-  OG_IMAGE,
-  BRAND_NAME,
-  localBusinessSchema,
-} from '@/lib/seo';
-import { WebsiteShell } from './website-shell';
+import { SITE_URL } from '@/lib/seo';
 import './globals.css';
 
-// ISR: revalidate layout (site settings / theme) every 60 s — matches
-// fetchSiteSettings's own revalidation period.
 export const revalidate = 60;
 
-// ── Dynamic metadata from site settings ──
-// Backend metaTitle/metaDescription win; the geo-targeted strings in
-// @/lib/seo are the static fallbacks.
-
-export async function generateMetadata(): Promise<Metadata> {
-  const settings = await fetchSiteSettings();
-
-  const title = settings.metaTitle ?? HOME_TITLE;
-  const description = settings.metaDescription ?? HOME_DESCRIPTION;
-  const siteName = settings.siteName || BRAND_NAME;
-
-  return {
-    metadataBase: new URL(SITE_URL),
-    title,
-    description,
-    alternates: {
-      canonical: '/',
-    },
-    openGraph: {
-      type: 'website',
-      locale: 'en_US',
-      url: SITE_URL,
-      siteName,
-      title,
-      description: OG_DESCRIPTION,
-      images: [
-        {
-          url: OG_IMAGE,
-          width: 1200,
-          height: 630,
-          alt: 'Transfera — Egypt Airport Transfers',
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description: OG_DESCRIPTION,
-      images: [OG_IMAGE],
-    },
-    icons: {
-      icon: settings.siteFaviconUrl ?? '/favicon.svg',
-    },
-  };
-}
+export const metadata = {
+  metadataBase: new URL(SITE_URL),
+};
 
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover' as const,
 };
-
-// ── Google Font CSS URLs for dynamic loading ──
 
 const FONT_CSS_MAP: Record<string, string> = {
   Inter:
@@ -92,27 +37,28 @@ const FONT_CSS_MAP: Record<string, string> = {
 
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   let settings = DEFAULT_SITE_SETTINGS;
   try {
     settings = await fetchSiteSettings();
   } catch {
-    // Use defaults on failure
+    // Use defaults
   }
 
   const fontUrl = FONT_CSS_MAP[settings.fontFamily];
 
   return (
+    // lang="en" is the server default; LocaleSetup overrides it client-side
+    // for non-English routes. suppressHydrationWarning prevents the React
+    // mismatch warning when the attribute changes after hydration.
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Dynamic Google Font */}
         {fontUrl && (
           // eslint-disable-next-line @next/next/no-page-custom-font
           <link rel="stylesheet" href={fontUrl} />
         )}
-        {/* CSS custom properties for dynamic theming */}
         <style
           dangerouslySetInnerHTML={{
             __html: `
@@ -129,35 +75,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
-        {/* Site-wide LocalBusiness / TravelAgency structured data */}
-        <JsonLd
-          data={localBusinessSchema({
-            name: settings.siteName,
-            telephone: settings.contactPhone,
-            email: settings.contactEmail,
-          })}
-        />
-        {/* WebSite schema enables Google Sitelinks Searchbox for branded queries */}
-        <JsonLd
-          data={{
-            '@context': 'https://schema.org',
-            '@type': 'WebSite',
-            name: settings.siteName || BRAND_NAME,
-            url: SITE_URL,
-            potentialAction: {
-              '@type': 'SearchAction',
-              target: {
-                '@type': 'EntryPoint',
-                urlTemplate: `${SITE_URL}/book?q={search_term_string}`,
-              },
-              'query-input': 'required name=search_term_string',
-            },
-          }}
-        />
-        <WebsiteShell settings={settings}>{children}</WebsiteShell>
-        <Toaster position="top-center" richColors />
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

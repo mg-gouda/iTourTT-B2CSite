@@ -10,7 +10,7 @@ import {
   Twitter,
 } from 'lucide-react';
 import type { SiteSettings } from '@/lib/site-settings';
-import { useWT } from '@/lib/website-i18n';
+import { useWT, useLocalePath } from '@/lib/website-i18n';
 
 interface SiteFooterProps {
   settings: SiteSettings;
@@ -95,12 +95,13 @@ function Copyright({ siteName }: { siteName: string }) {
 
 function useQuickLinks() {
   const t = useWT();
+  const localePath = useLocalePath();
   return [
-    { label: t('nav.home'), href: '/' },
-    { label: t('nav.bookNow'), href: '/book' },
-    { label: t('nav.destinations') || 'Destinations', href: '/destinations' },
-    { label: t('nav.trackBooking'), href: '/booking/lookup' },
-    { label: t('nav.myAccount'), href: '/account' },
+    { label: t('nav.home'), href: localePath('/') },
+    { label: t('nav.bookNow'), href: localePath('/book') },
+    { label: t('nav.destinations') || 'Destinations', href: localePath('/destinations') },
+    { label: t('nav.trackBooking'), href: localePath('/booking/lookup') },
+    { label: t('nav.myAccount'), href: localePath('/account') },
   ];
 }
 
