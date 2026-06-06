@@ -6,6 +6,7 @@ import { JsonLd } from '@/components/JsonLd';
 import { SITE_URL, BRAND_NAME, OG_IMAGE, localBusinessSchema } from '@/lib/seo';
 import { isValidLocale, LOCALES, type Locale } from '@/lib/i18n-config';
 import { LocaleSetup } from '@/components/website/locale-setup';
+import { CookieConsentBanner } from '@/components/website/cookie-consent-banner';
 import { WebsiteShell } from '../website-shell';
 
 export const revalidate = 60;
@@ -85,6 +86,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
       <WebsiteShell settings={settings}>{children}</WebsiteShell>
       <Toaster position="top-center" richColors />
+      <CookieConsentBanner />
     </>
   );
 }

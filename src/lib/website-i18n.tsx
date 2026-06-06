@@ -241,6 +241,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "common.error": "Something went wrong",
     "common.bookAnother": "Book Another Transfer",
     "common.step": "Step",
+
+    // Cookie consent
+    "cookie.title": "We use cookies",
+    "cookie.body": "We use cookies to improve your experience, analyse site traffic, and show relevant content. You can accept all, reject non-essential cookies, or choose which types to allow.",
+    "cookie.accept": "Accept All",
+    "cookie.reject": "Reject All",
+    "cookie.manage": "Manage",
+    "cookie.manageTitle": "Cookie Preferences",
+    "cookie.essential": "Essential",
+    "cookie.essentialDesc": "Required for the site to function. Cannot be disabled.",
+    "cookie.analytics": "Analytics",
+    "cookie.analyticsDesc": "Help us understand how visitors use the site.",
+    "cookie.marketing": "Marketing",
+    "cookie.marketingDesc": "Used to show you relevant ads and offers.",
+    "cookie.save": "Save preferences",
   },
 
   /* ============================  ARABIC  ============================= */
@@ -432,6 +447,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "common.error": "حدث خطأ ما",
     "common.bookAnother": "احجز رحلة أخرى",
     "common.step": "الخطوة",
+
+    // Cookie consent
+    "cookie.title": "نستخدم ملفات تعريف الارتباط",
+    "cookie.body": "نستخدم ملفات تعريف الارتباط لتحسين تجربتك وتحليل حركة الموقع وعرض محتوى ملائم. يمكنك قبول الكل أو رفض غير الضرورية أو اختيار الأنواع التي تريد السماح بها.",
+    "cookie.accept": "قبول الكل",
+    "cookie.reject": "رفض الكل",
+    "cookie.manage": "إدارة",
+    "cookie.manageTitle": "تفضيلات ملفات تعريف الارتباط",
+    "cookie.essential": "الضرورية",
+    "cookie.essentialDesc": "مطلوبة لعمل الموقع. لا يمكن تعطيلها.",
+    "cookie.analytics": "التحليلية",
+    "cookie.analyticsDesc": "تساعدنا على فهم كيفية استخدام الزوار للموقع.",
+    "cookie.marketing": "التسويقية",
+    "cookie.marketingDesc": "تُستخدم لعرض إعلانات وعروض ذات صلة لك.",
+    "cookie.save": "حفظ التفضيلات",
   },
 
   /* ============================  GERMAN  ============================= */
@@ -619,6 +649,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "common.error": "Etwas ist schiefgelaufen",
     "common.bookAnother": "Einen weiteren Transfer buchen",
     "common.step": "Schritt",
+
+    // Cookie consent
+    "cookie.title": "Wir verwenden Cookies",
+    "cookie.body": "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern, den Datenverkehr zu analysieren und relevante Inhalte anzuzeigen. Sie können alle akzeptieren, nicht notwendige ablehnen oder auswählen, welche Typen Sie zulassen möchten.",
+    "cookie.accept": "Alle akzeptieren",
+    "cookie.reject": "Alle ablehnen",
+    "cookie.manage": "Verwalten",
+    "cookie.manageTitle": "Cookie-Einstellungen",
+    "cookie.essential": "Notwendig",
+    "cookie.essentialDesc": "Für die Funktion der Website erforderlich. Kann nicht deaktiviert werden.",
+    "cookie.analytics": "Analyse",
+    "cookie.analyticsDesc": "Helfen uns zu verstehen, wie Besucher die Website nutzen.",
+    "cookie.marketing": "Marketing",
+    "cookie.marketingDesc": "Werden verwendet, um Ihnen relevante Werbung und Angebote zu zeigen.",
+    "cookie.save": "Einstellungen speichern",
   },
 
   /* ============================  FRENCH  ============================= */
@@ -810,6 +855,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "common.error": "Une erreur est survenue",
     "common.bookAnother": "Réserver un autre transfert",
     "common.step": "Étape",
+
+    // Cookie consent
+    "cookie.title": "Nous utilisons des cookies",
+    "cookie.body": "Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic du site et afficher du contenu pertinent. Vous pouvez tout accepter, refuser les cookies non essentiels ou choisir les types à autoriser.",
+    "cookie.accept": "Tout accepter",
+    "cookie.reject": "Tout refuser",
+    "cookie.manage": "Gérer",
+    "cookie.manageTitle": "Préférences de cookies",
+    "cookie.essential": "Essentiels",
+    "cookie.essentialDesc": "Nécessaires au fonctionnement du site. Ne peuvent pas être désactivés.",
+    "cookie.analytics": "Analytiques",
+    "cookie.analyticsDesc": "Nous aident à comprendre comment les visiteurs utilisent le site.",
+    "cookie.marketing": "Marketing",
+    "cookie.marketingDesc": "Utilisés pour vous montrer des publicités et offres pertinentes.",
+    "cookie.save": "Enregistrer les préférences",
   },
 
   /* ============================  ITALIAN  ============================ */
@@ -1001,6 +1061,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "common.error": "Qualcosa è andato storto",
     "common.bookAnother": "Prenota un altro transfer",
     "common.step": "Passo",
+
+    // Cookie consent
+    "cookie.title": "Utilizziamo i cookie",
+    "cookie.body": "Utilizziamo i cookie per migliorare la tua esperienza, analizzare il traffico del sito e mostrare contenuti pertinenti. Puoi accettare tutti, rifiutare quelli non essenziali o scegliere quali tipi consentire.",
+    "cookie.accept": "Accetta tutti",
+    "cookie.reject": "Rifiuta tutti",
+    "cookie.manage": "Gestisci",
+    "cookie.manageTitle": "Preferenze cookie",
+    "cookie.essential": "Essenziali",
+    "cookie.essentialDesc": "Necessari per il funzionamento del sito. Non possono essere disabilitati.",
+    "cookie.analytics": "Analitici",
+    "cookie.analyticsDesc": "Ci aiutano a capire come i visitatori usano il sito.",
+    "cookie.marketing": "Marketing",
+    "cookie.marketingDesc": "Usati per mostrarti annunci e offerte pertinenti.",
+    "cookie.save": "Salva preferenze",
   },
 
   /* ============================  DUTCH  ============================== */
@@ -1193,6 +1268,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "common.error": "Er is iets misgegaan",
     "common.bookAnother": "Nog een transfer boeken",
     "common.step": "Stap",
+
+    // Cookie consent
+    "cookie.title": "Wij gebruiken cookies",
+    "cookie.body": "Wij gebruiken cookies om uw ervaring te verbeteren, siteverkeer te analyseren en relevante inhoud te tonen. U kunt alles accepteren, niet-essentiële cookies weigeren of kiezen welke typen u wilt toestaan.",
+    "cookie.accept": "Alles accepteren",
+    "cookie.reject": "Alles weigeren",
+    "cookie.manage": "Beheren",
+    "cookie.manageTitle": "Cookievoorkeuren",
+    "cookie.essential": "Noodzakelijk",
+    "cookie.essentialDesc": "Vereist voor het functioneren van de site. Kan niet worden uitgeschakeld.",
+    "cookie.analytics": "Analytisch",
+    "cookie.analyticsDesc": "Helpen ons te begrijpen hoe bezoekers de site gebruiken.",
+    "cookie.marketing": "Marketing",
+    "cookie.marketingDesc": "Worden gebruikt om u relevante advertenties en aanbiedingen te tonen.",
+    "cookie.save": "Voorkeuren opslaan",
   },
 
   /* ============================  RUSSIAN  ============================ */
@@ -1385,6 +1475,21 @@ const translations: Record<Locale, Record<string, string>> = {
     "common.error": "Что-то пошло не так",
     "common.bookAnother": "Заказать ещё один трансфер",
     "common.step": "Шаг",
+
+    // Cookie consent
+    "cookie.title": "Мы используем файлы cookie",
+    "cookie.body": "Мы используем файлы cookie для улучшения вашего опыта, анализа трафика сайта и отображения релевантного контента. Вы можете принять все, отклонить необязательные или выбрать нужные типы.",
+    "cookie.accept": "Принять все",
+    "cookie.reject": "Отклонить все",
+    "cookie.manage": "Настроить",
+    "cookie.manageTitle": "Настройки cookie",
+    "cookie.essential": "Необходимые",
+    "cookie.essentialDesc": "Необходимы для работы сайта. Не могут быть отключены.",
+    "cookie.analytics": "Аналитика",
+    "cookie.analyticsDesc": "Помогают нам понять, как посетители используют сайт.",
+    "cookie.marketing": "Маркетинг",
+    "cookie.marketingDesc": "Используются для показа релевантной рекламы и предложений.",
+    "cookie.save": "Сохранить настройки",
   },
 };
 
