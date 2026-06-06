@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { fetchCmsPage } from '@/lib/website-content';
+import { CmsPageContent } from '@/components/website/cms-page-content';
 import { SITE_URL } from '@/lib/seo';
 import { LOCALES } from '@/lib/i18n-config';
 
@@ -48,12 +49,7 @@ export default async function CmsPageRoute({ params }: Props) {
       <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
         {page.title}
       </h1>
-      {page.content && (
-        <div
-          className="prose prose-lg mt-8 max-w-none"
-          dangerouslySetInnerHTML={{ __html: page.content }}
-        />
-      )}
+      {page.content && <CmsPageContent html={page.content} />}
     </main>
   );
 }
