@@ -52,6 +52,9 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
 
   const t = useWT();
   const localePath = useLocalePath();
+  const { locale } = useLocaleStore();
+  const router = useRouter();
+  const pathname = usePathname();
   const defaultNavLinks = useDefaultNavLinks();
   const navLinks = settings.navLinksJson ?? defaultNavLinks;
   const preset = settings.headerPreset;
@@ -351,7 +354,34 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
               <User className="h-4 w-4" />
               {t('nav.myAccount')}
             </Link>
-            <div className="mt-4 px-3">
+            <div className="mt-2 border-t border-white/10 pt-3">
+              <p className="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-white/30">
+                {t('nav.language') || 'Language'}
+              </p>
+              <div className="flex flex-wrap gap-1 px-2">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang.code}
+                    title={lang.label}
+                    onClick={() => {
+                      const segments = pathname.split('/');
+                      if (segments.length > 1) segments[1] = lang.code;
+                      router.push(segments.join('/') || `/${lang.code}`);
+                      setMobileOpen(false);
+                    }}
+                    className={cn(
+                      'rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
+                      locale === lang.code
+                        ? 'bg-white/20 text-white'
+                        : 'text-white/50 hover:bg-white/10 hover:text-white',
+                    )}
+                  >
+                    {lang.code.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="mt-3 px-3">
               <BookNowBtn className="w-full" />
             </div>
           </div>
