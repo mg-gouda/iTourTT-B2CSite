@@ -15,6 +15,24 @@ interface CityMenuItem {
   name: string;
 }
 
+interface CmsNavItem {
+  slug: string;
+  title: string;
+}
+
+function useCmsNavItems(): CmsNavItem[] {
+  const { locale } = useLocaleStore();
+  const [items, setItems] = useState<CmsNavItem[]>([]);
+  useEffect(() => {
+    const qs = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
+    fetch(`${API_BASE}/api/public/pages${qs}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => setItems(j?.data?.nav ?? []))
+      .catch(() => {});
+  }, [locale]);
+  return items;
+}
+
 interface SiteHeaderProps {
   settings: SiteSettings;
 }
@@ -37,6 +55,8 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
   const defaultNavLinks = useDefaultNavLinks();
   const navLinks = settings.navLinksJson ?? defaultNavLinks;
   const preset = settings.headerPreset;
+
+  const cmsNavItems = useCmsNavItems();
 
   // Destinations mega-menu — published city pages from the CMS.
   const [cities, setCities] = useState<CityMenuItem[]>([]);
@@ -149,6 +169,17 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       >
         {t('nav.blog') || 'Blog'}
       </Link>
+
+      {cmsNavItems.map((item) => (
+        <Link
+          key={item.slug}
+          href={localePath(`/${item.slug}`)}
+          onClick={onClick}
+          className="text-sm font-medium text-white/80 transition-colors hover:text-white"
+        >
+          {item.title}
+        </Link>
+      ))}
     </div>
   );
 
@@ -300,6 +331,17 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
             >
               {t('nav.blog') || 'Blog'}
             </Link>
+
+            {cmsNavItems.map((item) => (
+              <Link
+                key={item.slug}
+                href={localePath(`/${item.slug}`)}
+                onClick={() => setMobileOpen(false)}
+                className="rounded-md px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
+              >
+                {item.title}
+              </Link>
+            ))}
 
             <Link
               href={localePath('/account')}

@@ -104,6 +104,37 @@ export function fetchBlogCategories(): Promise<BlogCategoryRef[] | null> {
   return getJson<BlogCategoryRef[]>(`${PUBLIC_API}/blog/categories`);
 }
 
+// ── CMS Static Pages ──
+
+export interface CmsPageMenuItem {
+  slug: string;
+  title: string;
+}
+
+export interface CmsMenus {
+  nav: CmsPageMenuItem[];
+  footer: CmsPageMenuItem[];
+}
+
+export interface CmsPage {
+  slug: string;
+  title: string;
+  content: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  updatedAt: string;
+}
+
+export function fetchCmsMenus(locale?: string): Promise<CmsMenus | null> {
+  const qs = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
+  return getJson<CmsMenus>(`${PUBLIC_API}/pages${qs}`, 60);
+}
+
+export function fetchCmsPage(slug: string, locale?: string): Promise<CmsPage | null> {
+  const qs = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
+  return getJson<CmsPage>(`${PUBLIC_API}/pages/${encodeURIComponent(slug)}${qs}`, 60);
+}
+
 // ── Per-page SEO ──
 
 export interface PageSeo {

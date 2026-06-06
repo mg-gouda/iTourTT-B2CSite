@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Mail,
@@ -10,7 +11,22 @@ import {
   Twitter,
 } from 'lucide-react';
 import type { SiteSettings } from '@/lib/site-settings';
-import { useWT, useLocalePath } from '@/lib/website-i18n';
+import { API_BASE } from '@/lib/site-settings';
+import { useWT, useLocalePath, useLocaleStore } from '@/lib/website-i18n';
+
+function useCmsFooterItems(): { slug: string; title: string; href: string }[] {
+  const { locale } = useLocaleStore();
+  const localePath = useLocalePath();
+  const [items, setItems] = useState<{ slug: string; title: string }[]>([]);
+  useEffect(() => {
+    const qs = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
+    fetch(`${API_BASE}/api/public/pages${qs}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => setItems(j?.data?.footer ?? []))
+      .catch(() => {});
+  }, [locale]);
+  return items.map((item) => ({ ...item, href: localePath(`/${item.slug}`) }));
+}
 
 interface SiteFooterProps {
   settings: SiteSettings;
@@ -110,6 +126,7 @@ function useQuickLinks() {
 function DefaultFooter({ settings }: SiteFooterProps) {
   const t = useWT();
   const quickLinks = useQuickLinks();
+  const cmsFooterItems = useCmsFooterItems();
   return (
     <footer className="text-white/70" style={{ backgroundColor: settings.footerBgColor }}>
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -131,11 +148,15 @@ function DefaultFooter({ settings }: SiteFooterProps) {
             <ul className="mt-3 space-y-2 text-sm">
               {quickLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="transition-colors hover:text-white"
-                  >
+                  <Link href={link.href} className="transition-colors hover:text-white">
                     {link.label}
+                  </Link>
+                </li>
+              ))}
+              {cmsFooterItems.map((item) => (
+                <li key={item.slug}>
+                  <Link href={item.href} className="transition-colors hover:text-white">
+                    {item.title}
                   </Link>
                 </li>
               ))}
@@ -164,6 +185,7 @@ function DefaultFooter({ settings }: SiteFooterProps) {
 function MinimalFooter({ settings }: SiteFooterProps) {
   const t = useWT();
   const quickLinks = useQuickLinks();
+  const cmsFooterItems = useCmsFooterItems();
   return (
     <footer className="text-white/70" style={{ backgroundColor: settings.footerBgColor }}>
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -181,6 +203,15 @@ function MinimalFooter({ settings }: SiteFooterProps) {
                 {link.label}
               </Link>
             ))}
+            {cmsFooterItems.map((item) => (
+              <Link
+                key={item.slug}
+                href={item.href}
+                className="text-xs transition-colors hover:text-white"
+              >
+                {item.title}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
@@ -193,6 +224,7 @@ function MinimalFooter({ settings }: SiteFooterProps) {
 function ExpandedFooter({ settings }: SiteFooterProps) {
   const t = useWT();
   const quickLinks = useQuickLinks();
+  const cmsFooterItems = useCmsFooterItems();
   return (
     <footer className="text-white/70" style={{ backgroundColor: settings.footerBgColor }}>
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -213,11 +245,15 @@ function ExpandedFooter({ settings }: SiteFooterProps) {
             <ul className="mt-4 space-y-2.5 text-sm">
               {quickLinks.map((link) => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="transition-colors hover:text-white"
-                  >
+                  <Link href={link.href} className="transition-colors hover:text-white">
                     {link.label}
+                  </Link>
+                </li>
+              ))}
+              {cmsFooterItems.map((item) => (
+                <li key={item.slug}>
+                  <Link href={item.href} className="transition-colors hover:text-white">
+                    {item.title}
                   </Link>
                 </li>
               ))}
@@ -261,6 +297,7 @@ function ExpandedFooter({ settings }: SiteFooterProps) {
 function CenteredFooter({ settings }: SiteFooterProps) {
   const t = useWT();
   const quickLinks = useQuickLinks();
+  const cmsFooterItems = useCmsFooterItems();
   return (
     <footer className="text-white/70" style={{ backgroundColor: settings.footerBgColor }}>
       <div className="mx-auto max-w-3xl px-4 py-12 text-center sm:px-6">
@@ -269,7 +306,7 @@ function CenteredFooter({ settings }: SiteFooterProps) {
           {t('footer.about')}
         </p>
 
-        <div className="mt-6 flex items-center justify-center gap-5">
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-5">
           {quickLinks.map((link) => (
             <Link
               key={link.href}
@@ -277,6 +314,15 @@ function CenteredFooter({ settings }: SiteFooterProps) {
               className="text-sm transition-colors hover:text-white"
             >
               {link.label}
+            </Link>
+          ))}
+          {cmsFooterItems.map((item) => (
+            <Link
+              key={item.slug}
+              href={item.href}
+              className="text-sm transition-colors hover:text-white"
+            >
+              {item.title}
             </Link>
           ))}
         </div>
