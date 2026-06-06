@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plane, Clock, Users, Briefcase, ChevronRight, Sparkles, Car, AlertCircle } from 'lucide-react';
+import { Plane, Clock, Users, Briefcase, ChevronRight, Sparkles, Car, AlertCircle, Snowflake, Wifi } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking-store';
-import type { SiteSettings } from '@/lib/site-settings';
+import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -25,6 +25,10 @@ interface VehicleOption {
   vehicleTypeId: string;
   vehicleTypeName: string;
   seatCapacity: number;
+  imageUrl: string | null;
+  airConditioning: boolean;
+  wifi: boolean;
+  luggageCapacity: number | null;
   price: number;
   currency: string;
   driverTip: number;
@@ -198,6 +202,8 @@ export function FlightClient({ settings }: FlightClientProps) {
     return sum + ex.price * qtyFor(ex.id);
   }, 0);
 
+  const selectedVehicle = vehicleOptions.find((v) => v.vehicleTypeId === store.vehicleTypeId) ?? null;
+
   const canContinue = store.flightNo.trim().length > 0;
 
   return (
@@ -278,6 +284,56 @@ export function FlightClient({ settings }: FlightClientProps) {
             />
           </div>
         </div>
+
+        {/* Selected vehicle card */}
+        {(() => {
+          const typeName = selectedVehicle?.vehicleTypeName ?? String(store.quoteBreakdown?.vehicleType ?? '');
+          const seats = selectedVehicle?.seatCapacity ?? Number(store.quoteBreakdown?.seatCapacity ?? 0);
+          if (!typeName) return null;
+          return (
+            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+              <h2 className="flex items-center gap-2 font-semibold text-gray-900 text-sm mb-4">
+                <Car className="h-4 w-4" style={{ color: pc }} />
+                Your Vehicle
+              </h2>
+              <div className="flex items-center gap-4">
+                {selectedVehicle?.imageUrl && (
+                  <img
+                    src={resolveAssetUrl(selectedVehicle.imageUrl)}
+                    alt={typeName}
+                    className="h-16 w-24 rounded-lg object-cover shrink-0"
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-bold text-gray-900">{typeName}</p>
+                  <p className="mt-0.5 flex items-center gap-1 text-sm text-gray-500">
+                    <Users className="h-3.5 w-3.5" />
+                    Capacity: {seats} seat{seats !== 1 ? 's' : ''}
+                  </p>
+                  {selectedVehicle && (selectedVehicle.airConditioning || selectedVehicle.wifi || selectedVehicle.luggageCapacity != null) && (
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {selectedVehicle.airConditioning && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                          <Snowflake className="h-3 w-3" /> A/C
+                        </span>
+                      )}
+                      {selectedVehicle.wifi && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                          <Wifi className="h-3 w-3" /> Wi-Fi
+                        </span>
+                      )}
+                      {selectedVehicle.luggageCapacity != null && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                          <Briefcase className="h-3 w-3" /> {selectedVehicle.luggageCapacity} bags
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Optional extras card */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
