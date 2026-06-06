@@ -87,17 +87,20 @@ export function fetchBlogList(opts: {
   page?: number;
   category?: string;
   tag?: string;
+  locale?: string;
 } = {}): Promise<BlogListResponse | null> {
   const qs = new URLSearchParams();
   if (opts.page) qs.set('page', String(opts.page));
   if (opts.category) qs.set('category', opts.category);
   if (opts.tag) qs.set('tag', opts.tag);
+  if (opts.locale && opts.locale !== 'en') qs.set('locale', opts.locale);
   const q = qs.toString();
   return getJson<BlogListResponse>(`${PUBLIC_API}/blog${q ? `?${q}` : ''}`, 120);
 }
 
-export function fetchBlogPost(slug: string): Promise<BlogPost | null> {
-  return getJson<BlogPost>(`${PUBLIC_API}/blog/${encodeURIComponent(slug)}`, 120);
+export function fetchBlogPost(slug: string, locale?: string): Promise<BlogPost | null> {
+  const q = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
+  return getJson<BlogPost>(`${PUBLIC_API}/blog/${encodeURIComponent(slug)}${q}`, 120);
 }
 
 export function fetchBlogCategories(): Promise<BlogCategoryRef[] | null> {
