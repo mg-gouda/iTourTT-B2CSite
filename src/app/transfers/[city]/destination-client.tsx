@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, MapPin, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,8 @@ import type { SiteSettings } from '@/lib/site-settings';
 import { resolveAssetUrl } from '@/lib/site-settings';
 import type { Destination } from '@/lib/destinations';
 import type { CityPage } from '@/lib/website-content';
-import { useWT, useLocalePath } from '@/lib/website-i18n';
+import { fetchCityPage } from '@/lib/website-content';
+import { useWT, useLocalePath, useLocaleStore } from '@/lib/website-i18n';
 
 interface DestinationClientProps {
   dest: Destination | null;
@@ -18,6 +20,22 @@ interface DestinationClientProps {
 export function DestinationClient({ dest, cms, settings }: DestinationClientProps) {
   const t = useWT();
   const localePath = useLocalePath();
+  const locale = useLocaleStore((s) => s.locale);
+
+  const [override, setOverride] = useState<{ locale: string; cms: CityPage } | null>(null);
+
+  const slug = cms?.slug ?? dest?.slug ?? '';
+
+  useEffect(() => {
+    if (locale === 'en' || !slug) return;
+    let active = true;
+    fetchCityPage(slug, locale).then((res) => {
+      if (active && res) setOverride({ locale, cms: res });
+    });
+    return () => { active = false; };
+  }, [locale, slug]);
+
+  const activeCms = override && override.locale === locale ? override.cms : cms;
 
   const fill = (key: string, vars: Record<string, string>) =>
     Object.entries(vars).reduce((s, [k, v]) => s.replace(`{${k}}`, v), t(key));
@@ -29,16 +47,16 @@ export function DestinationClient({ dest, cms, settings }: DestinationClientProp
   ];
 
   // ── Merge CMS content over the hardcoded fallback ──
-  const name = cms?.city?.name ?? dest?.city ?? '';
-  const h1 = cms?.heroHeadline || dest?.h1 || `${name} Airport Transfers`;
-  const heroImage = resolveAssetUrl(cms?.heroImageUrl);
+  const name = activeCms?.city?.name ?? dest?.city ?? '';
+  const h1 = activeCms?.heroHeadline || dest?.h1 || `${name} Airport Transfers`;
+  const heroImage = resolveAssetUrl(activeCms?.heroImageUrl);
   const heroSubtitle = dest
     ? fill('destination.heroDesc', { airport: dest.airportName, iata: dest.iata })
     : `Private airport transfers in ${name}.`;
-  const introParas = cms?.introText ? [cms.introText] : dest?.intro ?? [];
-  const contentHtml = cms?.contentHtml?.trim() || '';
-  const bodySections = cms?.bodyJson?.filter((s) => s.heading || s.body) ?? [];
-  const faq = cms?.faqJson?.filter((f) => f.question || f.answer) ?? [];
+  const introParas = activeCms?.introText ? [activeCms.introText] : dest?.intro ?? [];
+  const contentHtml = activeCms?.contentHtml?.trim() || '';
+  const bodySections = activeCms?.bodyJson?.filter((s) => s.heading || s.body) ?? [];
+  const faq = activeCms?.faqJson?.filter((f) => f.question || f.answer) ?? [];
   const popularRoutes = dest?.popularRoutes ?? [];
 
   return (

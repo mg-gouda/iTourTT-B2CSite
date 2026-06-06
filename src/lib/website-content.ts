@@ -50,8 +50,9 @@ export function fetchCityMenu(): Promise<CityMenuItem[] | null> {
   return getJson<CityMenuItem[]>(`${PUBLIC_API}/city-pages`);
 }
 
-export function fetchCityPage(slug: string): Promise<CityPage | null> {
-  return getJson<CityPage>(`${PUBLIC_API}/city-pages/${encodeURIComponent(slug)}`);
+export function fetchCityPage(slug: string, locale?: string): Promise<CityPage | null> {
+  const qs = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
+  return getJson<CityPage>(`${PUBLIC_API}/city-pages/${encodeURIComponent(slug)}${qs}`);
 }
 
 // ── Blog ──
