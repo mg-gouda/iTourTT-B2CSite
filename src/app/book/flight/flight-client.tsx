@@ -460,6 +460,15 @@ export function FlightClient({ settings }: FlightClientProps) {
         >
           Continue to Your Details →
         </button>
+
+        {/* Cancellation policy */}
+        <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 flex items-start gap-2">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-gray-400" />
+          <p className="text-xs text-gray-500">
+            <span className="font-semibold text-gray-700">Cancellation policy: </span>
+            Free cancellation up to 48 hours before your scheduled pickup. Cancellations within 48 hours of departure cannot be processed.
+          </p>
+        </div>
       </div>
     </div>
   );

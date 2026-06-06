@@ -273,6 +273,14 @@ export function DetailsClient({ settings }: DetailsClientProps) {
         <p className="text-center text-xs text-gray-400">
           By confirming you agree to our terms of service. Payment is collected on arrival.
         </p>
+
+        {/* Cancellation policy */}
+        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+          <p className="text-xs font-semibold text-red-700 mb-0.5">Cancellation Policy</p>
+          <p className="text-xs text-red-600">
+            Free cancellation up to 48 hours before your scheduled pickup. Cancellations within 48 hours of departure cannot be processed.
+          </p>
+        </div>
       </div>
     </div>
   );

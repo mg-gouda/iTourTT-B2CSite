@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Loader2, ArrowLeft, Plane, Car, Calendar, Clock, Users,
-  Phone, User, AlertTriangle, CheckCircle2, XCircle,
+  Phone, User, AlertTriangle, CheckCircle2, XCircle, AlertCircle,
 } from 'lucide-react';
 import type { SiteSettings } from '@/lib/site-settings';
 
@@ -62,6 +62,7 @@ export function BookingDetailClient({ settings, bookingRef }: Props) {
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showCancelModal, setShowCancelModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('b2c_token');
@@ -83,7 +84,7 @@ export function BookingDetailClient({ settings, bookingRef }: Props) {
   }, [bookingRef, router]);
 
   const handleCancel = async () => {
-    if (!confirm('Are you sure you want to cancel this booking?')) return;
+    setShowCancelModal(false);
     setActionLoading(true);
     setError('');
     try {
@@ -264,7 +265,7 @@ export function BookingDetailClient({ settings, bookingRef }: Props) {
             )}
             {canCancel && (
               <button
-                onClick={handleCancel}
+                onClick={() => setShowCancelModal(true)}
                 disabled={actionLoading}
                 className="w-full rounded-xl py-2.5 text-sm font-semibold border border-red-200 text-red-600 bg-red-50 hover:bg-red-100 transition flex items-center justify-center gap-2">
                 {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
@@ -279,6 +280,51 @@ export function BookingDetailClient({ settings, bookingRef }: Props) {
           ← Back to All Bookings
         </button>
       </div>
+
+      {/* Cancel booking modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setShowCancelModal(false); }}>
+          <div className="w-full max-w-sm rounded-2xl bg-white shadow-xl p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 shrink-0">
+                <XCircle className="h-5 w-5 text-red-600" />
+              </div>
+              <h2 className="text-base font-bold text-gray-900">Cancel Booking</h2>
+            </div>
+
+            <p className="text-sm text-gray-600">
+              Are you sure you want to cancel booking{' '}
+              <span className="font-mono font-bold text-gray-900">{bookingRef}</span>? This action cannot be undone.
+            </p>
+
+            {/* Cancellation policy */}
+            <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+              <p className="text-xs font-semibold text-red-700 mb-0.5 flex items-center gap-1.5">
+                <AlertCircle className="h-3.5 w-3.5" /> Cancellation Policy
+              </p>
+              <p className="text-xs text-red-600">
+                Free cancellation is available up to 48 hours before your scheduled pickup. Cancellations within 48 hours of departure cannot be processed.
+              </p>
+            </div>
+
+            <div className="flex gap-3 pt-1">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="flex-1 rounded-xl py-2.5 text-sm font-semibold border border-gray-200 text-gray-700 hover:bg-gray-50 transition">
+                Keep Booking
+              </button>
+              <button
+                onClick={handleCancel}
+                disabled={actionLoading}
+                className="flex-1 rounded-xl py-2.5 text-sm font-semibold bg-red-600 text-white hover:bg-red-700 transition flex items-center justify-center gap-2">
+                {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                Yes, Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
