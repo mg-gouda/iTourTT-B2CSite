@@ -28,6 +28,13 @@ export function DetailsClient({ settings }: DetailsClientProps) {
   const [done, setDone] = useState(false);
   const [catalogExtras, setCatalogExtras] = useState<CatalogExtra[]>([]);
 
+  // Payment method master switches (admin-controlled).
+  const onlineEnabled = settings.onlinePaymentEnabled ?? true;
+  const cashEnabled = settings.cashOnArrivalEnabled ?? true;
+  const [paymentMethod, setPaymentMethod] = useState<'ONLINE' | 'PAY_ON_ARRIVAL'>(
+    onlineEnabled ? 'ONLINE' : 'PAY_ON_ARRIVAL',
+  );
+
   useEffect(() => {
     if (!store.vehicleTypeId || !store.flightNo) { router.replace('/book/flight'); }
   }, [store.vehicleTypeId, store.flightNo, router]);
@@ -52,7 +59,7 @@ export function DetailsClient({ settings }: DetailsClientProps) {
   const customExtrasTotal = extraLines.reduce((s, l) => s + l.cost, 0);
   const grandTotal = (store.quotePrice ?? 0) + customExtrasTotal;
 
-  const canSubmit = store.guestName.trim() && store.guestEmail.trim() && store.guestPhone.trim();
+  const canSubmit = !!store.guestName.trim() && !!store.guestEmail.trim() && !!store.guestPhone.trim() && (onlineEnabled || cashEnabled);
 
   const handleSubmit = async () => {
     setError('');
@@ -82,7 +89,8 @@ export function DetailsClient({ settings }: DetailsClientProps) {
           extras: store.extras,
           customExtras: store.customExtras.length > 0 ? store.customExtras : undefined,
           notes: store.notes || undefined,
-          paymentMethod: 'PAY_ON_ARRIVAL',
+          paymentMethod,
+          paymentGateway: paymentMethod === 'ONLINE' ? 'GETPAYIN' : undefined,
         }),
       });
       if (!res.ok) {
@@ -90,11 +98,17 @@ export function DetailsClient({ settings }: DetailsClientProps) {
         throw new Error(d.message || 'Booking failed. Please try again.');
       }
       const json = await res.json();
-      const ref = json.data?.bookingRef ?? json.bookingRef ?? '';
+      const data = json.data ?? json;
+      const ref = data.bookingRef ?? '';
       store.setField('bookingRef', ref);
-      store.setField('accountCreated', json.data?.accountCreated ?? json.accountCreated ?? false);
-      store.setField('accountEmail', json.data?.accountEmail ?? json.accountEmail ?? null);
-      store.setField('accountPassword', json.data?.accountPassword ?? json.accountPassword ?? null);
+      store.setField('accountCreated', data.accountCreated ?? false);
+      store.setField('accountEmail', data.accountEmail ?? null);
+      store.setField('accountPassword', data.accountPassword ?? null);
+      // Online payment → hand off to the GetPayIn hosted checkout.
+      if (paymentMethod === 'ONLINE' && data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+        return;
+      }
       setDone(true);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Something went wrong.');
@@ -256,6 +270,45 @@ export function DetailsClient({ settings }: DetailsClientProps) {
           </div>
         )}
 
+        {/* Payment method */}
+        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
+          <h2 className="font-semibold text-gray-900 text-sm">Payment Method</h2>
+          {!onlineEnabled && !cashEnabled ? (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+              Online booking is temporarily unavailable. Please contact us to complete your booking.
+            </div>
+          ) : (
+            <div className={`grid gap-3 ${onlineEnabled && cashEnabled ? 'sm:grid-cols-2' : 'grid-cols-1'}`}>
+              {onlineEnabled && (
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('ONLINE')}
+                  className="flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all"
+                  style={paymentMethod === 'ONLINE'
+                    ? { borderColor: pc, backgroundColor: `${pc}0d` }
+                    : { borderColor: '#e5e7eb' }}
+                >
+                  <span className="text-sm font-semibold text-gray-900">Online Payment</span>
+                  <span className="text-xs text-gray-500">Pay securely by card now</span>
+                </button>
+              )}
+              {cashEnabled && (
+                <button
+                  type="button"
+                  onClick={() => setPaymentMethod('PAY_ON_ARRIVAL')}
+                  className="flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all"
+                  style={paymentMethod === 'PAY_ON_ARRIVAL'
+                    ? { borderColor: pc, backgroundColor: `${pc}0d` }
+                    : { borderColor: '#e5e7eb' }}
+                >
+                  <span className="text-sm font-semibold text-gray-900">Pay Cash Upon Arrival</span>
+                  <span className="text-xs text-gray-500">Pay your driver in cash</span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
         {error && (
           <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
         )}
@@ -267,11 +320,16 @@ export function DetailsClient({ settings }: DetailsClientProps) {
           className="w-full rounded-xl py-3 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40 flex items-center justify-center gap-2"
           style={{ backgroundColor: pc }}
         >
-          {submitting ? <><Loader2 className="h-4 w-4 animate-spin" />Processing…</> : 'Confirm Booking'}
+          {submitting
+            ? <><Loader2 className="h-4 w-4 animate-spin" />Processing…</>
+            : (paymentMethod === 'ONLINE' ? 'Proceed to Payment' : 'Confirm Booking')}
         </button>
 
         <p className="text-center text-xs text-gray-400">
-          By confirming you agree to our terms of service. Payment is collected on arrival.
+          By confirming you agree to our terms of service.{' '}
+          {paymentMethod === 'ONLINE'
+            ? "You'll be redirected to our secure payment provider."
+            : 'Payment is collected on arrival.'}
         </p>
 
         {/* Cancellation policy */}
