@@ -8,13 +8,25 @@ export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 const PUBLIC_API = `${API_BASE}/api/public`;
 
-// Prefix backend-served asset paths (e.g. "/uploads/x.jpg") with the API host
-// so they resolve from this standalone site's own origin. Leaves absolute URLs
-// and local public assets (e.g. "/favicon.svg") untouched.
+// Same-origin base for backend-served assets (e.g. "/uploads/x.jpg"). Empty in
+// production so images load from THIS site's own domain — the B2C nginx reverse-
+// proxies /uploads to the backend — instead of the third-party backend host.
+// Set NEXT_PUBLIC_ASSET_BASE in local dev to point at the backend (e.g.
+// http://localhost:3001) where there's no such proxy.
+export const ASSET_BASE = process.env.NEXT_PUBLIC_ASSET_BASE ?? '';
+
+// Normalise any backend-served asset to a same-origin /uploads path so images
+// never load from the backend host. Handles both bare "/uploads/..." paths and
+// absolute backend URLs (e.g. "https://fulvago.itourtt.cloud/uploads/..."),
+// rewriting them to "${ASSET_BASE}/uploads/...". Leaves data: URIs and other
+// absolute URLs (and local public assets like "/favicon.svg") untouched.
 export function resolveAssetUrl(path?: string | null): string | undefined {
   if (!path) return undefined;
-  if (/^https?:\/\//.test(path) || path.startsWith('data:')) return path;
-  if (path.startsWith('/uploads')) return `${API_BASE}${path}`;
+  if (path.startsWith('data:')) return path;
+  const abs = path.match(/^https?:\/\/[^/]+(\/uploads\/.*)$/);
+  if (abs) return `${ASSET_BASE}${abs[1]}`;
+  if (/^https?:\/\//.test(path)) return path;
+  if (path.startsWith('/uploads')) return `${ASSET_BASE}${path}`;
   return path;
 }
 
@@ -155,12 +167,15 @@ export async function fetchSiteSettings(): Promise<SiteSettings> {
     const json = await res.json();
     const data = json.data ?? json;
 
-    // For /uploads/ URLs: in production the ingress serves them from the same
-    // domain, so keep them as relative paths. Only prefix in local dev where
-    // the backend runs on a different port.
-    const PUBLIC_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
-    const prefixUrl = (url: string | null): string | null =>
-      url && url.startsWith('/uploads/') ? `${PUBLIC_URL}${url}` : url;
+    // Keep backend-served assets same-origin (loaded from this site's own
+    // domain via the nginx /uploads proxy) — same normalisation as
+    // resolveAssetUrl, so hero/logo/favicon never depend on the backend host.
+    const prefixUrl = (url: string | null): string | null => {
+      if (!url) return url;
+      const abs = url.match(/^https?:\/\/[^/]+(\/uploads\/.*)$/);
+      if (abs) return `${ASSET_BASE}${abs[1]}`;
+      return url.startsWith('/uploads/') ? `${ASSET_BASE}${url}` : url;
+    };
 
     // Normalize contact email — replace old brand email if backend still has it.
     const contactEmail: string | null =

@@ -211,7 +211,7 @@ export function WebsiteLandingClient({ settings }: LandingClientProps) {
                 <span className="text-sm font-medium text-gray-700">
                   {airport.slug ? (
                     <Link
-                      href={`/transfers/${airport.slug}`}
+                      href={localePath(`/transfers/${airport.slug}`)}
                       className="hover:underline"
                       style={{ color: 'inherit' }}
                     >

@@ -225,6 +225,14 @@ function ExpandedFooter({ settings }: SiteFooterProps) {
   const t = useWT();
   const quickLinks = useQuickLinks();
   const cmsFooterItems = useCmsFooterItems();
+  // Only show the "Stay Connected / follow us" column when at least one real
+  // social profile is configured — otherwise the copy promises links we don't
+  // render. Profiles are set in the admin panel (socialFacebook/Instagram/Twitter).
+  const hasSocials = [
+    settings.socialFacebook,
+    settings.socialInstagram,
+    settings.socialTwitter,
+  ].some((u) => u && u !== '#');
   return (
     <footer className="text-white/70" style={{ backgroundColor: settings.footerBgColor }}>
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
@@ -270,18 +278,20 @@ function ExpandedFooter({ settings }: SiteFooterProps) {
             </div>
           </div>
 
-          {/* Column 4: Stay Connected */}
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-white/50">
-              {t('footer.stayConnected')}
-            </h3>
-            <p className="mt-4 text-sm leading-relaxed">
-              {t('footer.followUs')}
-            </p>
-            <div className="mt-4">
-              <SocialLinks settings={settings} />
+          {/* Column 4: Stay Connected — only when real social profiles exist */}
+          {hasSocials && (
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-white/50">
+                {t('footer.stayConnected')}
+              </h3>
+              <p className="mt-4 text-sm leading-relaxed">
+                {t('footer.followUs')}
+              </p>
+              <div className="mt-4">
+                <SocialLinks settings={settings} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="mt-12">

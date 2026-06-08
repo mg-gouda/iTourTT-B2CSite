@@ -94,7 +94,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
   const navBg = isTransparent ? 'transparent' : settings.navBgColor;
 
   const Logo = () => (
-    <Link href="/" className="flex items-center gap-2.5">
+    <Link href={localePath('/')} className="flex items-center gap-2.5">
       {settings.siteLogoUrl ? (
         <img
           src={settings.siteLogoUrl}

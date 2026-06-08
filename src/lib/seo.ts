@@ -42,9 +42,9 @@ export const AIRPORTS: Airport[] = [
   { name: 'Cairo International Airport', iata: 'CAI', slug: 'cairo' },
   { name: 'Sharm El Sheikh International Airport', iata: 'SSH', slug: 'sharm-el-sheikh' },
   { name: 'Luxor International Airport', iata: 'LXR', slug: 'luxor' },
-  { name: 'Aswan International Airport', iata: 'ASW' },
+  { name: 'Aswan International Airport', iata: 'ASW', slug: 'aswan' },
   { name: 'Marsa Alam International Airport', iata: 'RMF', slug: 'marsa-alam' },
-  { name: 'Alexandria Borg El Arab Airport', iata: 'HBE' },
+  { name: 'Alexandria Borg El Arab Airport', iata: 'HBE', slug: 'alexandria' },
 ];
 
 // ── FAQ (visible accordion + FAQPage JSON-LD) ──
@@ -119,12 +119,10 @@ export function localBusinessSchema(opts: {
     ],
     openingHours: 'Mo-Su 00:00-24:00',
     priceRange: '$$',
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.9',
-      reviewCount: '10000',
-      bestRating: '5',
-    },
+    // NOTE: aggregateRating intentionally omitted. Google's review-snippet
+    // policy requires ratings to be backed by verifiable, on-site reviews;
+    // emitting an unverifiable 4.9/10000 risks a manual action. Re-add only
+    // when wired to a real review source (e.g. Google Business / Trustpilot).
   };
 }
 

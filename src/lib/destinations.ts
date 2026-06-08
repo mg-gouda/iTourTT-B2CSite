@@ -27,7 +27,7 @@ export const DESTINATIONS: Destination[] = [
       'Private Hurghada Airport (HRG) transfers to El Gouna, Makadi Bay, Soma Bay & Sahl Hasheesh. Fixed price, flight tracking, free cancellation.',
     intro: [
       'Book a private airport transfer from Hurghada International Airport (HRG) to your hotel or resort with Transfera. Our professional, English-speaking drivers meet you in the arrivals hall, help with your luggage and take you directly to your destination — no shared shuttles, no waiting, no haggling over the fare.',
-      'Hurghada is the gateway to the Red Sea Riviera, and we cover every popular resort area: El Gouna, Makadi Bay, Soma Bay, Sahl Hasheesh, Sahl Hasheesh and the Hurghada city hotels. We track your flight in real time, so if you land early or late your driver is always there waiting at no extra charge.',
+      'Hurghada is the gateway to the Red Sea Riviera, and we cover every popular resort area: El Gouna, Makadi Bay, Soma Bay, Sahl Hasheesh and the Hurghada city hotels. We track your flight in real time, so if you land early or late your driver is always there waiting at no extra charge.',
       'Every transfer is a fixed price confirmed at the time of booking — what you see is what you pay, with no hidden surcharges and free cancellation up to 24 hours before pickup. Modern, air-conditioned vehicles, child seats on request, and 24/7 customer support make Transfera the reliable choice for your Hurghada arrival and departure.',
     ],
     popularRoutes: [
@@ -114,7 +114,7 @@ export const DESTINATIONS: Destination[] = [
       'Private Marsa Alam Airport (RMF) transfers to Port Ghalib, Abu Dabbab, Coraya Bay & El Quseir. Fixed price, flight tracking, free cancellation.',
     intro: [
       'Reach your Red Sea resort in comfort with a private transfer from Marsa Alam International Airport (RMF). Your Transfera driver meets you at arrivals, loads your luggage and drives you directly to your hotel — ideal after a long flight to this remote stretch of coast.',
-      'We cover the whole Marsa Alam region, including Port Ghalib, Abu Dabbab, Coraya Bay, Sahl Hasheesh-style resorts along the coast, and El Quseir to the north. Many resorts are a long drive from the airport, so a reliable private car with a fixed price is the comfortable, predictable way to travel.',
+      'We cover the whole Marsa Alam region, including Port Ghalib, Abu Dabbab, Coraya Bay, Marsa Alam town and the beach resorts along the coast, and El Quseir to the north. Many resorts are a long drive from the airport, so a reliable private car with a fixed price is the comfortable, predictable way to travel.',
       'Your fare is confirmed at booking with no hidden extras, we track your flight so your driver is always there on time, and free cancellation is available up to 24 hours before pickup. Air-conditioned vehicles, child seats on request and 24/7 support are included with every Marsa Alam transfer.',
     ],
     popularRoutes: [
@@ -122,6 +122,48 @@ export const DESTINATIONS: Destination[] = [
       'Marsa Alam Airport → Abu Dabbab',
       'Marsa Alam Airport → Coraya Bay',
       'Marsa Alam Airport → El Quseir',
+    ],
+  },
+  {
+    slug: 'aswan',
+    city: 'Aswan',
+    iata: 'ASW',
+    airportName: 'Aswan International Airport',
+    title: 'Aswan Airport Transfer | ASW Private Transfers | Transfera',
+    h1: 'Aswan Airport Transfers — ASW Private Transfer Service',
+    metaDescription:
+      'Private Aswan Airport (ASW) transfers to city hotels, Nile cruise docks, Philae & Abu Simbel routes. Fixed price, flight tracking, free cancellation.',
+    intro: [
+      'Begin your Nile journey the relaxed way with a private transfer from Aswan International Airport (ASW). Your English-speaking Transfera driver meets you in the arrivals hall, helps with your luggage and drives you directly to your hotel or Nile cruise ship — no shared shuttles and no waiting in the heat.',
+      'We cover all of Aswan: the Corniche and city-centre hotels, the Nile cruise docks for your Lake Nasser or Luxor-bound cruise, and the islands and west-bank resorts. We also handle the long road transfers many visitors need — including the route to Abu Simbel — and connections for Philae Temple and the High Dam.',
+      'Every fare is fixed at the time of booking with no hidden extras, and we track your flight so your driver is ready whenever you land. Free cancellation up to 24 hours before pickup, air-conditioned vehicles, child seats on request and round-the-clock support come as standard with every Aswan transfer.',
+    ],
+    popularRoutes: [
+      'Aswan Airport → Corniche & city hotels',
+      'Aswan Airport → Nile cruise docks',
+      'Aswan Airport → Philae Temple & High Dam',
+      'Aswan Airport → Abu Simbel',
+    ],
+  },
+  {
+    slug: 'alexandria',
+    city: 'Alexandria',
+    iata: 'HBE',
+    airportName: 'Borg El Arab Airport',
+    title: 'Alexandria Airport Transfer | HBE Private Transfers | Transfera',
+    h1: 'Alexandria Airport Transfers — HBE Private Transfer Service',
+    metaDescription:
+      'Private Alexandria Borg El Arab Airport (HBE) transfers to the Corniche, downtown, North Coast & Marina. Fixed price, flight tracking, free cancellation.',
+    intro: [
+      'Arrive in the Mediterranean city stress-free with a private transfer from Alexandria Borg El Arab Airport (HBE). Your Transfera driver greets you at arrivals, takes care of your bags and drives you straight to your hotel in a comfortable, air-conditioned vehicle — Borg El Arab sits well outside the city, so a reliable private car makes all the difference.',
+      'We serve the whole of Alexandria and the coast: the Corniche and downtown hotels, Stanley, Smouha, San Stefano and Montazah, as well as the North Coast (Sahel) resorts and Marina to the west. Whether you are here for business, a seaside break or a Mediterranean cruise connection, we get you there on time.',
+      'Your price is locked in at booking with no meter and no surprises, we monitor your flight for delays, and free cancellation is available up to 24 hours before pickup. Air-conditioned vehicles, child seats on request and 24/7 support are included with every Alexandria transfer.',
+    ],
+    popularRoutes: [
+      'Borg El Arab Airport → Corniche & downtown',
+      'Borg El Arab Airport → San Stefano & Montazah',
+      'Borg El Arab Airport → North Coast (Sahel) resorts',
+      'Borg El Arab Airport → Marina',
     ],
   },
 ];
