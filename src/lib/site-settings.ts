@@ -104,6 +104,12 @@ export interface SiteSettings {
   onlinePaymentEnabled: boolean;
   cashOnArrivalEnabled: boolean;
 
+  // Booking widget master switches
+  enableTwoWayTab: boolean;
+  enableCityToCityTab: boolean;
+  enableMapSelector: boolean;
+  bookingTabsOrder: string;
+
   // SEO
   metaTitle: string | null;
   metaDescription: string | null;
@@ -127,6 +133,10 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   footerBgColor: '#1a1a2e',
   headerPreset: 'default',
   footerPreset: 'default',
+  enableTwoWayTab: false,
+  enableCityToCityTab: false,
+  enableMapSelector: false,
+  bookingTabsOrder: 'ARR,DEP',
   heroTitle: 'Egypt Airport Transfers — Hurghada, Cairo & Sharm El Sheikh',
   heroSubtitle:
     'Safe, comfortable, and reliable private transfers across Egypt. From the airport to your hotel, we have got you covered.',
