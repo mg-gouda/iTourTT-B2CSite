@@ -26,6 +26,8 @@ interface VehicleOption {
   boosterSeatPrice: number;
   babySeatPrice: number;
   wheelChairPrice: number;
+  // Present on 2-way results: the departure-leg price (outbound + this = price).
+  returnPrice?: number;
 }
 
 interface BookNowClientProps {
@@ -45,22 +47,35 @@ export function BookNowClient({ settings }: BookNowClientProps) {
       router.replace('/');
       return;
     }
+    const quote = (serviceType: string, fromZoneId: string, toZoneId: string) =>
+      fetch(`${API}/vehicle-quotes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ serviceType, fromZoneId, toZoneId, paxCount: store.paxCount }),
+      }).then(async (r) => {
+        if (!r.ok) throw new Error('No results found for this route.');
+        const j = await r.json();
+        return ((j.data ?? j).options ?? []) as VehicleOption[];
+      });
+
     const fetch_ = async () => {
       try {
-        const res = await fetch(`${API}/vehicle-quotes`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            serviceType: store.serviceType,
-            fromZoneId: store.fromZoneId,
-            toZoneId: store.toZoneId,
-            paxCount: store.paxCount,
-          }),
-        });
-        if (!res.ok) throw new Error('No results found for this route.');
-        const json = await res.json();
-        const data = json.data ?? json;
-        setOptions(data.options ?? []);
+        const outbound = await quote(store.serviceType, store.fromZoneId, store.toZoneId);
+        if (store.roundTrip) {
+          // Return leg runs hotel→airport: swap the zones, price as a departure,
+          // then combine per vehicle (only vehicles available on BOTH legs).
+          const ret = await quote('DEP', store.toZoneId, store.fromZoneId);
+          const retById = new Map(ret.map((o) => [o.vehicleTypeId, o]));
+          const combined = outbound
+            .filter((o) => retById.has(o.vehicleTypeId))
+            .map((o) => {
+              const r = retById.get(o.vehicleTypeId)!;
+              return { ...o, returnPrice: r.price, price: o.price + r.price };
+            });
+          setOptions(combined);
+        } else {
+          setOptions(outbound);
+        }
       } catch (e: unknown) {
         setError(e instanceof Error ? e.message : 'Failed to load vehicles.');
       } finally {
@@ -68,19 +83,29 @@ export function BookNowClient({ settings }: BookNowClientProps) {
       }
     };
     fetch_();
-  }, [store.fromZoneId, store.toZoneId, store.serviceType, store.paxCount, router]);
+  }, [store.fromZoneId, store.toZoneId, store.serviceType, store.paxCount, store.roundTrip, router]);
 
   const selectVehicle = (opt: VehicleOption) => {
     store.setField('vehicleTypeId', opt.vehicleTypeId);
+    store.setField('returnQuotePrice', opt.returnPrice ?? null);
     store.setQuote(opt.price, opt.currency, {
       vehicleType: opt.vehicleTypeName,
       seatCapacity: opt.seatCapacity,
       driverTip: opt.driverTip,
     });
-    router.push('/book/flight');
+    // City-to-city has no flight — skip straight to guest details.
+    router.push(store.serviceType === 'CITY_TO_CITY' ? '/book/details' : '/book/flight');
   };
 
   const isArr = store.serviceType === 'ARR';
+  const isCity = store.serviceType === 'CITY_TO_CITY';
+  const transferLabel = isCity
+    ? 'City-to-City'
+    : store.roundTrip
+      ? '2-Way Transfer'
+      : isArr
+        ? 'Arrival'
+        : 'Departure';
   const dateDisplay = store.jobDate
     ? format(new Date(store.jobDate + 'T12:00:00'), 'EEE, dd MMM yyyy')
     : '';
@@ -94,8 +119,8 @@ export function BookNowClient({ settings }: BookNowClientProps) {
             ← Edit Search
           </button>
           <span className="flex items-center gap-1.5">
-            <Plane className="h-3.5 w-3.5" style={{ color: isArr ? '#16a34a' : '#dc2626' }} />
-            {isArr ? 'Arrival' : 'Departure'} Transfer
+            <Plane className="h-3.5 w-3.5" style={{ color: isArr || isCity ? '#16a34a' : '#dc2626' }} />
+            {transferLabel}{isCity ? '' : ' Transfer'}
           </span>
           {dateDisplay && (
             <span className="flex items-center gap-1.5">
@@ -218,7 +243,9 @@ export function BookNowClient({ settings }: BookNowClientProps) {
                   <div className="mt-4 flex items-end justify-between gap-3 pt-4 border-t border-gray-100 sm:mt-auto">
                     <div className="flex flex-col">
                       <span className="text-xl font-extrabold text-gray-900">{opt.currency} {opt.price.toFixed(2)}</span>
-                      <span className="text-xs text-gray-400">Per vehicle · all inclusive</span>
+                      <span className="text-xs text-gray-400">
+                        {store.roundTrip ? 'Round trip · both legs included' : 'Per vehicle · all inclusive'}
+                      </span>
                     </div>
                     <span className="inline-flex items-center gap-1 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform group-hover:scale-[1.02]" style={{ backgroundColor: pc }}>
                       Book now <ChevronRight className="h-4 w-4" />

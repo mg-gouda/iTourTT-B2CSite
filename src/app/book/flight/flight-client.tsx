@@ -285,6 +285,54 @@ export function FlightClient({ settings }: FlightClientProps) {
           </div>
         </div>
 
+        {/* Return flight card — 2-Way bookings only (departure leg) */}
+        {store.roundTrip && (
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
+            <h2 className="flex items-center gap-2 font-semibold text-gray-900 text-sm">
+              <Plane className="h-4 w-4 rotate-90" style={{ color: pc }} />
+              Return Flight (departure)
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Return Flight Number
+                </Label>
+                <Input
+                  placeholder="e.g. MS778"
+                  value={store.returnFlightNo}
+                  onChange={(e) => store.setField('returnFlightNo', e.target.value.toUpperCase())}
+                  className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1 uppercase"
+                  style={{ '--tw-ring-color': pc } as React.CSSProperties}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Terminal
+                </Label>
+                <Input
+                  placeholder="e.g. T1"
+                  value={store.returnTerminal}
+                  onChange={(e) => store.setField('returnTerminal', e.target.value)}
+                  className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1"
+                  style={{ '--tw-ring-color': pc } as React.CSSProperties}
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Destination (flying to)
+              </Label>
+              <Input
+                placeholder="e.g. London Heathrow"
+                value={store.returnCarrier}
+                onChange={(e) => store.setField('returnCarrier', e.target.value)}
+                className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1"
+                style={{ '--tw-ring-color': pc } as React.CSSProperties}
+              />
+            </div>
+          </div>
+        )}
+
         {/* Selected vehicle card */}
         {(() => {
           const typeName = selectedVehicle?.vehicleTypeName ?? String(store.quoteBreakdown?.vehicleType ?? '');

@@ -36,8 +36,10 @@ export function DetailsClient({ settings }: DetailsClientProps) {
   );
 
   useEffect(() => {
-    if (!store.vehicleTypeId || !store.flightNo) { router.replace('/book/flight'); }
-  }, [store.vehicleTypeId, store.flightNo, router]);
+    // City-to-city has no flight step, so don't require a flight number for it.
+    if (!store.vehicleTypeId) { router.replace('/book'); return; }
+    if (!store.flightNo && store.serviceType !== 'CITY_TO_CITY') { router.replace('/book/flight'); }
+  }, [store.vehicleTypeId, store.flightNo, store.serviceType, router]);
 
   useEffect(() => {
     let active = true;
@@ -83,9 +85,25 @@ export function DetailsClient({ settings }: DetailsClientProps) {
           guestEmail: store.guestEmail,
           guestPhone: store.guestPhone,
           guestCountry: store.guestCountry || undefined,
-          flightNo: store.flightNo,
+          flightNo: store.flightNo || undefined,
           terminal: store.terminal || undefined,
           carrier: store.carrier || undefined,
+          // Precise Google Places pickup/drop-off point (when picked).
+          pickupPlaceId: store.pickupPlaceId || undefined,
+          pickupLat: store.pickupLat ?? undefined,
+          pickupLng: store.pickupLng ?? undefined,
+          pickupAddress: store.pickupAddress || undefined,
+          dropoffPlaceId: store.dropoffPlaceId || undefined,
+          dropoffLat: store.dropoffLat ?? undefined,
+          dropoffLng: store.dropoffLng ?? undefined,
+          dropoffAddress: store.dropoffAddress || undefined,
+          // 2-Way (return) leg.
+          roundTrip: store.roundTrip || undefined,
+          returnDate: store.roundTrip ? store.returnDate : undefined,
+          returnPickupTime: store.roundTrip ? store.returnTime : undefined,
+          returnFlightNo: store.roundTrip ? store.returnFlightNo || undefined : undefined,
+          returnCarrier: store.roundTrip ? store.returnCarrier || undefined : undefined,
+          returnTerminal: store.roundTrip ? store.returnTerminal || undefined : undefined,
           extras: store.extras,
           customExtras: store.customExtras.length > 0 ? store.customExtras : undefined,
           notes: store.notes || undefined,

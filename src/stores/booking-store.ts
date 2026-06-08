@@ -22,6 +22,15 @@ interface BookingState {
   fromPlaceId: string;
   toPlaceName: string;
   toPlaceId: string;
+  // Precise pickup/drop-off point from the Google Places picker.
+  pickupPlaceId: string;
+  pickupLat: number | null;
+  pickupLng: number | null;
+  pickupAddress: string;
+  dropoffPlaceId: string;
+  dropoffLat: number | null;
+  dropoffLng: number | null;
+  dropoffAddress: string;
   hotelId: string;
   hotelName: string;
   originAirportId: string;
@@ -30,6 +39,14 @@ interface BookingState {
   pickupTime: string;
   paxCount: number;
   vehicleTypeId: string;
+  // 2-Way (return) transfer
+  roundTrip: boolean;
+  returnDate: string;
+  returnTime: string;
+  returnFlightNo: string;
+  returnCarrier: string;
+  returnTerminal: string;
+  returnQuotePrice: number | null;
   // Quote result
   quotePrice: number | null;
   quoteCurrency: string;
@@ -68,6 +85,14 @@ const initialState = {
   fromPlaceId: '',
   toPlaceName: '',
   toPlaceId: '',
+  pickupPlaceId: '',
+  pickupLat: null,
+  pickupLng: null,
+  pickupAddress: '',
+  dropoffPlaceId: '',
+  dropoffLat: null,
+  dropoffLng: null,
+  dropoffAddress: '',
   hotelId: '',
   hotelName: '',
   originAirportId: '',
@@ -76,6 +101,13 @@ const initialState = {
   pickupTime: '',
   paxCount: 1,
   vehicleTypeId: '',
+  roundTrip: false,
+  returnDate: '',
+  returnTime: '',
+  returnFlightNo: '',
+  returnCarrier: '',
+  returnTerminal: '',
+  returnQuotePrice: null,
   quotePrice: null,
   quoteCurrency: 'USD',
   quoteBreakdown: null,
