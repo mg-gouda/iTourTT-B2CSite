@@ -2,6 +2,16 @@
 // Data for the /transfers/[city] SEO landing pages. Each entry drives
 // the page metadata, H1, body copy, popular routes and Service schema.
 
+// A single airport→destination route, used to generate the long-tail
+// /transfers/[city]/[route] landing pages. distanceKm/durationMin drive the
+// route-specific copy, info cards and FAQ so every page is genuinely unique.
+export interface RouteInfo {
+  slug: string; // destination part of the URL, e.g. 'el-gouna'
+  to: string; // human label, e.g. 'El Gouna'
+  distanceKm: number;
+  durationMin: number;
+}
+
 export interface Destination {
   slug: string;
   city: string;
@@ -12,7 +22,7 @@ export interface Destination {
   metaDescription: string;
   // 2–3 paragraphs of body copy (200+ words total).
   intro: string[];
-  popularRoutes: string[];
+  routes: RouteInfo[];
 }
 
 export const DESTINATIONS: Destination[] = [
@@ -30,12 +40,12 @@ export const DESTINATIONS: Destination[] = [
       'Hurghada is the gateway to the Red Sea Riviera, and we cover every popular resort area: El Gouna, Makadi Bay, Soma Bay, Sahl Hasheesh and the Hurghada city hotels. We track your flight in real time, so if you land early or late your driver is always there waiting at no extra charge.',
       'Every transfer is a fixed price confirmed at the time of booking — what you see is what you pay, with no hidden surcharges and free cancellation up to 24 hours before pickup. Modern, air-conditioned vehicles, child seats on request, and 24/7 customer support make Transfera the reliable choice for your Hurghada arrival and departure.',
     ],
-    popularRoutes: [
-      'Hurghada Airport → El Gouna',
-      'Hurghada Airport → Makadi Bay',
-      'Hurghada Airport → Soma Bay',
-      'Hurghada Airport → Sahl Hasheesh',
-      'Hurghada Airport → Hurghada City & Marina',
+    routes: [
+      { slug: 'el-gouna', to: 'El Gouna', distanceKm: 35, durationMin: 30 },
+      { slug: 'makadi-bay', to: 'Makadi Bay', distanceKm: 35, durationMin: 30 },
+      { slug: 'soma-bay', to: 'Soma Bay', distanceKm: 60, durationMin: 45 },
+      { slug: 'sahl-hasheesh', to: 'Sahl Hasheesh', distanceKm: 25, durationMin: 25 },
+      { slug: 'hurghada-city', to: 'Hurghada City & Marina', distanceKm: 15, durationMin: 20 },
     ],
   },
   {
@@ -52,12 +62,12 @@ export const DESTINATIONS: Destination[] = [
       'We serve every part of Greater Cairo: Downtown Cairo, Zamalek, Garden City, Heliopolis, Nasr City, New Cairo, and the Giza and Pyramids area. Whether you are in town for business, a Nile cruise connection, or to see the Pyramids of Giza and the Grand Egyptian Museum, we get you there on time.',
       'Cairo traffic is unpredictable — that is exactly why a fixed-price private transfer makes sense. Your fare is locked in at booking with no meter and no surge pricing, we monitor your flight for delays, and free cancellation is available up to 24 hours before pickup. Friendly 24/7 support is on hand for any change of plan.',
     ],
-    popularRoutes: [
-      'Cairo Airport → Downtown Cairo',
-      'Cairo Airport → Giza & the Pyramids',
-      'Cairo Airport → Zamalek',
-      'Cairo Airport → New Cairo',
-      'Cairo Airport → Heliopolis',
+    routes: [
+      { slug: 'downtown-cairo', to: 'Downtown Cairo', distanceKm: 25, durationMin: 45 },
+      { slug: 'giza-pyramids', to: 'Giza & the Pyramids', distanceKm: 40, durationMin: 60 },
+      { slug: 'zamalek', to: 'Zamalek', distanceKm: 22, durationMin: 40 },
+      { slug: 'new-cairo', to: 'New Cairo', distanceKm: 25, durationMin: 35 },
+      { slug: 'heliopolis', to: 'Heliopolis', distanceKm: 12, durationMin: 25 },
     ],
   },
   {
@@ -74,12 +84,12 @@ export const DESTINATIONS: Destination[] = [
       'We cover all of Sharm El Sheikh and the surrounding bays: Naama Bay, Nabq Bay, Sharks Bay, Ras Um Sid, Hadaba and Sharm El Maya. From all-inclusive resorts to diving hotels, your driver knows the area and delivers you door to door.',
       'Each transfer is a fixed, all-in price agreed at booking with no hidden extras, and we track your flight so your driver is ready whenever you land. Free cancellation up to 24 hours before pickup, air-conditioned vehicles, child seats on request and round-the-clock support come as standard with Transfera.',
     ],
-    popularRoutes: [
-      'Sharm El Sheikh Airport → Naama Bay',
-      'Sharm El Sheikh Airport → Nabq Bay',
-      'Sharm El Sheikh Airport → Sharks Bay',
-      'Sharm El Sheikh Airport → Ras Um Sid',
-      'Sharm El Sheikh Airport → Hadaba',
+    routes: [
+      { slug: 'naama-bay', to: 'Naama Bay', distanceKm: 15, durationMin: 20 },
+      { slug: 'nabq-bay', to: 'Nabq Bay', distanceKm: 10, durationMin: 15 },
+      { slug: 'sharks-bay', to: 'Sharks Bay', distanceKm: 8, durationMin: 12 },
+      { slug: 'ras-um-sid', to: 'Ras Um Sid', distanceKm: 18, durationMin: 25 },
+      { slug: 'hadaba', to: 'Hadaba', distanceKm: 20, durationMin: 28 },
     ],
   },
   {
@@ -96,11 +106,11 @@ export const DESTINATIONS: Destination[] = [
       'We serve both sides of the Nile — the East Bank with Luxor Temple and Karnak, and the West Bank with the Valley of the Kings, Hatshepsut Temple and the Colossi of Memnon — as well as the cruise docks for your Nile cruise departure. Your transfer is timed around your flight, which we track in real time.',
       'Prices are fixed at the moment you book, with no surprises on the day and free cancellation up to 24 hours in advance. Comfortable air-conditioned vehicles and 24/7 support make your Luxor arrival and departure smooth from start to finish.',
     ],
-    popularRoutes: [
-      'Luxor Airport → East Bank hotels (Luxor & Karnak Temples)',
-      'Luxor Airport → West Bank (Valley of the Kings)',
-      'Luxor Airport → Nile cruise docks',
-      'Luxor Airport → Luxor city centre',
+    routes: [
+      { slug: 'east-bank', to: 'East Bank (Luxor & Karnak Temples)', distanceKm: 8, durationMin: 15 },
+      { slug: 'west-bank', to: 'West Bank (Valley of the Kings)', distanceKm: 15, durationMin: 25 },
+      { slug: 'nile-cruise-docks', to: 'Nile cruise docks', distanceKm: 7, durationMin: 15 },
+      { slug: 'luxor-city', to: 'Luxor city centre', distanceKm: 6, durationMin: 12 },
     ],
   },
   {
@@ -117,11 +127,11 @@ export const DESTINATIONS: Destination[] = [
       'We cover the whole Marsa Alam region, including Port Ghalib, Abu Dabbab, Coraya Bay, Marsa Alam town and the beach resorts along the coast, and El Quseir to the north. Many resorts are a long drive from the airport, so a reliable private car with a fixed price is the comfortable, predictable way to travel.',
       'Your fare is confirmed at booking with no hidden extras, we track your flight so your driver is always there on time, and free cancellation is available up to 24 hours before pickup. Air-conditioned vehicles, child seats on request and 24/7 support are included with every Marsa Alam transfer.',
     ],
-    popularRoutes: [
-      'Marsa Alam Airport → Port Ghalib',
-      'Marsa Alam Airport → Abu Dabbab',
-      'Marsa Alam Airport → Coraya Bay',
-      'Marsa Alam Airport → El Quseir',
+    routes: [
+      { slug: 'port-ghalib', to: 'Port Ghalib', distanceKm: 7, durationMin: 10 },
+      { slug: 'abu-dabbab', to: 'Abu Dabbab', distanceKm: 30, durationMin: 30 },
+      { slug: 'coraya-bay', to: 'Coraya Bay', distanceKm: 12, durationMin: 15 },
+      { slug: 'el-quseir', to: 'El Quseir', distanceKm: 80, durationMin: 70 },
     ],
   },
   {
@@ -138,11 +148,11 @@ export const DESTINATIONS: Destination[] = [
       'We cover all of Aswan: the Corniche and city-centre hotels, the Nile cruise docks for your Lake Nasser or Luxor-bound cruise, and the islands and west-bank resorts. We also handle the long road transfers many visitors need — including the route to Abu Simbel — and connections for Philae Temple and the High Dam.',
       'Every fare is fixed at the time of booking with no hidden extras, and we track your flight so your driver is ready whenever you land. Free cancellation up to 24 hours before pickup, air-conditioned vehicles, child seats on request and round-the-clock support come as standard with every Aswan transfer.',
     ],
-    popularRoutes: [
-      'Aswan Airport → Corniche & city hotels',
-      'Aswan Airport → Nile cruise docks',
-      'Aswan Airport → Philae Temple & High Dam',
-      'Aswan Airport → Abu Simbel',
+    routes: [
+      { slug: 'aswan-city', to: 'Corniche & city hotels', distanceKm: 25, durationMin: 35 },
+      { slug: 'nile-cruise-docks', to: 'Nile cruise docks', distanceKm: 20, durationMin: 30 },
+      { slug: 'philae-high-dam', to: 'Philae Temple & High Dam', distanceKm: 30, durationMin: 40 },
+      { slug: 'abu-simbel', to: 'Abu Simbel', distanceKm: 280, durationMin: 210 },
     ],
   },
   {
@@ -159,11 +169,11 @@ export const DESTINATIONS: Destination[] = [
       'We serve the whole of Alexandria and the coast: the Corniche and downtown hotels, Stanley, Smouha, San Stefano and Montazah, as well as the North Coast (Sahel) resorts and Marina to the west. Whether you are here for business, a seaside break or a Mediterranean cruise connection, we get you there on time.',
       'Your price is locked in at booking with no meter and no surprises, we monitor your flight for delays, and free cancellation is available up to 24 hours before pickup. Air-conditioned vehicles, child seats on request and 24/7 support are included with every Alexandria transfer.',
     ],
-    popularRoutes: [
-      'Borg El Arab Airport → Corniche & downtown',
-      'Borg El Arab Airport → San Stefano & Montazah',
-      'Borg El Arab Airport → North Coast (Sahel) resorts',
-      'Borg El Arab Airport → Marina',
+    routes: [
+      { slug: 'downtown-alexandria', to: 'Corniche & downtown', distanceKm: 45, durationMin: 50 },
+      { slug: 'san-stefano-montazah', to: 'San Stefano & Montazah', distanceKm: 55, durationMin: 60 },
+      { slug: 'north-coast', to: 'North Coast (Sahel) resorts', distanceKm: 80, durationMin: 70 },
+      { slug: 'marina', to: 'Marina', distanceKm: 95, durationMin: 85 },
     ],
   },
 ];

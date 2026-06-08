@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { SITE_URL } from '@/lib/seo';
 import { DESTINATIONS } from '@/lib/destinations';
+import { allRoutes } from '@/lib/routes';
 import { LOCALES } from '@/lib/i18n-config';
 import { fetchBlogList } from '@/lib/website-content';
 
@@ -47,6 +48,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: now,
         changeFrequency: 'monthly',
         priority: locale === 'en' ? 0.8 : 0.65,
+      });
+    }
+
+    // Route-level long-tail pages (/transfers/[city]/[route])
+    for (const { city, route } of allRoutes()) {
+      entries.push({
+        url: `${SITE_URL}/${locale}/transfers/${city}/${route}`,
+        lastModified: now,
+        changeFrequency: 'monthly',
+        priority: locale === 'en' ? 0.7 : 0.55,
       });
     }
 

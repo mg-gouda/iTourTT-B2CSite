@@ -57,7 +57,7 @@ export function DestinationClient({ dest, cms, settings }: DestinationClientProp
   const contentHtml = activeCms?.contentHtml?.trim() || '';
   const bodySections = activeCms?.bodyJson?.filter((s) => s.heading || s.body) ?? [];
   const faq = activeCms?.faqJson?.filter((f) => f.question || f.answer) ?? [];
-  const popularRoutes = dest?.popularRoutes ?? [];
+  const routes = dest?.routes ?? [];
 
   return (
     <>
@@ -132,21 +132,23 @@ export function DestinationClient({ dest, cms, settings }: DestinationClientProp
         </section>
       )}
 
-      {/* ── Popular routes (hardcoded destinations only) ── */}
-      {popularRoutes.length > 0 && (
+      {/* ── Popular routes → link to each long-tail route landing page ── */}
+      {routes.length > 0 && (
         <section className="bg-gray-50/60 px-4 py-16 sm:py-20">
           <div className="mx-auto max-w-3xl">
             <h2 className="text-center text-2xl font-bold text-gray-900 sm:text-3xl">
               {fill('destination.popularRoutes', { city: name })}
             </h2>
             <ul className="mt-10 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {popularRoutes.map((route) => (
-                <li
-                  key={route}
-                  className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3.5 shadow-sm"
-                >
-                  <MapPin className="h-4 w-4 shrink-0" style={{ color: settings.primaryColor }} />
-                  <span className="text-sm font-medium text-gray-700">{route}</span>
+              {routes.map((route) => (
+                <li key={route.slug}>
+                  <Link
+                    href={localePath(`/transfers/${slug}/${route.slug}`)}
+                    className="flex items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3.5 shadow-sm transition-colors hover:bg-gray-50"
+                  >
+                    <MapPin className="h-4 w-4 shrink-0" style={{ color: settings.primaryColor }} />
+                    <span className="text-sm font-medium text-gray-700">{name} → {route.to}</span>
+                  </Link>
                 </li>
               ))}
             </ul>
