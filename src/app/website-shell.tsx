@@ -3,7 +3,7 @@
 import { SiteHeader } from '@/components/website/site-header';
 import { SiteFooter } from '@/components/website/site-footer';
 import type { SiteSettings } from '@/lib/site-settings';
-import { useLocaleStore, LANGUAGES } from '@/lib/website-i18n';
+import { useLocale, LANGUAGES } from '@/lib/website-i18n';
 
 interface WebsiteShellProps {
   settings: SiteSettings;
@@ -11,7 +11,7 @@ interface WebsiteShellProps {
 }
 
 export function WebsiteShell({ settings, children }: WebsiteShellProps) {
-  const { locale } = useLocaleStore();
+  const locale = useLocale();
   const lang = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0];
 
   return (

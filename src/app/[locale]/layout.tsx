@@ -6,6 +6,7 @@ import { JsonLd } from '@/components/JsonLd';
 import { SITE_URL, BRAND_NAME, OG_IMAGE, localBusinessSchema } from '@/lib/seo';
 import { isValidLocale, LOCALES, type Locale } from '@/lib/i18n-config';
 import { LocaleSetup } from '@/components/website/locale-setup';
+import { LocaleProvider } from '@/lib/website-i18n';
 import { CookieConsentBanner } from '@/components/website/cookie-consent-banner';
 import { WebsiteShell } from '../website-shell';
 
@@ -58,7 +59,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <>
+    // LocaleProvider seeds the active locale into context server-side, so every
+    // useWT()/useLocale() consumer (hero, nav, features, footer) renders the
+    // correct language during SSR — not just after the client LocaleSetup swap.
+    <LocaleProvider locale={locale as Locale}>
       {/* Syncs URL locale into Zustand + sets html[lang] and html[dir]. */}
       <LocaleSetup locale={locale as Locale} />
 
@@ -87,6 +91,6 @@ export default async function LocaleLayout({ children, params }: Props) {
       <WebsiteShell settings={settings}>{children}</WebsiteShell>
       <Toaster position="top-center" richColors />
       <CookieConsentBanner />
-    </>
+    </LocaleProvider>
   );
 }

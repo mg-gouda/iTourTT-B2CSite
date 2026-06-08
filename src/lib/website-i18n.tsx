@@ -1,7 +1,7 @@
 "use client";
 
 import { create } from "zustand";
-import { useCallback } from "react";
+import { createContext, useCallback, useContext } from "react";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -45,6 +45,37 @@ export const useLocaleStore = create<LocaleStore>()((set) => ({
   locale: "en",
   setLocale: (locale: Locale) => set({ locale }),
 }));
+
+/* ------------------------------------------------------------------ */
+/*  Locale context (SSR-correct source of truth)                       */
+/* ------------------------------------------------------------------ */
+
+// The zustand store defaults to "en" and is only corrected client-side by
+// LocaleSetup (after hydration), so during SSR every translation rendered
+// "en". This context is seeded server-side from the URL locale in
+// app/[locale]/layout.tsx, so useWT()/useLocale() return the right language
+// on the server too — giving crawlers fully localized hero/body copy.
+const LocaleContext = createContext<Locale | null>(null);
+
+export function LocaleProvider({
+  locale,
+  children,
+}: {
+  locale: Locale;
+  children: React.ReactNode;
+}) {
+  return (
+    <LocaleContext.Provider value={locale}>{children}</LocaleContext.Provider>
+  );
+}
+
+// Active locale: prefer the server-seeded context, fall back to the store
+// (and ultimately "en") for any usage rendered outside the provider.
+export function useLocale(): Locale {
+  const ctx = useContext(LocaleContext);
+  const store = useLocaleStore((s) => s.locale);
+  return ctx ?? store;
+}
 
 /* ------------------------------------------------------------------ */
 /*  Translations                                                       */
@@ -1638,7 +1669,7 @@ const translations: Record<Locale, Record<string, string>> = {
 /* ------------------------------------------------------------------ */
 
 export function useWT(): (key: string) => string {
-  const locale = useLocaleStore((s) => s.locale);
+  const locale = useLocale();
 
   return useCallback(
     (key: string): string => {
@@ -1664,7 +1695,7 @@ export function useWT(): (key: string) => string {
 // e.g. useLocalePath()('/book') → '/en/book'
 // Use in client components instead of hard-coded href values.
 export function useLocalePath(): (path: string) => string {
-  const locale = useLocaleStore((s) => s.locale);
+  const locale = useLocale();
   return (path: string) => {
     if (!path.startsWith('/')) return path; // External URL — leave as-is.
     return `/${locale}${path}`;

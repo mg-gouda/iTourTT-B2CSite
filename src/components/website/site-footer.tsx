@@ -12,10 +12,10 @@ import {
 } from 'lucide-react';
 import type { SiteSettings } from '@/lib/site-settings';
 import { API_BASE } from '@/lib/site-settings';
-import { useWT, useLocalePath, useLocaleStore } from '@/lib/website-i18n';
+import { useWT, useLocalePath, useLocale } from '@/lib/website-i18n';
 
 function useCmsFooterItems(): { slug: string; title: string; href: string }[] {
-  const { locale } = useLocaleStore();
+  const locale = useLocale();
   const localePath = useLocalePath();
   const [items, setItems] = useState<{ slug: string; title: string }[]>([]);
   useEffect(() => {

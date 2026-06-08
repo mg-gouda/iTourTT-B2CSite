@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import type { SiteSettings, NavLink } from '@/lib/site-settings';
 import { API_BASE } from '@/lib/site-settings';
 import { cn } from '@/lib/utils';
-import { useLocaleStore, LANGUAGES, useWT, useLocalePath } from '@/lib/website-i18n';
+import { useLocale, LANGUAGES, useWT, useLocalePath } from '@/lib/website-i18n';
 
 interface CityMenuItem {
   slug: string;
@@ -21,7 +21,7 @@ interface CmsNavItem {
 }
 
 function useCmsNavItems(): CmsNavItem[] {
-  const { locale } = useLocaleStore();
+  const locale = useLocale();
   const [items, setItems] = useState<CmsNavItem[]>([]);
   useEffect(() => {
     const qs = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
@@ -52,7 +52,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
 
   const t = useWT();
   const localePath = useLocalePath();
-  const { locale } = useLocaleStore();
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const defaultNavLinks = useDefaultNavLinks();
@@ -187,7 +187,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
   );
 
   const LanguageSwitcher = () => {
-    const { locale } = useLocaleStore();
+    const locale = useLocale();
     const router = useRouter();
     const pathname = usePathname();
     const [open, setOpen] = useState(false);

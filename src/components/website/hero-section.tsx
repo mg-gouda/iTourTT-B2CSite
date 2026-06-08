@@ -1,7 +1,7 @@
 'use client';
 
 import type { SiteSettings } from '@/lib/site-settings';
-import { useWT, useLocaleStore } from '@/lib/website-i18n';
+import { useWT, useLocale } from '@/lib/website-i18n';
 
 interface HeroSectionProps {
   settings: SiteSettings;
@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ settings, children }: HeroSectionProps) {
   const t = useWT();
-  const { locale } = useLocaleStore();
+  const locale = useLocale();
   const heroTitle    = locale === 'en' ? settings.heroTitle    : t('site.heroTitle');
   const heroSubtitle = locale === 'en' ? settings.heroSubtitle : t('site.heroSubtitle');
   const hasImage = !!settings.heroImageUrl;

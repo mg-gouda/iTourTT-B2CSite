@@ -12,7 +12,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import type { SiteSettings, FeatureItem } from '@/lib/site-settings';
-import { useWT, useLocaleStore } from '@/lib/website-i18n';
+import { useWT, useLocale } from '@/lib/website-i18n';
 
 interface FeaturesSectionProps {
   settings: SiteSettings;
@@ -51,7 +51,7 @@ const DEFAULT_FEATURE_KEYS = [
 
 export function FeaturesSection({ settings }: FeaturesSectionProps) {
   const t = useWT();
-  const { locale } = useLocaleStore();
+  const locale = useLocale();
   const featuresTitle = locale === 'en' ? settings.featuresTitle : t('site.featuresTitle');
 
   if (!settings.featuresEnabled) return null;
