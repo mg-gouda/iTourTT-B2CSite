@@ -37,7 +37,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 export default async function LocaleBlogPage({ params, searchParams }: Props) {
   const { locale } = await params;
   const { page, category } = await searchParams;
-  const data = await fetchBlogList({ page: page ? parseInt(page, 10) : 1, category });
+  const data = await fetchBlogList({ page: page ? parseInt(page, 10) : 1, category, locale });
   const items = data?.items ?? [];
 
   return (

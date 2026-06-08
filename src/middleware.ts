@@ -17,9 +17,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Already locale-prefixed — nothing to do.
-  if (LOCALES.some((l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`))) {
-    return NextResponse.next();
+  // Already locale-prefixed — surface the active locale to the server tree
+  // (root layout) via a request header so it can set <html lang>/<dir>.
+  const active = LOCALES.find(
+    (l) => pathname === `/${l}` || pathname.startsWith(`/${l}/`),
+  );
+  if (active) {
+    const headers = new Headers(request.headers);
+    headers.set('x-locale', active);
+    return NextResponse.next({ request: { headers } });
   }
 
   // Detect preferred locale from Accept-Language header.

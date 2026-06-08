@@ -27,18 +27,23 @@ export async function buildPageMetadata(
   pageKey: string,
   opts: PageMetadataOpts,
 ): Promise<Metadata> {
-  const seo = await fetchPageSeo(pageKey);
+  // Pull localized SEO for the current locale so non-English pages get a
+  // localized <title>/<meta description> server-side (not just a client swap).
+  const seo = await fetchPageSeo(pageKey, opts.locale);
   const title = seo?.metaTitle ?? opts.fallbackTitle;
   const description = seo?.metaDescription ?? opts.fallbackDescription;
   const image = opts.ogImage ?? OG_IMAGE;
   const absoluteUrl = `${SITE_URL}${opts.canonical}`;
 
-  // Build hreflang alternates when a base path is supplied.
+  // Build hreflang alternates when a base path is supplied. Normalise the root
+  // path so home alternates are ".../en" (no trailing slash) to match the
+  // canonical — mismatched hreflang/canonical URLs weaken the signal.
   let languages: Record<string, string> | undefined;
   if (opts.path) {
-    languages = { 'x-default': `${SITE_URL}/en${opts.path}` };
+    const p = opts.path === '/' ? '' : opts.path;
+    languages = { 'x-default': `${SITE_URL}/en${p}` };
     LOCALES.forEach((loc) => {
-      languages![loc] = `${SITE_URL}/${loc}${opts.path}`;
+      languages![loc] = `${SITE_URL}/${loc}${p}`;
     });
   }
 

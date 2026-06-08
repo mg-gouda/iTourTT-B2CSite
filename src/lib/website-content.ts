@@ -147,6 +147,7 @@ export interface PageSeo {
   metaDescription: string | null;
 }
 
-export function fetchPageSeo(pageKey: string): Promise<PageSeo | null> {
-  return getJson<PageSeo>(`${PUBLIC_API}/seo/${encodeURIComponent(pageKey)}`);
+export function fetchPageSeo(pageKey: string, locale?: string): Promise<PageSeo | null> {
+  const qs = locale && locale !== 'en' ? `?locale=${encodeURIComponent(locale)}` : '';
+  return getJson<PageSeo>(`${PUBLIC_API}/seo/${encodeURIComponent(pageKey)}${qs}`);
 }

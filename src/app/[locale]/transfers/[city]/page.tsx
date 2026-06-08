@@ -21,7 +21,7 @@ export const dynamicParams = true;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, city } = await params;
-  const [cms, dest] = await Promise.all([fetchCityPage(city), Promise.resolve(getDestination(city))]);
+  const [cms, dest] = await Promise.all([fetchCityPage(city, locale), Promise.resolve(getDestination(city))]);
   if (!cms && !dest) return {};
 
   const name = cms?.city?.name ?? dest?.city ?? city;
@@ -58,7 +58,7 @@ function breadcrumbSchema(locale: string, name: string, slug: string) {
 
 export default async function LocaleDestinationPage({ params }: Props) {
   const { locale, city } = await params;
-  const [cms, dest] = await Promise.all([fetchCityPage(city), Promise.resolve(getDestination(city))]);
+  const [cms, dest] = await Promise.all([fetchCityPage(city, locale), Promise.resolve(getDestination(city))]);
   if (!cms && !dest) notFound();
 
   let settings = DEFAULT_SITE_SETTINGS;

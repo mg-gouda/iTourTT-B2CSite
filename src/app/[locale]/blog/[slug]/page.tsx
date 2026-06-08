@@ -21,7 +21,7 @@ function formatDate(d: string | null) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const post = await fetchBlogPost(slug);
+  const post = await fetchBlogPost(slug, locale);
   if (!post) return {};
 
   const title = post.metaTitle ?? `${post.title} | Transfera`;
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LocaleBlogPostPage({ params }: Props) {
   const { locale, slug } = await params;
-  const post = await fetchBlogPost(slug);
+  const post = await fetchBlogPost(slug, locale);
   if (!post) notFound();
 
   const canonical = `/${locale}/blog/${post.slug}`;

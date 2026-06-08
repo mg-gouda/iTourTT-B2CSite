@@ -1,6 +1,7 @@
 // Root layout — provides <html>/<body> and dynamic font/theme CSS.
 // Site chrome (header, footer, schemas) lives in app/[locale]/layout.tsx.
 
+import { headers } from 'next/headers';
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
 import { SITE_URL } from '@/lib/seo';
 import './globals.css';
@@ -49,11 +50,17 @@ export default async function RootLayout({
 
   const fontUrl = FONT_CSS_MAP[settings.fontFamily];
 
+  // Active locale comes from the middleware-set request header so the correct
+  // lang/dir is rendered server-side (crawler- and RTL-correct) rather than
+  // only being patched in client-side by LocaleSetup.
+  const locale = (await headers()).get('x-locale') ?? 'en';
+  const dir = locale === 'ar' ? 'rtl' : 'ltr';
+
   return (
-    // lang="en" is the server default; LocaleSetup overrides it client-side
-    // for non-English routes. suppressHydrationWarning prevents the React
-    // mismatch warning when the attribute changes after hydration.
-    <html lang="en" suppressHydrationWarning>
+    // suppressHydrationWarning: LocaleSetup may still re-assert lang/dir on the
+    // client (e.g. after a client-side locale switch); the server value here is
+    // already correct for the initial request.
+    <html lang={locale} dir={dir} suppressHydrationWarning>
       <head>
         {fontUrl && (
           // eslint-disable-next-line @next/next/no-page-custom-font
