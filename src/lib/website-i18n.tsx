@@ -95,6 +95,11 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Booking Widget
     "booking.arrivalTransfer": "Arrival Transfer",
+    "booking.airportTransfer": "Airport Transfer",
+    "booking.oneWay": "One Way",
+    "booking.returnTransfer": "Return Transfer",
+    "booking.pickup": "Pickup",
+    "booking.dropoff": "Drop-off",
     "booking.twoWayTransfer": "2-Way Transfer",
     "booking.cityToCity": "City to City",
     "booking.originCity": "Origin City",
@@ -336,6 +341,11 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Booking Widget
     "booking.arrivalTransfer": "انتقال الوصول",
+    "booking.airportTransfer": "انتقال المطار",
+    "booking.oneWay": "ذهاب فقط",
+    "booking.returnTransfer": "ذهاب وعودة",
+    "booking.pickup": "مكان الانطلاق",
+    "booking.dropoff": "مكان الوصول",
     "booking.twoWayTransfer": "انتقال ذهاب وعودة",
     "booking.cityToCity": "من مدينة إلى مدينة",
     "booking.originCity": "مدينة الانطلاق",
@@ -574,6 +584,11 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Booking Widget
     "booking.arrivalTransfer": "Ankunftstransfer",
+    "booking.airportTransfer": "Flughafentransfer",
+    "booking.oneWay": "Einfache Fahrt",
+    "booking.returnTransfer": "Hin- & Rücktransfer",
+    "booking.pickup": "Abholung",
+    "booking.dropoff": "Zielort",
     "booking.twoWayTransfer": "Hin- & Rücktransfer",
     "booking.cityToCity": "Stadt zu Stadt",
     "booking.originCity": "Abfahrtsstadt",
@@ -810,6 +825,11 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Booking Widget
     "booking.arrivalTransfer": "Transfert d'arrivée",
+    "booking.airportTransfer": "Transfert aéroport",
+    "booking.oneWay": "Aller simple",
+    "booking.returnTransfer": "Aller-retour",
+    "booking.pickup": "Prise en charge",
+    "booking.dropoff": "Dépose",
     "booking.twoWayTransfer": "Transfert aller-retour",
     "booking.cityToCity": "Ville à ville",
     "booking.originCity": "Ville de départ",
@@ -1050,6 +1070,11 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Booking Widget
     "booking.arrivalTransfer": "Transfer di arrivo",
+    "booking.airportTransfer": "Transfer aeroporto",
+    "booking.oneWay": "Solo andata",
+    "booking.returnTransfer": "Andata e ritorno",
+    "booking.pickup": "Punto di partenza",
+    "booking.dropoff": "Destinazione",
     "booking.twoWayTransfer": "Transfer andata e ritorno",
     "booking.cityToCity": "Città a città",
     "booking.originCity": "Città di partenza",
@@ -1290,6 +1315,11 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Booking Widget
     "booking.arrivalTransfer": "Aankomsttransfer",
+    "booking.airportTransfer": "Luchthaventransfer",
+    "booking.oneWay": "Enkele reis",
+    "booking.returnTransfer": "Retourtransfer",
+    "booking.pickup": "Ophaallocatie",
+    "booking.dropoff": "Bestemming",
     "booking.twoWayTransfer": "Retourtransfer",
     "booking.cityToCity": "Stad naar stad",
     "booking.originCity": "Vertrekstad",
@@ -1531,6 +1561,11 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Booking Widget
     "booking.arrivalTransfer": "Трансфер по прибытии",
+    "booking.airportTransfer": "Трансфер в аэропорт",
+    "booking.oneWay": "В одну сторону",
+    "booking.returnTransfer": "Туда и обратно",
+    "booking.pickup": "Место подачи",
+    "booking.dropoff": "Место высадки",
     "booking.twoWayTransfer": "Трансфер туда-обратно",
     "booking.cityToCity": "Из города в город",
     "booking.originCity": "Город отправления",

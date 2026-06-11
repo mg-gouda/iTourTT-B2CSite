@@ -6,7 +6,6 @@ import {
   MapPin,
   Users,
   Plane,
-  PlaneLanding,
   PlaneTakeoff,
   CalendarDays,
   Clock,
@@ -15,7 +14,6 @@ import {
   ChevronRight,
   Check,
   ChevronsUpDown,
-  ArrowLeftRight,
   Building2,
 } from 'lucide-react';
 import {
@@ -41,7 +39,7 @@ import { PlaceAutocomplete, type PickedPlace } from '@/components/website/place-
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
-type Tab = 'TWO_WAY' | 'ARR' | 'DEP' | 'CITY';
+type Tab = 'AIRPORT' | 'CITY';
 
 interface LocationNode {
   id: string;
@@ -323,27 +321,27 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   const router = useRouter();
   const store = useBookingStore();
 
-  const [activeTab, setActiveTab] = useState<Tab>('ARR');
+  const [activeTab, setActiveTab] = useState<Tab>('AIRPORT');
   const [locations, setLocations] = useState<LocationNode[]>([]);
   const [placeMsg, setPlaceMsg] = useState('');
 
   const t = useWT();
 
-  // Visible tabs are driven by the admin master switches; ARR & DEP always show.
-  // Order: 2-Way first, Arrival, Departure, City-to-City last (product spec).
+  // Two tabs only: Airport Transfer (always on; One Way / Return Transfer via the
+  // radio inside it) and City-to-City (admin master switch). The old separate
+  // 2-Way and Departure tabs are folded into the Airport tab's radio group.
   const tabs = (
     [
-      { key: 'TWO_WAY' as Tab, label: t('booking.twoWayTransfer'), Icon: ArrowLeftRight, on: settings.enableTwoWayTab },
-      { key: 'ARR' as Tab, label: t('booking.arrivalTransfer'), Icon: PlaneLanding, on: true },
-      { key: 'DEP' as Tab, label: t('booking.departureTransfer'), Icon: PlaneTakeoff, on: true },
+      { key: 'AIRPORT' as Tab, label: t('booking.airportTransfer'), Icon: Plane, on: true },
       { key: 'CITY' as Tab, label: t('booking.cityToCity'), Icon: Building2, on: settings.enableCityToCityTab },
     ] as const
   ).filter((d) => d.on);
 
   useEffect(() => {
-    const svc = activeTab === 'CITY' ? 'CITY_TO_CITY' : activeTab === 'DEP' ? 'DEP' : 'ARR';
+    const svc = activeTab === 'CITY' ? 'CITY_TO_CITY' : 'ARR';
     store.setField('serviceType', svc);
-    store.setField('roundTrip', activeTab === 'TWO_WAY');
+    // One Way is the default; the radio toggles roundTrip on the Airport tab.
+    store.setField('roundTrip', false);
     store.setField('fromZoneId', '');
     store.setField('toZoneId', '');
     store.setField('originAirportId', '');
@@ -440,9 +438,20 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
     return out;
   })();
 
-  // TWO_WAY shares the arrival layout (airport → hotel, plus a return leg).
+  // Airport transfers are always arrival-oriented (pickup = airport → drop-off =
+  // hotel). A Return Transfer simply adds the mirrored departure leg.
   const isCity = activeTab === 'CITY';
-  const isArr = activeTab === 'ARR' || activeTab === 'TWO_WAY';
+  const isArr = !isCity;
+
+  const zoneNameById = (id: string): string => {
+    if (!id) return '';
+    for (const country of locations)
+      for (const airport of country.children ?? [])
+        for (const city of airport.children ?? [])
+          for (const zone of city.children ?? [])
+            if (zone.id === id) return zone.name;
+    return '';
+  };
 
   const handleAirportChange = (airportId: string) => {
     store.setField(isArr ? 'originAirportId' : 'destinationAirportId', airportId);
@@ -462,6 +471,11 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
 
   const airportSideZone = isArr ? store.fromZoneId : store.toZoneId;
   const destZones = zonesForAirport(locations, airportValue).filter((z) => z.id !== airportSideZone);
+
+  // For the Return Transfer's read-only departure leg: pickup = the one-way
+  // drop-off (hotel/zone), drop-off = the one-way pickup (airport).
+  const airportName = airports.find((a) => a.id === airportValue)?.name ?? '';
+  const dropoffName = store.hotelName || zoneNameById(hotelZone);
 
   const selectedDestValue = store.hotelId
     ? `h:${store.hotelId}:${hotelZone}`
@@ -529,19 +543,35 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   const baseValid = store.fromZoneId && store.toZoneId && store.jobDate && store.pickupTime && store.paxCount > 0;
   const canSearch = isCity
     ? baseValid && store.fromZoneId !== store.toZoneId
-    : activeTab === 'TWO_WAY'
+    : store.roundTrip
       ? baseValid && airportValue && hotelZone && store.returnDate && store.returnTime
       : baseValid && airportValue && hotelZone;
+
+  // Date & Time cells are shared by both tabs but sit in different positions
+  // (Airport spec puts them first), so define them once and place per layout.
+  const dateCell = (
+    <Cell icon={CalendarDays} iconColor={pc} label={`${t('booking.date')} *`}>
+      <DatePicker value={store.jobDate} onChange={(v) => store.setField('jobDate', v)}
+        minDate={new Date()} primaryColor={pc} placeholder={t('booking.pickDate')} />
+    </Cell>
+  );
+  const timeCell = (
+    <Cell icon={Clock} iconColor={pc} label={`${t('booking.time')} *`}>
+      <TimePicker value={store.pickupTime} onChange={(v) => store.setField('pickupTime', v)}
+        primaryColor={pc} placeholder={t('booking.pickTime')} />
+    </Cell>
+  );
 
   return (
     <div>
 
-      {/* Tabs — driven by admin master switches */}
+      {/* Tabs — active = solid brand colour; inactive = the same brand colour
+          faded (matching the disabled Search button). */}
       <div className="flex items-center justify-center gap-1 px-3">
         {tabs.map(({ key, label, Icon }) => (
           <button key={key} type="button" onClick={() => { setActiveTab(key); setPlaceMsg(''); }}
             className="flex items-center gap-1.5 sm:gap-2 rounded-tl-lg rounded-tr-lg px-3 sm:px-5 pt-2 sm:pt-2.5 pb-0 text-xs sm:text-xl font-semibold transition-all mb-0"
-            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { backgroundColor: 'rgba(25,25,25,0.25)', color: 'rgba(255,255,255,0.55)' }}>
+            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { backgroundColor: pc, color: 'white', opacity: 0.4 }}>
             <Icon className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
             {label}
           </button>
@@ -553,7 +583,34 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
 
       {/* Fields row */}
       <div className="p-3 sm:py-0 sm:pr-0 sm:pl-3">
-        <div className="grid grid-cols-1 sm:[grid-template-columns:2fr_2fr_1fr_1fr_1fr_auto] rounded-xl overflow-hidden">
+
+        {/* One Way / Return Transfer radio — Airport tab only, and only when
+            the admin has enabled return (2-way) transfers. */}
+        {activeTab === 'AIRPORT' && settings.enableTwoWayTab && (
+          <div className="flex items-center gap-2 px-1 pt-3 pb-2">
+            {[
+              { value: false, label: t('booking.oneWay') },
+              { value: true, label: t('booking.returnTransfer') },
+            ].map((opt) => {
+              const active = store.roundTrip === opt.value;
+              return (
+                <button key={String(opt.value)} type="button"
+                  onClick={() => store.setField('roundTrip', opt.value)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs sm:text-sm font-semibold transition"
+                  style={active ? { backgroundColor: pc, color: 'white' } : { backgroundColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' }}>
+                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-current">
+                    {active && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                  </span>
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        <div className={cn('grid grid-cols-1 rounded-xl overflow-hidden',
+          isCity ? 'sm:[grid-template-columns:2fr_2fr_1fr_1fr_1fr_auto]'
+                 : 'sm:[grid-template-columns:1fr_1fr_2fr_2fr_1fr_auto]')}>
 
           {isCity ? (
             <>
@@ -577,13 +634,16 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
                   emptyText={t('booking.noDestinations')}
                 />
               </Cell>
+              {dateCell}
+              {timeCell}
             </>
           ) : (
             <>
-              <Cell icon={Plane} iconColor={isArr ? '#16a34a' : '#dc2626'}
-                label={isArr ? `${t('booking.arrivalAirport')} *` : `${t('booking.departureAirport')} *`}>
+              {dateCell}
+              {timeCell}
+              <Cell icon={Plane} iconColor="#16a34a" label={`${t('booking.pickup')} *`}>
                 <SearchableSelect
-                  value={isArr ? store.originAirportId : store.destinationAirportId}
+                  value={store.originAirportId}
                   onValueChange={handleAirportChange}
                   options={airports.map((a) => ({ value: a.id, label: a.name }))}
                   placeholder={t('booking.selectAirport')}
@@ -592,8 +652,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
                 />
               </Cell>
 
-              <Cell icon={MapPin} iconColor={isArr ? '#dc2626' : '#16a34a'}
-                label={isArr ? `${t('booking.dropoffHotel')} *` : `${t('booking.pickupHotel')} *`}>
+              <Cell icon={MapPin} iconColor="#dc2626" label={`${t('booking.dropoff')} *`}>
                 <SearchableSelect
                   value={selectedDestValue}
                   onValueChange={handleDestinationChange}
@@ -609,16 +668,6 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
               </Cell>
             </>
           )}
-
-          <Cell icon={CalendarDays} iconColor={pc} label={`${t('booking.date')} *`}>
-            <DatePicker value={store.jobDate} onChange={(v) => store.setField('jobDate', v)}
-              minDate={new Date()} primaryColor={pc} placeholder={t('booking.pickDate')} />
-          </Cell>
-
-          <Cell icon={Clock} iconColor={pc} label={`${t('booking.time')} *`}>
-            <TimePicker value={store.pickupTime} onChange={(v) => store.setField('pickupTime', v)}
-              primaryColor={pc} placeholder={t('booking.pickTime')} />
-          </Cell>
 
           <Cell icon={Users} iconColor={pc} label={`${t('booking.passengers')} *`}>
             <Stepper value={store.paxCount} onChange={(v) => store.setField('paxCount', v)} min={1} max={50} color={pc} />
@@ -636,21 +685,35 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
 
         </div>
 
-        {/* 2-Way return leg: when does the guest go back to the airport? */}
-        {activeTab === 'TWO_WAY' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 px-1 pb-2 pt-1">
-            <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2">
-              <CalendarDays className="h-4 w-4 shrink-0" style={{ color: pc }} />
-              <span className="text-xs text-white/60 shrink-0">{t('booking.returnDate')} *</span>
-              <DatePicker value={store.returnDate} onChange={(v) => store.setField('returnDate', v)}
-                minDate={store.jobDate ? new Date(store.jobDate + 'T12:00:00') : new Date()}
-                primaryColor={pc} placeholder={t('booking.pickDate')} />
+        {/* Return Transfer → mirrored departure leg. Pickup is auto-populated as
+            the one-way drop-off (hotel), drop-off as the one-way pickup (airport);
+            the guest only chooses the return date & time. */}
+        {activeTab === 'AIRPORT' && store.roundTrip && (
+          <div className="px-1 pb-2 pt-1">
+            <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-white/60">
+              <PlaneTakeoff className="h-3.5 w-3.5" style={{ color: pc }} />
+              {t('booking.departureTransfer')}
             </div>
-            <div className="flex items-center gap-2 rounded-lg bg-white/5 px-3 py-2">
-              <Clock className="h-4 w-4 shrink-0" style={{ color: pc }} />
-              <span className="text-xs text-white/60 shrink-0">{t('booking.returnTime')} *</span>
-              <TimePicker value={store.returnTime} onChange={(v) => store.setField('returnTime', v)}
-                primaryColor={pc} placeholder={t('booking.pickTime')} />
+            <div className="grid grid-cols-1 sm:[grid-template-columns:1fr_1fr_2fr_2fr] rounded-xl overflow-hidden bg-white/5">
+              <Cell icon={CalendarDays} iconColor={pc} label={`${t('booking.date')} *`}>
+                <DatePicker value={store.returnDate} onChange={(v) => store.setField('returnDate', v)}
+                  minDate={store.jobDate ? new Date(store.jobDate + 'T12:00:00') : new Date()}
+                  primaryColor={pc} placeholder={t('booking.pickDate')} />
+              </Cell>
+              <Cell icon={Clock} iconColor={pc} label={`${t('booking.time')} *`}>
+                <TimePicker value={store.returnTime} onChange={(v) => store.setField('returnTime', v)}
+                  primaryColor={pc} placeholder={t('booking.pickTime')} />
+              </Cell>
+              <Cell icon={MapPin} iconColor="#16a34a" label={`${t('booking.pickup')} *`}>
+                {dropoffName
+                  ? <span className="block truncate text-sm font-medium text-white">{dropoffName}</span>
+                  : <span className="block truncate text-sm text-white/50">{t('booking.dropoffHotel')}</span>}
+              </Cell>
+              <Cell icon={Plane} iconColor="#dc2626" label={`${t('booking.dropoff')} *`}>
+                {airportName
+                  ? <span className="block truncate text-sm font-medium text-white">{airportName}</span>
+                  : <span className="block truncate text-sm text-white/50">{t('booking.selectAirport')}</span>}
+              </Cell>
             </div>
           </div>
         )}
