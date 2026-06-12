@@ -92,6 +92,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.blog": "Blog",
     "nav.myAccount": "My Account",
     "nav.menu": "Menu",
+    "nav.routes": "Routes",
 
     // Booking Widget
     "booking.arrivalTransfer": "Arrival Transfer",
@@ -338,6 +339,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.trackBooking": "تتبع الحجز",
     "nav.myAccount": "حسابي",
     "nav.menu": "القائمة",
+    "nav.routes": "المسارات",
 
     // Booking Widget
     "booking.arrivalTransfer": "انتقال الوصول",
@@ -581,6 +583,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.trackBooking": "Buchung verfolgen",
     "nav.myAccount": "Mein Konto",
     "nav.menu": "Menü",
+    "nav.routes": "Routen",
 
     // Booking Widget
     "booking.arrivalTransfer": "Ankunftstransfer",
@@ -822,6 +825,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.trackBooking": "Suivre la réservation",
     "nav.myAccount": "Mon compte",
     "nav.menu": "Menu",
+    "nav.routes": "Trajets",
 
     // Booking Widget
     "booking.arrivalTransfer": "Transfert d'arrivée",
@@ -1067,6 +1071,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.trackBooking": "Traccia prenotazione",
     "nav.myAccount": "Il mio account",
     "nav.menu": "Menu",
+    "nav.routes": "Percorsi",
 
     // Booking Widget
     "booking.arrivalTransfer": "Transfer di arrivo",
@@ -1312,6 +1317,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.trackBooking": "Boeking volgen",
     "nav.myAccount": "Mijn account",
     "nav.menu": "Menu",
+    "nav.routes": "Routes",
 
     // Booking Widget
     "booking.arrivalTransfer": "Aankomsttransfer",
@@ -1558,6 +1564,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.trackBooking": "Отследить бронирование",
     "nav.myAccount": "Мой аккаунт",
     "nav.menu": "Меню",
+    "nav.routes": "Маршруты",
 
     // Booking Widget
     "booking.arrivalTransfer": "Трансфер по прибытии",

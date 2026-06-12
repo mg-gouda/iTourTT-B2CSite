@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { Menu, X, Globe, User, ChevronDown, MapPin } from 'lucide-react';
+import { Menu, X, Globe, User, ChevronDown, MapPin, Route as RouteIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { featuredRoutes } from '@/lib/destinations';
 import type { SiteSettings, NavLink } from '@/lib/site-settings';
 import { API_BASE } from '@/lib/site-settings';
 import { cn } from '@/lib/utils';
@@ -60,6 +61,9 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
   const preset = settings.headerPreset;
 
   const cmsNavItems = useCmsNavItems();
+
+  // "Routes" mega-menu — featured airport→resort routes (static, localized URLs).
+  const routes = featuredRoutes();
 
   // Destinations mega-menu — published city pages from the CMS.
   const [cities, setCities] = useState<CityMenuItem[]>([]);
@@ -158,6 +162,32 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
                 >
                   <MapPin className="h-4 w-4 text-emerald-500" />
                   {c.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Routes mega-menu — placeholder trigger; the route links inside are
+          real crawlable <a> tags so search engines still discover them. */}
+      {routes.length > 0 && (
+        <div className="group relative">
+          <span className="flex cursor-default items-center gap-1 text-sm font-medium text-white/80 transition-colors hover:text-white">
+            {t('nav.routes') || 'Routes'}
+            <ChevronDown className="h-3.5 w-3.5" />
+          </span>
+          <div className="absolute left-1/2 top-full z-50 hidden -translate-x-1/2 pt-3 group-hover:block">
+            <div className="grid w-[30rem] grid-cols-2 gap-1 rounded-xl border border-gray-100 bg-white p-3 shadow-xl">
+              {routes.map((r) => (
+                <Link
+                  key={r.path}
+                  href={localePath(r.path)}
+                  onClick={onClick}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-emerald-700"
+                >
+                  <RouteIcon className="h-4 w-4 shrink-0 text-emerald-500" />
+                  {r.label}
                 </Link>
               ))}
             </div>
@@ -321,6 +351,28 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
                     >
                       <MapPin className="h-3.5 w-3.5 text-emerald-400" />
                       {c.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Routes (placeholder section header + route links) */}
+            {routes.length > 0 && (
+              <div className="mt-1">
+                <span className="block px-3 text-xs font-semibold uppercase tracking-wide text-white/40">
+                  {t('nav.routes') || 'Routes'}
+                </span>
+                <div className="mt-1 flex flex-col">
+                  {routes.map((r) => (
+                    <Link
+                      key={r.path}
+                      href={localePath(r.path)}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                    >
+                      <RouteIcon className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                      {r.label}
                     </Link>
                   ))}
                 </div>

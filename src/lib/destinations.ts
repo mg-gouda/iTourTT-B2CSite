@@ -45,6 +45,7 @@ export const DESTINATIONS: Destination[] = [
       { slug: 'makadi-bay', to: 'Makadi Bay', distanceKm: 35, durationMin: 30 },
       { slug: 'soma-bay', to: 'Soma Bay', distanceKm: 60, durationMin: 45 },
       { slug: 'sahl-hasheesh', to: 'Sahl Hasheesh', distanceKm: 25, durationMin: 25 },
+      { slug: 'safaga', to: 'Safaga', distanceKm: 55, durationMin: 50 },
       { slug: 'hurghada-city', to: 'Hurghada City & Marina', distanceKm: 15, durationMin: 20 },
     ],
   },
@@ -180,4 +181,31 @@ export const DESTINATIONS: Destination[] = [
 
 export function getDestination(slug: string): Destination | undefined {
   return DESTINATIONS.find((d) => d.slug === slug);
+}
+
+// Routes surfaced in the header "Routes" mega-menu. Defaults to the Hurghada
+// (HRG) resort routes, the highest-demand transfers. Returns ready-to-render
+// link data: locale-agnostic path + human label "City → Destination".
+export const FEATURED_ROUTE_CITY = 'hurghada';
+
+export interface FeaturedRoute {
+  /** locale-agnostic path, e.g. /transfers/hurghada/el-gouna */
+  path: string;
+  /** human label, e.g. "Hurghada → El Gouna" */
+  label: string;
+  to: string;
+  distanceKm: number;
+  durationMin: number;
+}
+
+export function featuredRoutes(citySlug: string = FEATURED_ROUTE_CITY): FeaturedRoute[] {
+  const dest = getDestination(citySlug);
+  if (!dest) return [];
+  return dest.routes.map((r) => ({
+    path: `/transfers/${dest.slug}/${r.slug}`,
+    label: `${dest.city} → ${r.to}`,
+    to: r.to,
+    distanceKm: r.distanceKm,
+    durationMin: r.durationMin,
+  }));
 }
