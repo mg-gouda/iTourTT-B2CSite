@@ -73,7 +73,7 @@ export default async function RoutePage({ params }: Props) {
       <section className="bg-white px-4 pt-14 pb-10 sm:pt-20">
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-gray-500 shadow-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: settings.primaryColor }} />
             {copy.kicker} · {dest.iata}
           </div>
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
