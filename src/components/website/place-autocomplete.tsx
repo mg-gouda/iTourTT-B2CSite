@@ -35,6 +35,8 @@ interface Props {
   onSelect: (place: PickedPlace) => void;
   placeholder?: string;
   primaryColor?: string;
+  // Override the input styling (e.g. to match a light vs. dark surface).
+  inputClassName?: string;
   // Bias autocomplete results toward this point (e.g. selected airport).
   biasLat?: number;
   biasLng?: number;
@@ -42,7 +44,7 @@ interface Props {
 
 // A Google Places autocomplete input. Renders nothing if the backend has no
 // Maps key configured, so it degrades gracefully (the manual zone select stays).
-export function PlaceAutocomplete({ onSelect, placeholder, primaryColor, biasLat, biasLng }: Props) {
+export function PlaceAutocomplete({ onSelect, placeholder, primaryColor, inputClassName, biasLat, biasLng }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [ready, setReady] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
@@ -95,7 +97,7 @@ export function PlaceAutocomplete({ onSelect, placeholder, primaryColor, biasLat
       ref={inputRef}
       type="text"
       placeholder={placeholder ?? 'Search a place on the map…'}
-      className="w-full rounded-lg border border-white/15 bg-white/95 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2"
+      className={inputClassName ?? "w-full rounded-lg border border-white/15 bg-white/95 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2"}
       style={{ ['--tw-ring-color' as string]: primaryColor }}
       onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
     />

@@ -72,6 +72,7 @@ export default async function RootLayout({
               .website-root {
                 --website-primary: ${settings.primaryColor};
                 --website-primary-dark: color-mix(in srgb, ${settings.primaryColor} 82%, black);
+                --website-secondary: ${settings.heroGradientFrom};
                 --website-accent: ${settings.accentColor};
                 --website-nav-bg: ${settings.navBgColor};
                 --website-footer-bg: ${settings.footerBgColor};

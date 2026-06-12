@@ -6,12 +6,12 @@ import {
   MapPin,
   Users,
   Plane,
-  PlaneTakeoff,
+  Flag,
   CalendarDays,
-  Clock,
   Search,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Check,
   ChevronsUpDown,
   Building2,
@@ -41,6 +41,21 @@ const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
 type Tab = 'AIRPORT' | 'CITY';
 
+/* ─── Theme contract ───
+ * CTA/action colour and its hover shade come from the admin-injected CMS
+ * variables. The brand identity colour (gradients, pills, counters) is the
+ * secondary; everything structural below is fixed and theme-independent. */
+const PRIMARY = 'var(--website-primary)';
+// --website-primary-dark is used directly in the Search button's hover class.
+const SECONDARY = 'var(--website-secondary, #2A1A5E)';
+
+// Fixed structural colours — do NOT vary with the theme.
+const C_BORDER = '#D0D5DD'; // input borders
+const C_DIVIDER = '#F2F4F7'; // hairlines / dividers
+const C_LABEL = '#344054'; // field labels
+const C_MUTED = '#98A2B3'; // icon / placeholder grey
+const C_TEXT = '#212121'; // body text
+
 interface LocationNode {
   id: string;
   name: string;
@@ -52,19 +67,51 @@ interface BookingWidgetProps {
   settings: SiteSettings;
 }
 
-/* ─── Stepper ─── */
-function Stepper({ value, onChange, min = 0, max = 50, color }: {
-  value: number; onChange: (v: number) => void; min?: number; max?: number; color: string;
+/* ─── Field wrapper ───
+ * Uppercase label above a white, 48px-tall bordered input box. */
+function Field({ icon: Icon, label, children, className }: {
+  icon?: React.ElementType; label: string; children: React.ReactNode; className?: string;
 }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className={cn('flex min-w-0 flex-col gap-1.5', className)}>
+      <label className="text-[10.5px] font-semibold uppercase tracking-wide" style={{ color: C_LABEL }}>
+        {label}
+      </label>
+      <div className="flex h-12 items-center gap-2 rounded-lg bg-white px-3" style={{ border: `0.8px solid ${C_BORDER}` }}>
+        {Icon && <Icon className="h-4 w-4 shrink-0" style={{ color: C_MUTED }} />}
+        <div className="min-w-0 flex-1">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Section pill (Outbound Trip / Return Trip) ─── */
+function SectionPill({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      className="inline-flex items-center rounded-full text-xs font-bold"
+      style={{ padding: '4px 12px', background: `color-mix(in srgb, ${SECONDARY} 8%, white)`, color: SECONDARY }}
+    >
+      {children}
+    </span>
+  );
+}
+
+/* ─── Passenger stepper ───
+ * 24px circular −/+ buttons outlined in the secondary brand colour. */
+function Stepper({ value, onChange, min = 0, max = 50 }: {
+  value: number; onChange: (v: number) => void; min?: number; max?: number;
+}) {
+  const cls =
+    'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold leading-none transition disabled:opacity-30';
+  const st = { border: `1px solid color-mix(in srgb, ${SECONDARY} 15%, transparent)`, color: SECONDARY };
+  return (
+    <div className="flex w-full items-center justify-between">
       <button type="button" onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min}
-        className="flex h-6 w-6 items-center justify-center rounded-full text-white transition disabled:opacity-30 text-sm font-bold"
-        style={{ backgroundColor: color }}>−</button>
-      <span className="min-w-[2ch] text-center text-sm font-bold text-white">{value}</span>
+        className={cls} style={st} aria-label="Decrease passengers">−</button>
+      <span className="text-sm font-semibold" style={{ color: C_TEXT }}>{value}</span>
       <button type="button" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}
-        className="flex h-6 w-6 items-center justify-center rounded-full text-white transition disabled:opacity-30 text-sm font-bold"
-        style={{ backgroundColor: color }}>+</button>
+        className={cls} style={st} aria-label="Increase passengers">+</button>
     </div>
   );
 }
@@ -88,10 +135,10 @@ function DatePicker({ value, onChange, minDate, primaryColor, placeholder }: {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button type="button" className="flex h-full w-full flex-col justify-center text-left">
+        <button type="button" className="w-full truncate text-left">
           {selected
-            ? <span className="text-sm font-medium text-white">{format(selected, 'EEE, dd MMM yyyy')}</span>
-            : <span className="text-sm text-white">{placeholder}</span>}
+            ? <span className="text-sm font-medium" style={{ color: C_TEXT }}>{format(selected, 'EEE, dd MMM yyyy')}</span>
+            : <span className="text-sm" style={{ color: C_MUTED }}>{placeholder}</span>}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white rounded-2xl shadow-2xl border border-gray-100" align="start" sideOffset={8}>
@@ -170,10 +217,11 @@ function TimePicker({ value, onChange, primaryColor, placeholder }: {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button type="button" className="flex h-full w-full flex-col justify-center text-left">
+        <button type="button" className="flex items-center gap-1 whitespace-nowrap text-left">
           {value
-            ? <span className="text-sm font-medium text-white">{value}</span>
-            : <span className="text-sm text-white">{placeholder}</span>}
+            ? <span className="text-sm font-medium" style={{ color: C_TEXT }}>{value}</span>
+            : <span className="text-sm" style={{ color: C_MUTED }}>{placeholder}</span>}
+          <ChevronDown className="h-3.5 w-3.5 shrink-0" style={{ color: C_MUTED }} />
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white rounded-2xl shadow-2xl border border-gray-100" align="start" sideOffset={8}>
@@ -198,23 +246,6 @@ function TimePicker({ value, onChange, primaryColor, placeholder }: {
         </div>
       </PopoverContent>
     </Popover>
-  );
-}
-
-/* ─── Cell ─── */
-function Cell({ icon: Icon, iconColor, label, children }: {
-  icon: React.ElementType; iconColor: string; label: string; children: React.ReactNode;
-}) {
-  return (
-    <div className="flex h-14 sm:h-[74px] items-center gap-2.5 px-3">
-      <div className="flex h-full items-center">
-        <Icon className="h-3.5 w-3.5 shrink-0" style={{ color: iconColor }} />
-      </div>
-      <div className="min-w-0 flex-1 flex flex-col justify-center">
-        <p className="text-[9px] font-bold uppercase tracking-widest text-white mb-0.5">{label}</p>
-        {children}
-      </div>
-    </div>
   );
 }
 
@@ -270,10 +301,11 @@ function SearchableSelect({
       <PopoverTrigger asChild disabled={disabled}>
         <button type="button" disabled={disabled}
           className="flex w-full items-center justify-between gap-1 text-left disabled:cursor-not-allowed disabled:opacity-50">
-          <span className={cn('truncate text-sm', selected ? 'font-medium text-white' : 'text-white')}>
+          <span className="truncate text-sm"
+            style={{ color: selected ? C_TEXT : C_MUTED, fontWeight: selected ? 500 : 400 }}>
             {selected ? selected.label : placeholder}
           </span>
-          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-white" />
+          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0" style={{ color: C_MUTED }} />
         </button>
       </PopoverTrigger>
       <PopoverContent align="start" sideOffset={8}
@@ -441,7 +473,8 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   // Airport transfers are always arrival-oriented (pickup = airport → drop-off =
   // hotel). A Return Transfer simply adds the mirrored departure leg.
   const isCity = activeTab === 'CITY';
-  const isArr = !isCity;
+  const isAirport = !isCity;
+  const isArr = isAirport;
 
   const zoneNameById = (id: string): string => {
     if (!id) return '';
@@ -467,7 +500,6 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
 
   const airportValue = isArr ? store.originAirportId : store.destinationAirportId;
   const hotelZone = isArr ? store.toZoneId : store.fromZoneId;
-  const pc = settings.primaryColor;
 
   const airportSideZone = isArr ? store.fromZoneId : store.toZoneId;
   const destZones = zonesForAirport(locations, airportValue).filter((z) => z.id !== airportSideZone);
@@ -547,193 +579,202 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
       ? baseValid && airportValue && hotelZone && store.returnDate && store.returnTime
       : baseValid && airportValue && hotelZone;
 
-  // Date & Time cells are shared by both tabs but sit in different positions
-  // (Airport spec puts them first), so define them once and place per layout.
-  const dateCell = (
-    <Cell icon={CalendarDays} iconColor={pc} label={`${t('booking.date')} *`}>
-      <DatePicker value={store.jobDate} onChange={(v) => store.setField('jobDate', v)}
-        minDate={new Date()} primaryColor={pc} placeholder={t('booking.pickDate')} />
-    </Cell>
-  );
-  const timeCell = (
-    <Cell icon={Clock} iconColor={pc} label={`${t('booking.time')} *`}>
-      <TimePicker value={store.pickupTime} onChange={(v) => store.setField('pickupTime', v)}
-        primaryColor={pc} placeholder={t('booking.pickTime')} />
-    </Cell>
+  // Combined Date + Time box — both legs share this layout, so build it once.
+  const dateTimeField = (
+    dateVal: string,
+    onDate: (v: string) => void,
+    timeVal: string,
+    onTime: (v: string) => void,
+    minDate: Date,
+  ) => (
+    <Field icon={CalendarDays} label={`${t('booking.date')} *`}>
+      <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <DatePicker value={dateVal} onChange={onDate} minDate={minDate} primaryColor={PRIMARY} placeholder={t('booking.pickDate')} />
+        </div>
+        <span className="h-5 w-px shrink-0" style={{ background: C_DIVIDER }} />
+        <TimePicker value={timeVal} onChange={onTime} primaryColor={PRIMARY} placeholder="HH:MM" />
+      </div>
+    </Field>
   );
 
   return (
     <div>
 
-      {/* Tabs — active = solid brand colour; inactive = the same brand colour
-          faded (matching the disabled Search button). */}
-      <div className="flex items-center justify-center gap-1 px-3">
-        {tabs.map(({ key, label, Icon }) => (
-          <button key={key} type="button" onClick={() => { setActiveTab(key); setPlaceMsg(''); }}
-            className="flex items-center gap-1.5 sm:gap-2 rounded-tl-lg rounded-tr-lg px-3 sm:px-5 pt-2 sm:pt-2.5 pb-0 text-xs sm:text-xl font-semibold transition-all mb-0"
-            style={activeTab === key ? { backgroundColor: pc, color: 'white' } : { backgroundColor: pc, color: 'white', opacity: 0.4 }}>
-            <Icon className="h-3.5 w-3.5 sm:h-5 sm:w-5" />
-            {label}
-          </button>
-        ))}
+      {/* Tabs — active tab is white (merges into the card); inactive tabs use
+          the translucent-white treatment to sit on the hero gradient. */}
+      <div className="flex items-center gap-1.5 px-1">
+        {tabs.map(({ key, label, Icon }) => {
+          const active = activeTab === key;
+          return (
+            <button key={key} type="button" onClick={() => { setActiveTab(key); setPlaceMsg(''); }}
+              className="flex items-center gap-2 rounded-t-xl px-4 py-2.5 text-xs font-bold transition sm:px-5 sm:text-sm"
+              style={active
+                ? { backgroundColor: '#fff', color: PRIMARY }
+                : { backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff' }}>
+              <Icon className="h-4 w-4" />
+              {label}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Dark widget box */}
-      <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10" style={{ backgroundColor: 'rgba(25,25,25,0.75)' }}>
+      {/* White form card */}
+      <div className="overflow-hidden rounded-2xl bg-white"
+        style={{ border: `0.8px solid color-mix(in srgb, ${SECONDARY} 6%, transparent)`, boxShadow: '0 20px 60px rgba(0,0,0,0.12)' }}>
 
-      {/* Fields row */}
-      <div className="p-3 sm:py-0 sm:pr-0 sm:pl-3">
-
-        {/* One Way / Return Transfer radio — Airport tab only, and only when
-            the admin has enabled return (2-way) transfers. */}
-        {activeTab === 'AIRPORT' && settings.enableTwoWayTab && (
-          <div className="flex items-center gap-2 px-1 pt-3 pb-2">
-            {[
-              { value: false, label: t('booking.oneWay') },
-              { value: true, label: t('booking.returnTransfer') },
-            ].map((opt) => {
-              const active = store.roundTrip === opt.value;
-              return (
-                <button key={String(opt.value)} type="button"
-                  onClick={() => store.setField('roundTrip', opt.value)}
-                  className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs sm:text-sm font-semibold transition"
-                  style={active ? { backgroundColor: pc, color: 'white' } : { backgroundColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' }}>
-                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-current">
-                    {active && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
-                  </span>
-                  {opt.label}
-                </button>
-              );
-            })}
-          </div>
+        {/* One Way / Return Transfer radio — Airport tab only, and only when the
+            admin has enabled return (2-way) transfers. */}
+        {isAirport && settings.enableTwoWayTab && (
+          <>
+            <div className="flex items-center gap-6 px-5 py-3.5">
+              {[
+                { value: false, label: t('booking.oneWay') },
+                { value: true, label: t('booking.returnTransfer') },
+              ].map((opt) => {
+                const active = store.roundTrip === opt.value;
+                return (
+                  <button key={String(opt.value)} type="button"
+                    onClick={() => store.setField('roundTrip', opt.value)}
+                    className="flex items-center gap-2 text-sm font-semibold"
+                    style={{ color: active ? C_TEXT : C_LABEL }}>
+                    <span className="flex items-center justify-center rounded-full"
+                      style={{ width: 18, height: 18, border: `1.5px solid ${active ? PRIMARY : C_BORDER}`, backgroundColor: active ? PRIMARY : '#fff' }}>
+                      {active && <span className="rounded-full bg-white" style={{ width: 6, height: 6 }} />}
+                    </span>
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{ height: '0.8px', background: C_DIVIDER }} />
+          </>
         )}
 
-        <div className={cn('grid grid-cols-1 rounded-xl overflow-hidden',
-          isCity ? 'sm:[grid-template-columns:2fr_2fr_1fr_1fr_1fr_auto]'
-                 : 'sm:[grid-template-columns:1fr_1fr_2fr_2fr_1fr_auto]')}>
+        {/* Fields */}
+        <div className="p-5">
 
-          {isCity ? (
-            <>
-              <Cell icon={Building2} iconColor="#16a34a" label={`${t('booking.originCity')} *`}>
-                <SearchableSelect
-                  value={store.fromZoneId ? `z:${store.fromZoneId}` : ''}
-                  onValueChange={(v) => store.setField('fromZoneId', v.split(':')[1])}
-                  options={allZonesGrouped}
-                  placeholder={t('booking.selectOrigin')}
-                  primaryColor={pc}
-                  emptyText={t('booking.noDestinations')}
-                />
-              </Cell>
-              <Cell icon={MapPin} iconColor="#dc2626" label={`${t('booking.destinationCity')} *`}>
-                <SearchableSelect
-                  value={store.toZoneId ? `z:${store.toZoneId}` : ''}
-                  onValueChange={(v) => store.setField('toZoneId', v.split(':')[1])}
-                  options={allZonesGrouped}
-                  placeholder={t('booking.selectDestination')}
-                  primaryColor={pc}
-                  emptyText={t('booking.noDestinations')}
-                />
-              </Cell>
-              {dateCell}
-              {timeCell}
-            </>
-          ) : (
-            <>
-              {dateCell}
-              {timeCell}
-              <Cell icon={Plane} iconColor="#16a34a" label={`${t('booking.pickup')} *`}>
-                <SearchableSelect
-                  value={store.originAirportId}
-                  onValueChange={handleAirportChange}
-                  options={airports.map((a) => ({ value: a.id, label: a.name }))}
-                  placeholder={t('booking.selectAirport')}
-                  primaryColor={pc}
-                  emptyText={t('booking.selectAirport')}
-                />
-              </Cell>
-
-              <Cell icon={MapPin} iconColor="#dc2626" label={`${t('booking.dropoff')} *`}>
-                <SearchableSelect
-                  value={selectedDestValue}
-                  onValueChange={handleDestinationChange}
-                  options={destZones.flatMap((z) => [
-                    { value: `z:${z.id}`, label: `${t('booking.anywhereIn')} ${z.name}`, group: z.name },
-                    ...z.hotels.map((h) => ({ value: `h:${h.id}:${z.id}`, label: h.name, group: z.name })),
-                  ])}
-                  placeholder={airportValue ? t('booking.searchLocation') : t('booking.selectAirport')}
-                  primaryColor={pc}
-                  disabled={!airportValue}
-                  emptyText={t('booking.noDestinations')}
-                />
-              </Cell>
-            </>
+          {isAirport && store.roundTrip && (
+            <div className="mb-3"><SectionPill>{t('booking.outboundTrip')}</SectionPill></div>
           )}
 
-          <Cell icon={Users} iconColor={pc} label={`${t('booking.passengers')} *`}>
-            <Stepper value={store.paxCount} onChange={(v) => store.setField('paxCount', v)} min={1} max={50} color={pc} />
-          </Cell>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
+            {isCity ? (
+              <>
+                <Field icon={MapPin} label={`${t('booking.originCity')} *`}>
+                  <SearchableSelect
+                    value={store.fromZoneId ? `z:${store.fromZoneId}` : ''}
+                    onValueChange={(v) => store.setField('fromZoneId', v.split(':')[1])}
+                    options={allZonesGrouped}
+                    placeholder={t('booking.selectOrigin')}
+                    primaryColor={PRIMARY}
+                    emptyText={t('booking.noDestinations')}
+                  />
+                </Field>
+                <Field icon={Flag} label={`${t('booking.destinationCity')} *`}>
+                  <SearchableSelect
+                    value={store.toZoneId ? `z:${store.toZoneId}` : ''}
+                    onValueChange={(v) => store.setField('toZoneId', v.split(':')[1])}
+                    options={allZonesGrouped}
+                    placeholder={t('booking.selectDestination')}
+                    primaryColor={PRIMARY}
+                    emptyText={t('booking.noDestinations')}
+                  />
+                </Field>
+              </>
+            ) : (
+              <>
+                <Field icon={MapPin} label={`${t('booking.pickup')} *`}>
+                  <SearchableSelect
+                    value={store.originAirportId}
+                    onValueChange={handleAirportChange}
+                    options={airports.map((a) => ({ value: a.id, label: a.name }))}
+                    placeholder={t('booking.selectAirport')}
+                    primaryColor={PRIMARY}
+                    emptyText={t('booking.selectAirport')}
+                  />
+                </Field>
+                <Field icon={Flag} label={`${t('booking.dropoff')} *`}>
+                  <SearchableSelect
+                    value={selectedDestValue}
+                    onValueChange={handleDestinationChange}
+                    options={destZones.flatMap((z) => [
+                      { value: `z:${z.id}`, label: `${t('booking.anywhereIn')} ${z.name}`, group: z.name },
+                      ...z.hotels.map((h) => ({ value: `h:${h.id}:${z.id}`, label: h.name, group: z.name })),
+                    ])}
+                    placeholder={airportValue ? t('booking.searchLocation') : t('booking.selectAirport')}
+                    primaryColor={PRIMARY}
+                    disabled={!airportValue}
+                    emptyText={t('booking.noDestinations')}
+                  />
+                </Field>
+              </>
+            )}
 
-          {/* Search button */}
-          <div className="flex items-stretch">
-            <button type="button" onClick={handleSearch} disabled={!canSearch}
-              className="w-full h-full flex items-center justify-center gap-2 px-5 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
-              style={{ backgroundColor: pc }}>
-              <Search className="h-4 w-4" />
-              {t('booking.search')}
-            </button>
+            {dateTimeField(store.jobDate, (v) => store.setField('jobDate', v), store.pickupTime, (v) => store.setField('pickupTime', v), new Date())}
+
+            {/* Passengers + Search share the 4th column. */}
+            <div className="flex items-end gap-2">
+              <Field icon={Users} label={`${t('booking.passengers')} *`} className="flex-1">
+                <Stepper value={store.paxCount} onChange={(v) => store.setField('paxCount', v)} min={1} max={50} />
+              </Field>
+              <button type="button" onClick={handleSearch} disabled={!canSearch}
+                aria-label={t('booking.search')}
+                className="flex shrink-0 items-center justify-center rounded-lg bg-[var(--website-primary)] text-white transition-colors hover:bg-[var(--website-primary-dark)] disabled:opacity-40"
+                style={{ width: 56, height: 48 }}>
+                <Search className="h-5 w-5" />
+              </button>
+            </div>
           </div>
 
+          {/* Return Transfer → mirrored departure leg. Pickup auto-populates as the
+              one-way drop-off (hotel), drop-off as the one-way pickup (airport);
+              the guest only chooses the return date & time. */}
+          {isAirport && store.roundTrip && (
+            <div className="mt-4">
+              <div className="mb-3"><SectionPill>{t('booking.returnTrip')}</SectionPill></div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
+                <Field icon={MapPin} label={`${t('booking.pickup')} *`}>
+                  {dropoffName
+                    ? <span className="block truncate text-sm font-medium" style={{ color: C_TEXT }}>{dropoffName}</span>
+                    : <span className="block truncate text-sm" style={{ color: C_MUTED }}>{t('booking.dropoffHotel')}</span>}
+                </Field>
+                <Field icon={Flag} label={`${t('booking.dropoff')} *`}>
+                  {airportName
+                    ? <span className="block truncate text-sm font-medium" style={{ color: C_TEXT }}>{airportName}</span>
+                    : <span className="block truncate text-sm" style={{ color: C_MUTED }}>{t('booking.selectAirport')}</span>}
+                </Field>
+                {dateTimeField(
+                  store.returnDate,
+                  (v) => store.setField('returnDate', v),
+                  store.returnTime,
+                  (v) => store.setField('returnTime', v),
+                  store.jobDate ? new Date(store.jobDate + 'T12:00:00') : new Date(),
+                )}
+                <Field icon={Users} label={`${t('booking.passengers')} *`}>
+                  <Stepper value={store.paxCount} onChange={(v) => store.setField('paxCount', v)} min={1} max={50} />
+                </Field>
+              </div>
+            </div>
+          )}
+
+          {/* Optional Google Maps place picker (admin-toggled) */}
+          {settings.enableMapSelector && (isCity || airportValue) && (
+            <div className="mt-3">
+              <div className="mb-1.5 flex items-center gap-1.5 text-[11px]" style={{ color: C_MUTED }}>
+                <MapPin className="h-3 w-3" />
+                {t('booking.orPickOnMap')}
+              </div>
+              <PlaceAutocomplete
+                onSelect={handlePlace}
+                primaryColor={PRIMARY}
+                placeholder={t('booking.searchPlace')}
+                inputClassName="h-12 w-full rounded-lg border-[0.8px] border-[#D0D5DD] bg-white px-3 text-sm text-[#212121] outline-none placeholder:text-[#98A2B3] focus:ring-2"
+              />
+              {placeMsg && <p className="mt-1 text-[11px]" style={{ color: '#667085' }}>{placeMsg}</p>}
+            </div>
+          )}
         </div>
-
-        {/* Return Transfer → mirrored departure leg. Pickup is auto-populated as
-            the one-way drop-off (hotel), drop-off as the one-way pickup (airport);
-            the guest only chooses the return date & time. */}
-        {activeTab === 'AIRPORT' && store.roundTrip && (
-          <div className="px-1 pb-2 pt-1">
-            <div className="mb-1.5 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-white/60">
-              <PlaneTakeoff className="h-3.5 w-3.5" style={{ color: pc }} />
-              {t('booking.departureTransfer')}
-            </div>
-            <div className="grid grid-cols-1 sm:[grid-template-columns:1fr_1fr_2fr_2fr] rounded-xl overflow-hidden bg-white/5">
-              <Cell icon={CalendarDays} iconColor={pc} label={`${t('booking.date')} *`}>
-                <DatePicker value={store.returnDate} onChange={(v) => store.setField('returnDate', v)}
-                  minDate={store.jobDate ? new Date(store.jobDate + 'T12:00:00') : new Date()}
-                  primaryColor={pc} placeholder={t('booking.pickDate')} />
-              </Cell>
-              <Cell icon={Clock} iconColor={pc} label={`${t('booking.time')} *`}>
-                <TimePicker value={store.returnTime} onChange={(v) => store.setField('returnTime', v)}
-                  primaryColor={pc} placeholder={t('booking.pickTime')} />
-              </Cell>
-              <Cell icon={MapPin} iconColor="#16a34a" label={`${t('booking.pickup')} *`}>
-                {dropoffName
-                  ? <span className="block truncate text-sm font-medium text-white">{dropoffName}</span>
-                  : <span className="block truncate text-sm text-white/50">{t('booking.dropoffHotel')}</span>}
-              </Cell>
-              <Cell icon={Plane} iconColor="#dc2626" label={`${t('booking.dropoff')} *`}>
-                {airportName
-                  ? <span className="block truncate text-sm font-medium text-white">{airportName}</span>
-                  : <span className="block truncate text-sm text-white/50">{t('booking.selectAirport')}</span>}
-              </Cell>
-            </div>
-          </div>
-        )}
-
-        {/* Optional Google Maps place picker (admin-toggled) */}
-        {settings.enableMapSelector && (isCity || airportValue) && (
-          <div className="px-1 pb-3 pt-1">
-            <div className="flex items-center gap-1.5 mb-1 text-[11px] text-white/50">
-              <MapPin className="h-3 w-3" />
-              {t('booking.orPickOnMap')}
-            </div>
-            <PlaceAutocomplete
-              onSelect={handlePlace}
-              primaryColor={pc}
-              placeholder={t('booking.searchPlace')}
-            />
-            {placeMsg && <p className="mt-1 text-[11px] text-white/60">{placeMsg}</p>}
-          </div>
-        )}
-      </div>
       </div>
     </div>
   );
