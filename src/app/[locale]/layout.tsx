@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { Toaster } from 'sonner';
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
 import { JsonLd } from '@/components/JsonLd';
-import { SITE_URL, BRAND_NAME, OG_IMAGE, localBusinessSchema } from '@/lib/seo';
+import { SITE_URL, BRAND_NAME, OG_IMAGE, localBusinessSchema, socialSameAs } from '@/lib/seo';
 import { isValidLocale, LOCALES, type Locale } from '@/lib/i18n-config';
 import { LocaleSetup } from '@/components/website/locale-setup';
 import { LocaleProvider } from '@/lib/website-i18n';
@@ -72,6 +72,11 @@ export default async function LocaleLayout({ children, params }: Props) {
           name: settings.siteName,
           telephone: settings.contactPhone,
           email: settings.contactEmail,
+          sameAs: socialSameAs({
+            facebook: settings.socialFacebook,
+            instagram: settings.socialInstagram,
+            twitter: settings.socialTwitter,
+          }),
         })}
       />
       <JsonLd

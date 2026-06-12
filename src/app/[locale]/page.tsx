@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
 import { JsonLd } from '@/components/JsonLd';
-import { organizationSchema, faqSchema } from '@/lib/seo';
+import { organizationSchema, faqSchema, transportationServiceSchema, socialSameAs } from '@/lib/seo';
 import { buildPageMetadata } from '@/lib/page-metadata';
 import { WebsiteLandingClient } from '../landing-client';
 
@@ -29,8 +29,14 @@ export default async function LocaleHomePage() {
           name: settings.siteName,
           telephone: settings.contactPhone,
           email: settings.contactEmail,
+          sameAs: socialSameAs({
+            facebook: settings.socialFacebook,
+            instagram: settings.socialInstagram,
+            twitter: settings.socialTwitter,
+          }),
         })}
       />
+      <JsonLd data={transportationServiceSchema()} />
       <JsonLd data={faqSchema()} />
       <WebsiteLandingClient settings={settings} />
     </>

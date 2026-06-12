@@ -83,14 +83,28 @@ export const FAQ_ITEMS: FaqItem[] = [
 
 // ── Structured-data builders ──
 
+// Collect non-empty social-profile URLs into a schema.org `sameAs` array.
+export function socialSameAs(opts: {
+  facebook?: string | null;
+  instagram?: string | null;
+  twitter?: string | null;
+}): string[] {
+  return [opts.facebook, opts.instagram, opts.twitter].filter(
+    (u): u is string => Boolean(u && u.trim()),
+  );
+}
+
 export function localBusinessSchema(opts: {
   name?: string;
   telephone?: string | null;
   email?: string | null;
+  sameAs?: string[];
 }): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': ['LocalBusiness', 'TravelAgency'],
+    '@id': `${SITE_URL}/#organization`,
+    ...(opts.sameAs && opts.sameAs.length ? { sameAs: opts.sameAs } : {}),
     name: opts.name || BRAND_NAME,
     description:
       'Professional private airport transfer services across Egypt.',
@@ -133,6 +147,7 @@ export function organizationSchema(opts?: {
   name?: string;
   telephone?: string | null;
   email?: string | null;
+  sameAs?: string[];
 }): Record<string, unknown> {
   const telephone = opts?.telephone || BRAND_PHONE;
   return {
@@ -162,7 +177,51 @@ export function organizationSchema(opts?: {
       'Marsa Alam',
       'Alexandria',
     ],
-    sameAs: [],
+    sameAs: opts?.sameAs ?? [],
+  };
+}
+
+// Catalog of the transportation services we offer, modelled as a schema.org
+// Service with an OfferCatalog. Gives LLMs / AI search a single, explicit
+// node describing the full product range (airport, private, hotel & chauffeur
+// transfers) linked back to the organization node.
+export function transportationServiceSchema(): Record<string, unknown> {
+  const offering = (name: string, description: string) => ({
+    '@type': 'Offer',
+    itemOffered: { '@type': 'Service', name, description, serviceType: name },
+  });
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${SITE_URL}/#transportation-service`,
+    name: 'Egypt Airport Transfer & Private Transportation',
+    serviceType: 'Airport transfer',
+    provider: { '@id': `${SITE_URL}/#organization` },
+    areaServed: { '@type': 'Country', name: 'Egypt' },
+    description:
+      'Fixed-price private ground transportation across Egypt: airport pickups and drop-offs, point-to-point private transfers, hotel and resort transfers, and chauffeur-driven service with flight tracking and 24/7 support.',
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Transfer services',
+      itemListElement: [
+        offering(
+          'Airport Transfers',
+          'Private meet-and-greet transfers between Egyptian airports (HRG, CAI, SSH, LXR, ASW, RMF, HBE) and your hotel, resort or address, with real-time flight tracking.',
+        ),
+        offering(
+          'Private Transfers',
+          'Door-to-door private vehicle hire for individuals, families and groups — no shared shuttles, fixed price per vehicle.',
+        ),
+        offering(
+          'Hotel Transfers',
+          'Transfers between hotels, resorts and city destinations across Egypt, including Red Sea and Sinai resort areas.',
+        ),
+        offering(
+          'Chauffeur Service',
+          'Professional English-speaking drivers for airport runs, day trips and inter-city journeys throughout Egypt.',
+        ),
+      ],
+    },
   };
 }
 
