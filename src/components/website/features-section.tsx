@@ -29,24 +29,13 @@ const ICON_MAP: Record<string, LucideIcon> = {
   users: Users,
 };
 
-const GRADIENT_MAP: Record<string, { from: string; to: string; text: string }> = {
-  blue:   { from: '#dbeafe', to: '#bfdbfe', text: '#2563eb' },
-  green:  { from: '#dcfce7', to: '#bbf7d0', text: '#16a34a' },
-  purple: { from: '#f3e8ff', to: '#e9d5ff', text: '#9333ea' },
-  red:    { from: '#fee2e2', to: '#fecaca', text: '#dc2626' },
-  amber:  { from: '#fef3c7', to: '#fde68a', text: '#d97706' },
-  indigo: { from: '#e0e7ff', to: '#c7d2fe', text: '#4f46e5' },
-  teal:   { from: '#ccfbf1', to: '#99f6e4', text: '#0d9488' },
-  pink:   { from: '#fce7f3', to: '#fbcfe8', text: '#db2777' },
-};
-
 const DEFAULT_FEATURE_KEYS = [
-  { icon: 'headphones', titleKey: 'features.supportTitle',  descKey: 'features.supportDesc',  color: 'blue'   },
-  { icon: 'star',       titleKey: 'features.meetGreetTitle',descKey: 'features.meetGreetDesc',color: 'green'  },
-  { icon: 'shield',     titleKey: 'features.driversTitle',  descKey: 'features.driversDesc',  color: 'purple' },
-  { icon: 'plane',      titleKey: 'features.flightTitle',   descKey: 'features.flightDesc',   color: 'indigo' },
-  { icon: 'clock',      titleKey: 'features.noFeesTitle',   descKey: 'features.noFeesDesc',   color: 'amber'  },
-  { icon: 'credit-card',titleKey: 'features.paymentTitle',  descKey: 'features.paymentDesc',  color: 'teal'   },
+  { icon: 'plane',      titleKey: 'features.flightTitle',   descKey: 'features.flightDesc'    },
+  { icon: 'star',       titleKey: 'features.meetGreetTitle',descKey: 'features.meetGreetDesc' },
+  { icon: 'shield',     titleKey: 'features.driversTitle',  descKey: 'features.driversDesc'   },
+  { icon: 'clock',      titleKey: 'features.noFeesTitle',   descKey: 'features.noFeesDesc'    },
+  { icon: 'credit-card',titleKey: 'features.paymentTitle',  descKey: 'features.paymentDesc'   },
+  { icon: 'headphones', titleKey: 'features.supportTitle',  descKey: 'features.supportDesc'   },
 ];
 
 export function FeaturesSection({ settings }: FeaturesSectionProps) {
@@ -65,58 +54,83 @@ export function FeaturesSection({ settings }: FeaturesSectionProps) {
         icon: f.icon,
         title: t(f.titleKey),
         description: t(f.descKey),
-        color: f.color,
       }));
 
+  if (features.length === 0) return null;
+
+  const primary = settings.primaryColor;
+  const [anchor, ...support] = features;
+  const AnchorIcon = ICON_MAP[anchor.icon] ?? Shield;
+
   return (
-    <section className="bg-gray-50/60 px-4 py-16 sm:py-24">
+    <section className="bg-[var(--background)] px-4 py-16 sm:py-24">
       <div className="mx-auto max-w-6xl">
         {/* Header */}
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl lg:text-4xl">
+        <div className="max-w-2xl">
+          <p
+            className="text-xs font-semibold uppercase tracking-[0.18em]"
+            style={{ color: primary }}
+          >
+            {settings.siteName}
+          </p>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-[var(--foreground)] sm:text-3xl lg:text-4xl">
             {featuresTitle}
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-gray-500">
-            {t('features.subtitle')}
-          </p>
+          <p className="mt-3 text-[var(--muted-foreground)]">{t('features.subtitle')}</p>
         </div>
 
-        {/* Grid */}
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature, idx) => {
-            const IconComponent = ICON_MAP[feature.icon] ?? Shield;
-            const grad = GRADIENT_MAP[feature.color ?? 'blue'] ?? GRADIENT_MAP.blue;
-
-            return (
-              <div
-                key={idx}
-                className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+        {/* Anchor + support layout */}
+        <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-5">
+          {/* Anchor feature — larger, more weight */}
+          <div
+            className="relative flex flex-col justify-between overflow-hidden rounded-2xl p-8 lg:col-span-2"
+            style={{
+              background: `linear-gradient(150deg, ${primary}14, ${primary}05)`,
+              boxShadow: 'var(--shadow-card)',
+            }}
+          >
+            <div>
+              <span
+                className="flex h-14 w-14 items-center justify-center rounded-2xl"
+                style={{ backgroundColor: primary }}
               >
-                {/* subtle gradient bleed on hover */}
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  style={{
-                    background: `radial-gradient(ellipse at top left, ${grad.from}60, transparent 70%)`,
-                  }}
-                />
+                <AnchorIcon className="h-7 w-7 text-white" />
+              </span>
+              <h3 className="mt-6 text-xl font-bold text-[var(--foreground)]">{anchor.title}</h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-[var(--muted-foreground)]">
+                {anchor.description}
+              </p>
+            </div>
+          </div>
 
+          {/* Support features — compact rows in a 2-col grid */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-3">
+            {support.map((feature, idx) => {
+              const Icon = ICON_MAP[feature.icon] ?? Shield;
+              return (
                 <div
-                  className="relative flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
-                  style={{
-                    background: `linear-gradient(135deg, ${grad.from}, ${grad.to})`,
-                  }}
+                  key={idx}
+                  className="flex gap-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 transition-all duration-200 hover:-translate-y-0.5"
+                  style={{ boxShadow: 'var(--elevation-1)' }}
                 >
-                  <IconComponent className="h-6 w-6" style={{ color: grad.text }} />
+                  <span
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
+                    style={{ backgroundColor: `${primary}14` }}
+                  >
+                    <Icon className="h-5 w-5" style={{ color: primary }} />
+                  </span>
+                  <div>
+                    <h3 className="text-[15px] font-semibold text-[var(--foreground)]">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-1 text-sm leading-relaxed text-[var(--muted-foreground)]">
+                      {feature.description}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="relative mt-4 text-base font-semibold text-gray-900">
-                  {feature.title}
-                </h3>
-                <p className="relative mt-2 text-sm leading-relaxed text-gray-500">
-                  {feature.description}
-                </p>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

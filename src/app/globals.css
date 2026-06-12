@@ -124,26 +124,67 @@
   }
 }
 
-/* Force light-mode CSS variables inside the public website */
+/* ── Public website design tokens — "Warm Editorial Travel" ──
+   Light mode is forced here. Warm sand/stone neutrals as backgrounds,
+   brand blue (admin --website-primary) as the accent. Keep all token
+   NAMES — branded interactive elements still read var(--website-primary)
+   injected by the admin, these are only the neutral/fallback layer. */
 .website-root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
+  /* Backgrounds — warm off-white, not pure white */
+  --background: oklch(0.985 0.003 75);          /* warm white */
+  --card: oklch(1 0 0);                          /* pure white for cards */
+  --card-foreground: oklch(0.18 0.015 250);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.45 0.18 250);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
+  --popover-foreground: oklch(0.18 0.015 250);
+
+  /* Foreground — slightly warm dark, not pure black */
+  --foreground: oklch(0.18 0.015 250);
+
+  /* Primary — admin var takes precedence; this is the fallback blue */
+  --primary: oklch(0.48 0.22 260);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary / muted — warm light panels */
+  --secondary: oklch(0.965 0.006 75);
+  --secondary-foreground: oklch(0.18 0.015 250);
+  --muted: oklch(0.965 0.006 75);
+  --muted-foreground: oklch(0.52 0.025 250);
+  --accent: oklch(0.965 0.006 75);
+  --accent-foreground: oklch(0.18 0.015 250);
+
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
+
+  /* Border — very subtle, warm */
+  --border: oklch(0.9 0.005 75);
+  --input: oklch(0.9 0.005 75);
   --ring: oklch(0.65 0.15 250);
+
+  /* Warm-tinted soft shadows (used by component CSS) */
+  --shadow-card: 0 2px 16px oklch(0.15 0.02 60 / 0.07);
+  --shadow-card-hover: 0 8px 32px oklch(0.15 0.02 60 / 0.13);
+
+  /* Elevation scale */
+  --elevation-1: 0 1px 3px oklch(0.15 0.02 60 / 0.06);
+  --elevation-2: 0 2px 8px oklch(0.15 0.02 60 / 0.08);
+  --elevation-3: 0 4px 20px oklch(0.15 0.02 60 / 0.10);
+  --elevation-4: 0 8px 40px oklch(0.15 0.02 60 / 0.14);
+}
+
+/* Warm gradient placeholder for cards/destinations without a photo. */
+.placeholder-gradient {
+  background: linear-gradient(135deg,
+    oklch(0.6 0.12 250) 0%,
+    oklch(0.45 0.18 280) 100%);
+}
+
+/* Hero readability overlay — sits over the LCP <img>, content is a sibling. */
+.hero-overlay {
+  background: linear-gradient(
+    to right,
+    oklch(0.1 0.02 250 / 0.78) 0%,
+    oklch(0.1 0.02 250 / 0.45) 55%,
+    oklch(0.1 0.02 250 / 0.15) 100%
+  );
 }
 
 /* Sidebar gradient: uses --sidebar CSS variable (dynamically overridden by theme) */

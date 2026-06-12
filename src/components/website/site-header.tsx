@@ -158,9 +158,9 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
                   key={c.slug}
                   href={localePath(`/transfers/${c.slug}`)}
                   onClick={onClick}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-emerald-700"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[var(--website-primary)]"
                 >
-                  <MapPin className="h-4 w-4 text-emerald-500" />
+                  <MapPin className="h-4 w-4 text-[var(--website-primary)]" />
                   {c.name}
                 </Link>
               ))}
@@ -184,9 +184,9 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
                   key={r.path}
                   href={localePath(r.path)}
                   onClick={onClick}
-                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-emerald-700"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-[var(--website-primary)]"
                 >
-                  <RouteIcon className="h-4 w-4 shrink-0 text-emerald-500" />
+                  <RouteIcon className="h-4 w-4 shrink-0 text-[var(--website-primary)]" />
                   {r.label}
                 </Link>
               ))}
@@ -349,7 +349,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
                       onClick={() => setMobileOpen(false)}
                       className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white"
                     >
-                      <MapPin className="h-3.5 w-3.5 text-emerald-400" />
+                      <MapPin className="h-3.5 w-3.5 text-[var(--website-primary)]" />
                       {c.name}
                     </Link>
                   ))}
@@ -371,7 +371,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
                       onClick={() => setMobileOpen(false)}
                       className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white"
                     >
-                      <RouteIcon className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
+                      <RouteIcon className="h-3.5 w-3.5 shrink-0 text-[var(--website-primary)]" />
                       {r.label}
                     </Link>
                   ))}

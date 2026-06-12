@@ -9,6 +9,7 @@ import {
   Facebook,
   Instagram,
   Twitter,
+  Check,
 } from 'lucide-react';
 import type { SiteSettings } from '@/lib/site-settings';
 import { API_BASE } from '@/lib/site-settings';
@@ -123,6 +124,26 @@ function useQuickLinks() {
 
 // ── Preset: Default ──
 // 3-column layout: about, links, contact
+function TrustStrip({ settings }: { settings: SiteSettings }) {
+  const t = useWT();
+  const items = [
+    t('features.noFeesTitle'),   // No Hidden Fees
+    t('landing.freeCancellation'),
+    t('features.flightTitle'),   // Flight Monitoring
+    t('features.supportTitle'),  // 24/7 Customer Support
+  ];
+  return (
+    <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-white/10 pt-6">
+      {items.map((item) => (
+        <span key={item} className="flex items-center gap-1.5 text-sm text-white/70">
+          <Check className="h-4 w-4 shrink-0" style={{ color: settings.primaryColor }} />
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function DefaultFooter({ settings }: SiteFooterProps) {
   const t = useWT();
   const quickLinks = useQuickLinks();
@@ -171,6 +192,8 @@ function DefaultFooter({ settings }: SiteFooterProps) {
             </div>
           </div>
         </div>
+
+        <TrustStrip settings={settings} />
 
         <div className="mt-10">
           <Copyright siteName={settings.siteName} />
