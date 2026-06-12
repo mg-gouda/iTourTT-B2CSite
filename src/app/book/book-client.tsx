@@ -6,6 +6,7 @@ import { Users, Clock, CalendarDays, MapPin, Plane, ChevronRight, Car, Loader2, 
 import { format } from 'date-fns';
 import { useBookingStore } from '@/stores/booking-store';
 import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
+import { BookingSteps } from '@/components/website/booking-steps';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -111,12 +112,12 @@ export function BookNowClient({ settings }: BookNowClientProps) {
     : '';
 
   return (
-    <div className="min-h-screen pt-16 bg-gray-50">
+    <div className="min-h-screen pt-16 bg-[var(--muted)]">
       {/* Header bar */}
-      <div className="border-b border-gray-200 bg-white px-4 py-3 shadow-sm">
-        <div className="mx-auto max-w-5xl flex flex-wrap items-center gap-4 text-sm text-gray-600">
-          <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition text-xs">
-            ← Edit Search
+      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
+        <div className="mx-auto max-w-5xl flex flex-wrap items-center gap-4 text-sm text-[var(--muted-foreground)]">
+          <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition text-xs font-medium">
+            <span className="rtl:rotate-180">←</span> Edit Search
           </button>
           <span className="flex items-center gap-1.5">
             <Plane className="h-3.5 w-3.5" style={{ color: isArr || isCity ? '#16a34a' : '#dc2626' }} />
@@ -124,12 +125,12 @@ export function BookNowClient({ settings }: BookNowClientProps) {
           </span>
           {dateDisplay && (
             <span className="flex items-center gap-1.5">
-              <CalendarDays className="h-3.5 w-3.5 text-gray-400" />
+              <CalendarDays className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
               {dateDisplay} · {store.pickupTime}
             </span>
           )}
           <span className="flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5 text-gray-400" />
+            <Users className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
             {store.paxCount} passenger{store.paxCount !== 1 ? 's' : ''}
           </span>
         </div>
@@ -137,23 +138,12 @@ export function BookNowClient({ settings }: BookNowClientProps) {
 
       <div className="mx-auto max-w-5xl px-4 py-10">
         {/* Step indicator */}
-        <div className="flex items-center justify-center gap-3 mb-8">
-          {['Select Vehicle', 'Flight & Extras', 'Your Details'].map((step, i) => (
-            <div key={step} className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold"
-                  style={i === 0 ? { backgroundColor: pc, color: 'white' } : { backgroundColor: '#f3f4f6', color: '#9ca3af' }}>
-                  {i + 1}
-                </div>
-                <span className={`text-sm font-medium ${i === 0 ? 'text-gray-900' : 'text-gray-400'}`}>{step}</span>
-              </div>
-              {i < 2 && <ChevronRight className="h-4 w-4 text-gray-300" />}
-            </div>
-          ))}
+        <div className="mb-10">
+          <BookingSteps current={0} primaryColor={pc} />
         </div>
 
-        <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">Choose your vehicle</h2>
-        <p className="text-gray-500 text-center text-sm mb-8">All prices are per vehicle, not per person.</p>
+        <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)] text-center mb-2">Choose your vehicle</h2>
+        <p className="text-[var(--muted-foreground)] text-center text-sm mb-8">All prices are per vehicle, not per person.</p>
 
         {loading && (
           <div className="flex justify-center py-20">
@@ -180,20 +170,26 @@ export function BookNowClient({ settings }: BookNowClientProps) {
 
         {!loading && !error && options.length > 0 && (
           <div className="flex flex-col gap-4">
-            {options.map((opt) => (
+            {options.map((opt, i) => (
               <button
                 key={opt.vehicleTypeId}
                 type="button"
                 onClick={() => selectVehicle(opt)}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white text-left shadow-sm transition-all hover:shadow-md hover:border-gray-300 sm:flex-row"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] text-left transition-all duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:flex-row animate-in fade-in slide-in-from-bottom-2"
+                style={{
+                  boxShadow: 'var(--elevation-2)',
+                  animationDelay: `${i * 70}ms`,
+                  animationFillMode: 'both',
+                  ['--tw-ring-color' as string]: pc,
+                }}
               >
                 {/* Vehicle image */}
-                <div className="relative h-44 shrink-0 bg-gray-100 overflow-hidden sm:h-auto sm:w-64">
+                <div className="relative h-44 shrink-0 overflow-hidden bg-[var(--muted)] sm:h-auto sm:w-64">
                   {opt.imageUrl ? (
-                    <img src={resolveAssetUrl(opt.imageUrl)} alt={opt.vehicleTypeName} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                    <img src={resolveAssetUrl(opt.imageUrl)} alt={opt.vehicleTypeName} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
                   ) : (
-                    <div className="flex h-full min-h-[11rem] items-center justify-center">
-                      <Car className="h-16 w-16 text-gray-300" />
+                    <div className="placeholder-gradient flex h-full min-h-[11rem] items-center justify-center">
+                      <Car className="h-16 w-16 text-white/70" />
                     </div>
                   )}
                 </div>
@@ -201,54 +197,54 @@ export function BookNowClient({ settings }: BookNowClientProps) {
                 {/* Info */}
                 <div className="flex flex-1 flex-col p-4 sm:p-5">
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-bold text-gray-900 text-base sm:text-lg">{opt.vehicleTypeName}</h3>
-                    <span className="flex items-center gap-1 text-xs text-gray-500 shrink-0">
+                    <h3 className="font-bold text-[var(--foreground)] text-base sm:text-lg">{opt.vehicleTypeName}</h3>
+                    <span className="flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)] shrink-0">
                       <Users className="h-3.5 w-3.5" />
                       up to {opt.seatCapacity}
                     </span>
                   </div>
                   {opt.description && (
-                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{opt.description}</p>
+                    <p className="text-sm text-[var(--muted-foreground)] leading-relaxed line-clamp-2">{opt.description}</p>
                   )}
                   {/* Amenities */}
                   {(opt.airConditioning || opt.wifi || opt.gpsTracked || opt.transmission || opt.luggageCapacity != null) && (
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {opt.airConditioning && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Snowflake className="h-3 w-3" /> A/C
                         </span>
                       )}
                       {opt.wifi && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Wifi className="h-3 w-3" /> Wi-Fi
                         </span>
                       )}
                       {opt.transmission && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600 capitalize">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)] capitalize">
                           <Cog className="h-3 w-3" /> {opt.transmission.toLowerCase()}
                         </span>
                       )}
                       {opt.luggageCapacity != null && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Briefcase className="h-3 w-3" /> {opt.luggageCapacity}
                         </span>
                       )}
                       {opt.gpsTracked && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Navigation className="h-3 w-3" /> GPS
                         </span>
                       )}
                     </div>
                   )}
-                  <div className="mt-4 flex items-end justify-between gap-3 pt-4 border-t border-gray-100 sm:mt-auto">
+                  <div className="mt-4 flex items-end justify-between gap-3 pt-4 border-t border-[var(--border)] sm:mt-auto">
                     <div className="flex flex-col">
-                      <span className="text-xl font-extrabold text-gray-900">{opt.currency} {opt.price.toFixed(2)}</span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-2xl font-extrabold tracking-tight" style={{ color: pc }}>{opt.currency} {opt.price.toFixed(2)}</span>
+                      <span className="text-xs text-[var(--muted-foreground)]">
                         {store.roundTrip ? 'Round trip · both legs included' : 'Per vehicle · all inclusive'}
                       </span>
                     </div>
-                    <span className="inline-flex items-center gap-1 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform group-hover:scale-[1.02]" style={{ backgroundColor: pc }}>
-                      Book now <ChevronRight className="h-4 w-4" />
+                    <span className="inline-flex items-center gap-1 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform group-hover:scale-[1.03]" style={{ backgroundColor: pc }}>
+                      Book now <ChevronRight className="h-4 w-4 rtl:rotate-180" />
                     </span>
                   </div>
                 </div>

@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Phone, Globe, Loader2, CheckCircle2, ChevronRight, KeyRound, ExternalLink } from 'lucide-react';
+import { User, Mail, Phone, Globe, Loader2, CheckCircle2, KeyRound, ExternalLink } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking-store';
 import type { SiteSettings } from '@/lib/site-settings';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { BookingSteps } from '@/components/website/booking-steps';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -137,7 +138,7 @@ export function DetailsClient({ settings }: DetailsClientProps) {
 
   if (done) {
     return (
-      <div className="min-h-screen pt-16 flex items-center justify-center bg-gray-50 px-4">
+      <div className="min-h-screen pt-16 flex items-center justify-center bg-[var(--muted)] px-4">
         <div className="w-full max-w-md space-y-5">
           <div className="text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full" style={{ backgroundColor: `${pc}15` }}>
@@ -197,165 +198,164 @@ export function DetailsClient({ settings }: DetailsClientProps) {
   }
 
   return (
-    <div className="min-h-screen pt-16 bg-gray-50">
+    <div className="min-h-screen pt-16 bg-[var(--muted)]">
       {/* Top bar */}
-      <div className="border-b border-gray-200 bg-white px-4 py-3 shadow-sm">
-        <div className="mx-auto max-w-2xl flex items-center gap-3">
-          <button onClick={() => router.back()} className="text-sm text-gray-400 hover:text-gray-700 transition">← Back</button>
-          <div className="flex items-center gap-3 ml-auto">
-            {['Select Vehicle', 'Flight & Extras', 'Your Details'].map((step, i) => (
-              <div key={step} className="flex items-center gap-2">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold"
-                  style={i === 2 ? { backgroundColor: pc, color: 'white' } : { backgroundColor: '#d1fae5', color: '#059669' }}>
-                  {i < 2 ? '✓' : i + 1}
-                </div>
-                <span className={`text-xs font-medium ${i === 2 ? 'text-gray-900' : 'text-emerald-600'}`}>{step}</span>
-                {i < 2 && <ChevronRight className="h-3.5 w-3.5 text-gray-300" />}
-              </div>
-            ))}
-          </div>
+      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
+        <div className="mx-auto flex max-w-5xl items-center gap-3">
+          <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+            <span className="rtl:rotate-180">←</span> Back
+          </button>
         </div>
       </div>
 
-      <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Your details</h1>
-          <p className="mt-1 text-sm text-gray-500">We'll send your booking confirmation here.</p>
-        </div>
+      <div className="px-4 pt-8">
+        <BookingSteps current={2} primaryColor={pc} />
+      </div>
 
-        {/* Personal info */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-          <h2 className="flex items-center gap-2 font-semibold text-gray-900 text-sm">
-            <User className="h-4 w-4" style={{ color: pc }} />
-            Personal Information
-          </h2>
-          <div className="space-y-4">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Full Name *</Label>
-              <Input placeholder="John Smith" value={store.guestName}
-                onChange={(e) => store.setField('guestName', e.target.value)}
-                className="border-gray-200 bg-gray-50 focus-visible:ring-1" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
-                  <Mail className="h-3 w-3" /> Email *
-                </Label>
-                <Input type="email" placeholder="john@example.com" value={store.guestEmail}
-                  onChange={(e) => store.setField('guestEmail', e.target.value)}
-                  className="border-gray-200 bg-gray-50 focus-visible:ring-1" />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
-                  <Phone className="h-3 w-3" /> Phone *
-                </Label>
-                <Input type="tel" placeholder="+20 123 456 789" value={store.guestPhone}
-                  onChange={(e) => store.setField('guestPhone', e.target.value)}
-                  className="border-gray-200 bg-gray-50 focus-visible:ring-1" />
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
-                <Globe className="h-3 w-3" /> Country
-              </Label>
-              <Input placeholder="United Kingdom" value={store.guestCountry}
-                onChange={(e) => store.setField('guestCountry', e.target.value)}
-                className="border-gray-200 bg-gray-50 focus-visible:ring-1" />
-            </div>
+      <div className="mx-auto grid max-w-5xl gap-6 px-4 py-8 lg:grid-cols-[1fr_360px] lg:items-start">
+        {/* ── Left column: form ── */}
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">Your details</h1>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">We&apos;ll send your booking confirmation here.</p>
           </div>
-        </div>
 
-        {/* Order summary */}
-        {store.quotePrice !== null && (
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <h2 className="font-semibold text-gray-900 text-sm mb-3">Booking Summary</h2>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between text-gray-600">
-                <span>Transfer</span>
-                <span className="font-medium text-gray-900">{store.quoteCurrency} {store.quotePrice.toFixed(2)}</span>
+          {/* Personal info */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 space-y-4" style={{ boxShadow: 'var(--elevation-1)' }}>
+            <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm">
+              <User className="h-4 w-4" style={{ color: pc }} />
+              Personal Information
+            </h2>
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Full Name *</Label>
+                <Input placeholder="John Smith" value={store.guestName}
+                  onChange={(e) => store.setField('guestName', e.target.value)}
+                  className="border-[var(--border)] bg-[var(--muted)] focus-visible:ring-1" />
               </div>
-              {extraLines.map((line) => (
-                <div key={line.name} className="flex justify-between text-gray-600">
-                  <span>{line.name}{line.qty > 1 ? ` × ${line.qty}` : ''}</span>
-                  <span className="font-medium text-gray-900">{store.quoteCurrency} {line.cost.toFixed(2)}</span>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider flex items-center gap-1.5">
+                    <Mail className="h-3 w-3" /> Email *
+                  </Label>
+                  <Input type="email" placeholder="john@example.com" value={store.guestEmail}
+                    onChange={(e) => store.setField('guestEmail', e.target.value)}
+                    className="border-[var(--border)] bg-[var(--muted)] focus-visible:ring-1" />
                 </div>
-              ))}
-              <div className="border-t border-gray-100 pt-2 flex justify-between font-bold text-gray-900">
-                <span>Total</span>
-                <span style={{ color: pc }}>{store.quoteCurrency} {grandTotal.toFixed(2)}</span>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider flex items-center gap-1.5">
+                    <Phone className="h-3 w-3" /> Phone *
+                  </Label>
+                  <Input type="tel" placeholder="+20 123 456 789" value={store.guestPhone}
+                    onChange={(e) => store.setField('guestPhone', e.target.value)}
+                    className="border-[var(--border)] bg-[var(--muted)] focus-visible:ring-1" />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider flex items-center gap-1.5">
+                  <Globe className="h-3 w-3" /> Country
+                </Label>
+                <Input placeholder="United Kingdom" value={store.guestCountry}
+                  onChange={(e) => store.setField('guestCountry', e.target.value)}
+                  className="border-[var(--border)] bg-[var(--muted)] focus-visible:ring-1" />
               </div>
             </div>
           </div>
-        )}
 
-        {/* Payment method */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-          <h2 className="font-semibold text-gray-900 text-sm">Payment Method</h2>
-          {!onlineEnabled && !cashEnabled ? (
-            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-              Online booking is temporarily unavailable. Please contact us to complete your booking.
-            </div>
-          ) : (
-            <div className={`grid gap-3 ${onlineEnabled && cashEnabled ? 'sm:grid-cols-2' : 'grid-cols-1'}`}>
-              {onlineEnabled && (
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('ONLINE')}
-                  className="flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all"
-                  style={paymentMethod === 'ONLINE'
-                    ? { borderColor: pc, backgroundColor: `${pc}0d` }
-                    : { borderColor: '#e5e7eb' }}
-                >
-                  <span className="text-sm font-semibold text-gray-900">Online Payment</span>
-                  <span className="text-xs text-gray-500">Pay securely by card now</span>
-                </button>
-              )}
-              {cashEnabled && (
-                <button
-                  type="button"
-                  onClick={() => setPaymentMethod('PAY_ON_ARRIVAL')}
-                  className="flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all"
-                  style={paymentMethod === 'PAY_ON_ARRIVAL'
-                    ? { borderColor: pc, backgroundColor: `${pc}0d` }
-                    : { borderColor: '#e5e7eb' }}
-                >
-                  <span className="text-sm font-semibold text-gray-900">Pay Cash Upon Arrival</span>
-                  <span className="text-xs text-gray-500">Pay your driver in cash</span>
-                </button>
-              )}
+          {/* Payment method */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 space-y-4" style={{ boxShadow: 'var(--elevation-1)' }}>
+            <h2 className="font-semibold text-[var(--foreground)] text-sm">Payment Method</h2>
+            {!onlineEnabled && !cashEnabled ? (
+              <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+                Online booking is temporarily unavailable. Please contact us to complete your booking.
+              </div>
+            ) : (
+              <div className={`grid gap-3 ${onlineEnabled && cashEnabled ? 'sm:grid-cols-2' : 'grid-cols-1'}`}>
+                {onlineEnabled && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('ONLINE')}
+                    className="flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all"
+                    style={paymentMethod === 'ONLINE'
+                      ? { borderColor: pc, backgroundColor: `${pc}0d` }
+                      : { borderColor: 'var(--border)' }}
+                  >
+                    <span className="text-sm font-semibold text-[var(--foreground)]">Online Payment</span>
+                    <span className="text-xs text-[var(--muted-foreground)]">Pay securely by card now</span>
+                  </button>
+                )}
+                {cashEnabled && (
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('PAY_ON_ARRIVAL')}
+                    className="flex flex-col items-start gap-1 rounded-xl border-2 p-4 text-left transition-all"
+                    style={paymentMethod === 'PAY_ON_ARRIVAL'
+                      ? { borderColor: pc, backgroundColor: `${pc}0d` }
+                      : { borderColor: 'var(--border)' }}
+                  >
+                    <span className="text-sm font-semibold text-[var(--foreground)]">Pay Cash Upon Arrival</span>
+                    <span className="text-xs text-[var(--muted-foreground)]">Pay your driver in cash</span>
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ── Right column: sticky order summary + confirm ── */}
+        <div className="space-y-4 lg:sticky lg:top-24">
+          {store.quotePrice !== null && (
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5" style={{ boxShadow: 'var(--elevation-2)' }}>
+              <h2 className="mb-3 text-sm font-semibold text-[var(--foreground)]">Booking Summary</h2>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between text-[var(--muted-foreground)]">
+                  <span>Transfer</span>
+                  <span className="font-medium text-[var(--foreground)]">{store.quoteCurrency} {store.quotePrice.toFixed(2)}</span>
+                </div>
+                {extraLines.map((line) => (
+                  <div key={line.name} className="flex justify-between text-[var(--muted-foreground)]">
+                    <span>{line.name}{line.qty > 1 ? ` × ${line.qty}` : ''}</span>
+                    <span className="font-medium text-[var(--foreground)]">{store.quoteCurrency} {line.cost.toFixed(2)}</span>
+                  </div>
+                ))}
+                <div className="mt-1 flex items-center justify-between border-t border-[var(--border)] pt-3 text-base font-bold text-[var(--foreground)]">
+                  <span>Total</span>
+                  <span style={{ color: pc }}>{store.quoteCurrency} {grandTotal.toFixed(2)}</span>
+                </div>
+              </div>
             </div>
           )}
-        </div>
 
-        {error && (
-          <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
-        )}
+          {error && (
+            <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
+          )}
 
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!canSubmit || submitting}
-          className="w-full rounded-xl py-3 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40 flex items-center justify-center gap-2"
-          style={{ backgroundColor: pc }}
-        >
-          {submitting
-            ? <><Loader2 className="h-4 w-4 animate-spin" />Processing…</>
-            : (paymentMethod === 'ONLINE' ? 'Proceed to Payment' : 'Confirm Booking')}
-        </button>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!canSubmit || submitting}
+            className="flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
+            style={{ backgroundColor: pc }}
+          >
+            {submitting
+              ? <><Loader2 className="h-4 w-4 animate-spin" />Processing…</>
+              : (paymentMethod === 'ONLINE' ? 'Proceed to Payment' : 'Confirm Booking')}
+          </button>
 
-        <p className="text-center text-xs text-gray-400">
-          By confirming you agree to our terms of service.{' '}
-          {paymentMethod === 'ONLINE'
-            ? "You'll be redirected to our secure payment provider."
-            : 'Payment is collected on arrival.'}
-        </p>
-
-        {/* Cancellation policy */}
-        <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-          <p className="text-xs font-semibold text-red-700 mb-0.5">Cancellation Policy</p>
-          <p className="text-xs text-red-600">
-            Free cancellation up to 48 hours before your scheduled pickup. Cancellations within 48 hours of departure cannot be processed.
+          <p className="text-center text-xs text-[var(--muted-foreground)]">
+            By confirming you agree to our terms of service.{' '}
+            {paymentMethod === 'ONLINE'
+              ? "You'll be redirected to our secure payment provider."
+              : 'Payment is collected on arrival.'}
           </p>
+
+          {/* Cancellation policy */}
+          <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
+            <p className="text-xs font-semibold text-red-700 mb-0.5">Cancellation Policy</p>
+            <p className="text-xs text-red-600">
+              Free cancellation up to 48 hours before your scheduled pickup. Cancellations within 48 hours of departure cannot be processed.
+            </p>
+          </div>
         </div>
       </div>
     </div>

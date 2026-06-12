@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Plane, Clock, Users, Briefcase, ChevronRight, Sparkles, Car, AlertCircle, Snowflake, Wifi } from 'lucide-react';
+import { Plane, Clock, Users, Briefcase, Sparkles, Car, AlertCircle, Snowflake, Wifi } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking-store';
 import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { BookingSteps } from '@/components/website/booking-steps';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -207,26 +208,18 @@ export function FlightClient({ settings }: FlightClientProps) {
   const canContinue = store.flightNo.trim().length > 0;
 
   return (
-    <div className="min-h-screen pt-16 bg-gray-50">
+    <div className="min-h-screen pt-16 bg-[var(--muted)]">
       {/* Top bar */}
-      <div className="border-b border-gray-200 bg-white px-4 py-3 shadow-sm">
-        <div className="mx-auto max-w-2xl flex items-center gap-3">
-          <button onClick={() => router.back()} className="text-sm text-gray-400 hover:text-gray-700 transition">← Back</button>
-          <div className="flex items-center gap-3 ml-auto">
-            {['Select Vehicle', 'Flight & Extras', 'Your Details'].map((step, i) => (
-              <div key={step} className="flex items-center gap-2">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold"
-                  style={i === 1 ? { backgroundColor: pc, color: 'white' } : i < 1
-                    ? { backgroundColor: '#d1fae5', color: '#059669' }
-                    : { backgroundColor: '#f3f4f6', color: '#9ca3af' }}>
-                  {i < 1 ? '✓' : i + 1}
-                </div>
-                <span className={`text-xs font-medium ${i === 1 ? 'text-gray-900' : i < 1 ? 'text-emerald-600' : 'text-gray-400'}`}>{step}</span>
-                {i < 2 && <ChevronRight className="h-3.5 w-3.5 text-gray-300" />}
-              </div>
-            ))}
-          </div>
+      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
+        <div className="mx-auto flex max-w-2xl items-center gap-3">
+          <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+            <span className="rtl:rotate-180">←</span> Back
+          </button>
         </div>
+      </div>
+
+      <div className="px-4 pt-8">
+        <BookingSteps current={1} primaryColor={pc} />
       </div>
 
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
