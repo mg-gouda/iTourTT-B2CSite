@@ -526,6 +526,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.myAccount": "Mein Konto",
     "nav.menu": "Menü",
     "nav.routes": "Routen",
+    "nav.destinations": "Reiseziele",
+    "nav.blog": "Blog",
 
     // Booking Widget
     "booking.arrivalTransfer": "Ankunftstransfer",
@@ -556,6 +558,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "booking.time": "Uhrzeit",
     "booking.passengers": "Passagiere",
     "booking.luggage": "Gepäck",
+    "booking.addons": "Zusatzleistungen & besondere Wünsche",
     "booking.pickupAirport": "Abholung (Flughafenbereich)",
     "booking.pickupHotel": "Abholung (Hotel / Adresse)",
     "booking.dropoffHotel": "Absetzen (Hotel / Adresse)",
@@ -776,6 +779,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.myAccount": "Mon compte",
     "nav.menu": "Menu",
     "nav.routes": "Trajets",
+    "nav.destinations": "Destinations",
+    "nav.blog": "Blog",
 
     // Booking Widget
     "booking.arrivalTransfer": "Transfert d'arrivée",
@@ -806,6 +811,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "booking.time": "Heure",
     "booking.passengers": "Passagers",
     "booking.luggage": "Bagages",
+    "booking.addons": "Options & exigences particulières",
     "booking.pickupAirport": "Prise en charge (zone aéroport)",
     "booking.pickupHotel": "Prise en charge (hôtel / adresse)",
     "booking.dropoffHotel": "Dépose (hôtel / adresse)",
@@ -1030,6 +1036,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.myAccount": "Il mio account",
     "nav.menu": "Menu",
     "nav.routes": "Percorsi",
+    "nav.destinations": "Destinazioni",
+    "nav.blog": "Blog",
 
     // Booking Widget
     "booking.arrivalTransfer": "Transfer di arrivo",
@@ -1060,6 +1068,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "booking.time": "Ora",
     "booking.passengers": "Passeggeri",
     "booking.luggage": "Bagagli",
+    "booking.addons": "Extra e richieste speciali",
     "booking.pickupAirport": "Ritiro (zona aeroporto)",
     "booking.pickupHotel": "Ritiro (hotel / indirizzo)",
     "booking.dropoffHotel": "Consegna (hotel / indirizzo)",
@@ -1284,6 +1293,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.myAccount": "Mijn account",
     "nav.menu": "Menu",
     "nav.routes": "Routes",
+    "nav.destinations": "Bestemmingen",
+    "nav.blog": "Blog",
 
     // Booking Widget
     "booking.arrivalTransfer": "Aankomsttransfer",
@@ -1314,6 +1325,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "booking.time": "Tijd",
     "booking.passengers": "Passagiers",
     "booking.luggage": "Bagage",
+    "booking.addons": "Extra's & speciale wensen",
     "booking.pickupAirport": "Ophalen (luchthavengebied)",
     "booking.pickupHotel": "Ophalen (hotel / adres)",
     "booking.dropoffHotel": "Afzetten (hotel / adres)",
@@ -1539,6 +1551,8 @@ const translations: Record<Locale, Record<string, string>> = {
     "nav.myAccount": "Мой аккаунт",
     "nav.menu": "Меню",
     "nav.routes": "Маршруты",
+    "nav.destinations": "Направления",
+    "nav.blog": "Блог",
 
     // Booking Widget
     "booking.arrivalTransfer": "Трансфер по прибытии",
@@ -1569,6 +1583,7 @@ const translations: Record<Locale, Record<string, string>> = {
     "booking.time": "Время",
     "booking.passengers": "Пассажиры",
     "booking.luggage": "Багаж",
+    "booking.addons": "Дополнения и особые пожелания",
     "booking.pickupAirport": "Посадка (зона аэропорта)",
     "booking.pickupHotel": "Посадка (отель / адрес)",
     "booking.dropoffHotel": "Высадка (отель / адрес)",
