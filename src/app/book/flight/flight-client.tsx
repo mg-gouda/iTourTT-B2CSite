@@ -54,7 +54,7 @@ function Stepper({ value, onChange, min = 0, max = 10, color }: {
       <button type="button" onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min}
         className="flex h-7 w-7 items-center justify-center rounded-full text-white font-bold disabled:opacity-30"
         style={{ backgroundColor: color }}>−</button>
-      <span className="w-6 text-center font-bold text-gray-900">{value}</span>
+      <span className="w-6 text-center font-bold text-[var(--foreground)]">{value}</span>
       <button type="button" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max}
         className="flex h-7 w-7 items-center justify-center rounded-full text-white font-bold disabled:opacity-30"
         style={{ backgroundColor: color }}>+</button>
@@ -224,55 +224,55 @@ export function FlightClient({ settings }: FlightClientProps) {
 
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Flight details</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-[var(--foreground)]">Flight details</h1>
+          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
             {isArr ? 'Your arrival flight information so we can monitor delays.' : 'Your departure flight information for scheduling.'}
           </p>
         </div>
 
         {/* Flight info card */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-          <h2 className="flex items-center gap-2 font-semibold text-gray-900 text-sm">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm space-y-4">
+          <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm">
             <Plane className="h-4 w-4" style={{ color: pc }} />
             Flight Information
           </h2>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
                 Flight Number *
               </Label>
               <Input
                 placeholder="e.g. MS777"
                 value={store.flightNo}
                 onChange={(e) => store.setField('flightNo', e.target.value.toUpperCase())}
-                className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1 uppercase"
+                className="border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)] focus-visible:ring-1 uppercase"
                 style={{ '--tw-ring-color': pc } as React.CSSProperties}
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
                 Terminal
               </Label>
               <Input
                 placeholder="e.g. T1"
                 value={store.terminal}
                 onChange={(e) => store.setField('terminal', e.target.value)}
-                className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1"
+                className="border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)] focus-visible:ring-1"
                 style={{ '--tw-ring-color': pc } as React.CSSProperties}
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
               {isArr ? 'Origin (flying from)' : 'Destination (flying to)'}
             </Label>
             <Input
               placeholder="e.g. London Heathrow"
               value={store.carrier}
               onChange={(e) => store.setField('carrier', e.target.value)}
-              className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1"
+              className="border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)] focus-visible:ring-1"
               style={{ '--tw-ring-color': pc } as React.CSSProperties}
             />
           </div>
@@ -280,46 +280,46 @@ export function FlightClient({ settings }: FlightClientProps) {
 
         {/* Return flight card — 2-Way bookings only (departure leg) */}
         {store.roundTrip && (
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-            <h2 className="flex items-center gap-2 font-semibold text-gray-900 text-sm">
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm space-y-4">
+            <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm">
               <Plane className="h-4 w-4 rotate-90" style={{ color: pc }} />
               Return Flight (departure)
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
                   Return Flight Number
                 </Label>
                 <Input
                   placeholder="e.g. MS778"
                   value={store.returnFlightNo}
                   onChange={(e) => store.setField('returnFlightNo', e.target.value.toUpperCase())}
-                  className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1 uppercase"
+                  className="border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)] focus-visible:ring-1 uppercase"
                   style={{ '--tw-ring-color': pc } as React.CSSProperties}
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
                   Terminal
                 </Label>
                 <Input
                   placeholder="e.g. T1"
                   value={store.returnTerminal}
                   onChange={(e) => store.setField('returnTerminal', e.target.value)}
-                  className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1"
+                  className="border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)] focus-visible:ring-1"
                   style={{ '--tw-ring-color': pc } as React.CSSProperties}
                 />
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
                 Destination (flying to)
               </Label>
               <Input
                 placeholder="e.g. London Heathrow"
                 value={store.returnCarrier}
                 onChange={(e) => store.setField('returnCarrier', e.target.value)}
-                className="border-gray-200 bg-gray-50 text-gray-800 focus-visible:ring-1"
+                className="border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)] focus-visible:ring-1"
                 style={{ '--tw-ring-color': pc } as React.CSSProperties}
               />
             </div>
@@ -332,8 +332,8 @@ export function FlightClient({ settings }: FlightClientProps) {
           const seats = selectedVehicle?.seatCapacity ?? Number(store.quoteBreakdown?.seatCapacity ?? 0);
           if (!typeName) return null;
           return (
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h2 className="flex items-center gap-2 font-semibold text-gray-900 text-sm mb-4">
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
+              <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm mb-4">
                 <Car className="h-4 w-4" style={{ color: pc }} />
                 Your Vehicle
               </h2>
@@ -346,25 +346,25 @@ export function FlightClient({ settings }: FlightClientProps) {
                   />
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold text-gray-900">{typeName}</p>
-                  <p className="mt-0.5 flex items-center gap-1 text-sm text-gray-500">
+                  <p className="font-bold text-[var(--foreground)]">{typeName}</p>
+                  <p className="mt-0.5 flex items-center gap-1 text-sm text-[var(--muted-foreground)]">
                     <Users className="h-3.5 w-3.5" />
                     Capacity: {seats} seat{seats !== 1 ? 's' : ''}
                   </p>
                   {selectedVehicle && (selectedVehicle.airConditioning || selectedVehicle.wifi || selectedVehicle.luggageCapacity != null) && (
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {selectedVehicle.airConditioning && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] text-[var(--muted-foreground)]">
                           <Snowflake className="h-3 w-3" /> A/C
                         </span>
                       )}
                       {selectedVehicle.wifi && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] text-[var(--muted-foreground)]">
                           <Wifi className="h-3 w-3" /> Wi-Fi
                         </span>
                       )}
                       {selectedVehicle.luggageCapacity != null && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] text-[var(--muted-foreground)]">
                           <Briefcase className="h-3 w-3" /> {selectedVehicle.luggageCapacity} bags
                         </span>
                       )}
@@ -377,8 +377,8 @@ export function FlightClient({ settings }: FlightClientProps) {
         })()}
 
         {/* Optional extras card */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-          <h2 className="flex items-center gap-2 font-semibold text-gray-900 text-sm">
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm space-y-4">
+          <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm">
             <Briefcase className="h-4 w-4" style={{ color: pc }} />
             Optional Extras
           </h2>
@@ -405,11 +405,11 @@ export function FlightClient({ settings }: FlightClientProps) {
                               key={opt.vehicleTypeId}
                               type="button"
                               onClick={() => switchVehicle(opt, capacityAlert)}
-                              className="flex items-center gap-2 rounded-lg border border-amber-300 bg-white px-3 py-1.5 transition hover:border-amber-400 hover:shadow-sm"
+                              className="flex items-center gap-2 rounded-lg border border-amber-300 bg-[var(--card)] px-3 py-1.5 transition hover:border-amber-400 hover:shadow-sm"
                             >
                               <Car className="h-3.5 w-3.5 text-amber-600" />
-                              <span className="font-semibold text-gray-900">{opt.vehicleTypeName}</span>
-                              <span className="text-gray-400">· up to {opt.seatCapacity}</span>
+                              <span className="font-semibold text-[var(--foreground)]">{opt.vehicleTypeName}</span>
+                              <span className="text-[var(--muted-foreground)]">· up to {opt.seatCapacity}</span>
                               <span className="font-bold" style={{ color: pc }}>
                                 {opt.currency} {opt.price.toFixed(2)}
                               </span>
@@ -428,12 +428,12 @@ export function FlightClient({ settings }: FlightClientProps) {
               {catalogExtras.map((ex) => (
                 <div key={ex.id} className="flex items-center justify-between py-2">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gray-100">
-                      <Sparkles className="h-4 w-4 text-gray-500" />
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--muted)]">
+                      <Sparkles className="h-4 w-4 text-[var(--muted-foreground)]" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{ex.name}</p>
-                      <p className="text-xs text-gray-400">
+                      <p className="text-sm font-medium text-[var(--foreground)]">{ex.name}</p>
+                      <p className="text-xs text-[var(--muted-foreground)]">
                         {ex.description ? `${ex.description} · ` : ''}
                         {ex.currency} {ex.price.toFixed(2)}
                         {ex.occupiesSeat ? ' · occupies a seat' : ''}
@@ -456,13 +456,13 @@ export function FlightClient({ settings }: FlightClientProps) {
           )}
 
           <div className="space-y-1.5 pt-2">
-            <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Special Requests</Label>
+            <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Special Requests</Label>
             <textarea
               rows={2}
               placeholder="Any special requirements or notes for the driver…"
               value={store.notes}
               onChange={(e) => store.setField('notes', e.target.value)}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-1 resize-none"
+              className="w-full rounded-lg border border-[var(--border)] bg-[var(--muted)] px-3 py-2 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-1 resize-none"
               style={{ '--tw-ring-color': pc } as React.CSSProperties}
             />
           </div>
@@ -473,17 +473,17 @@ export function FlightClient({ settings }: FlightClientProps) {
           <div className="rounded-2xl px-5 py-4 flex items-center justify-between"
             style={{ background: `linear-gradient(135deg, ${pc}12, ${pc}06)`, border: `1px solid ${pc}25` }}>
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-0.5">Your price</p>
-              <p className="text-xl font-extrabold text-gray-900">
+              <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-0.5">Your price</p>
+              <p className="text-xl font-extrabold text-[var(--foreground)]">
                 {store.quoteCurrency} {(store.quotePrice + customExtrasTotal).toFixed(2)}
               </p>
               {customExtrasTotal > 0 && (
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-[var(--muted-foreground)]">
                   incl. {store.quoteCurrency} {customExtrasTotal.toFixed(2)} extras
                 </p>
               )}
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
+            <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
               <Users className="h-3.5 w-3.5" />
               {store.paxCount} pax ·
               <Clock className="h-3.5 w-3.5 ml-1" />
@@ -503,10 +503,10 @@ export function FlightClient({ settings }: FlightClientProps) {
         </button>
 
         {/* Cancellation policy */}
-        <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 flex items-start gap-2">
-          <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-gray-400" />
-          <p className="text-xs text-gray-500">
-            <span className="font-semibold text-gray-700">Cancellation policy: </span>
+        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 flex items-start gap-2">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-[var(--muted-foreground)]" />
+          <p className="text-xs text-[var(--muted-foreground)]">
+            <span className="font-semibold text-[var(--foreground)]">Cancellation policy: </span>
             Free cancellation up to 48 hours before your scheduled pickup. Cancellations within 48 hours of departure cannot be processed.
           </p>
         </div>
