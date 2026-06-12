@@ -5,6 +5,7 @@ import { fetchCityMenu } from '@/lib/website-content';
 import { buildPageMetadata } from '@/lib/page-metadata';
 import { JsonLd } from '@/components/JsonLd';
 import { SITE_URL } from '@/lib/seo';
+import { translate } from '@/lib/website-translations';
 
 export const revalidate = 300;
 
@@ -41,17 +42,17 @@ export default async function LocaleDestinationsPage({ params }: Props) {
       <section className="border-b border-gray-100 bg-gray-50/60 px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
           <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-            Egypt Airport Transfer Destinations
+            {translate(locale, 'destinations.heading')}
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-base text-gray-500 sm:text-lg">
-            Private transfers to and from every major Egyptian airport. Fixed price, flight tracking, free cancellation.
+            {translate(locale, 'destinations.subheading')}
           </p>
         </div>
       </section>
       <section className="px-4 py-14">
         <div className="mx-auto max-w-5xl">
           {cities.length === 0 ? (
-            <p className="py-16 text-center text-gray-500">Destinations coming soon.</p>
+            <p className="py-16 text-center text-gray-500">{translate(locale, 'destinations.empty')}</p>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {cities.map((city) => (

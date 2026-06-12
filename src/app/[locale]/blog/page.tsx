@@ -4,6 +4,7 @@ import { ArrowRight, CalendarDays } from 'lucide-react';
 import { fetchBlogList } from '@/lib/website-content';
 import { resolveAssetUrl } from '@/lib/site-settings';
 import { buildPageMetadata } from '@/lib/page-metadata';
+import { translate } from '@/lib/website-translations';
 
 export const revalidate = 120;
 
@@ -44,16 +45,16 @@ export default async function LocaleBlogPage({ params, searchParams }: Props) {
     <div className="bg-white">
       <section className="border-b border-gray-100 bg-gray-50/60 px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">The Transfera Blog</h1>
+          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">{translate(locale, 'blog.heading')}</h1>
           <p className="mx-auto mt-3 max-w-2xl text-base text-gray-500 sm:text-lg">
-            Travel tips, destination guides and everything you need for a smooth airport transfer in Egypt.
+            {translate(locale, 'blog.subheading')}
           </p>
         </div>
       </section>
       <section className="px-4 py-14">
         <div className="mx-auto max-w-5xl">
           {items.length === 0 ? (
-            <p className="py-16 text-center text-gray-500">No articles published yet. Check back soon.</p>
+            <p className="py-16 text-center text-gray-500">{translate(locale, 'blog.empty')}</p>
           ) : (
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((post) => (
@@ -81,7 +82,7 @@ export default async function LocaleBlogPage({ params, searchParams }: Props) {
                         <CalendarDays className="h-3.5 w-3.5" />{formatDate(post.publishedAt)}
                       </span>
                       <span className="flex items-center gap-1 font-medium text-emerald-600">
-                        Read <ArrowRight className="h-3.5 w-3.5" />
+                        {translate(locale, 'blog.read')} <ArrowRight className="h-3.5 w-3.5" />
                       </span>
                     </div>
                   </div>

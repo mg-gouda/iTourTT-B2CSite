@@ -7,6 +7,7 @@ import { resolveAssetUrl } from '@/lib/site-settings';
 import { JsonLd } from '@/components/JsonLd';
 import { SITE_URL, BRAND_NAME, OG_IMAGE, articleSchema } from '@/lib/seo';
 import { LOCALES } from '@/lib/i18n-config';
+import { translate } from '@/lib/website-translations';
 
 export const revalidate = 120;
 
@@ -81,7 +82,7 @@ export default async function LocaleBlogPostPage({ params }: Props) {
       <JsonLd data={article} />
       <div className="mx-auto max-w-3xl px-4 py-12 sm:py-16">
         <Link href={`/${locale}/blog`} className="mb-8 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900">
-          <ArrowLeft className="h-4 w-4" /> Back to blog
+          <ArrowLeft className="h-4 w-4" /> {translate(locale, 'blog.backToBlog')}
         </Link>
         {post.categories?.length > 0 && (
           <span className="mb-3 inline-block text-xs font-semibold uppercase tracking-wide text-emerald-600">
