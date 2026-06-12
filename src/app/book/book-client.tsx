@@ -7,6 +7,8 @@ import { format } from 'date-fns';
 import { useBookingStore } from '@/stores/booking-store';
 import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
 import { BookingSteps } from '@/components/website/booking-steps';
+import { useLocale } from '@/lib/website-i18n';
+import { translate } from '@/lib/website-translations';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -42,6 +44,8 @@ export function BookNowClient({ settings }: BookNowClientProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const pc = settings.primaryColor;
+  const locale = useLocale();
+  const t = (key: string, vars?: Record<string, string | number>) => translate(locale, key, vars);
 
   useEffect(() => {
     if (!store.fromZoneId || !store.toZoneId || !store.serviceType) {
@@ -54,7 +58,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ serviceType, fromZoneId, toZoneId, paxCount: store.paxCount }),
       }).then(async (r) => {
-        if (!r.ok) throw new Error('No results found for this route.');
+        if (!r.ok) throw new Error('NO_RESULTS');
         const j = await r.json();
         return ((j.data ?? j).options ?? []) as VehicleOption[];
       });
@@ -78,7 +82,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
           setOptions(outbound);
         }
       } catch (e: unknown) {
-        setError(e instanceof Error ? e.message : 'Failed to load vehicles.');
+        setError(e instanceof Error && e.message === 'NO_RESULTS' ? t('funnel.errNoResults') : t('funnel.errLoad'));
       } finally {
         setLoading(false);
       }
@@ -101,12 +105,12 @@ export function BookNowClient({ settings }: BookNowClientProps) {
   const isArr = store.serviceType === 'ARR';
   const isCity = store.serviceType === 'CITY_TO_CITY';
   const transferLabel = isCity
-    ? 'City-to-City'
+    ? t('funnel.label.cityToCity')
     : store.roundTrip
-      ? '2-Way Transfer'
+      ? t('funnel.label.twoWay')
       : isArr
-        ? 'Arrival'
-        : 'Departure';
+        ? t('funnel.label.arrival')
+        : t('funnel.label.departure');
   const dateDisplay = store.jobDate
     ? format(new Date(store.jobDate + 'T12:00:00'), 'EEE, dd MMM yyyy')
     : '';
@@ -117,11 +121,11 @@ export function BookNowClient({ settings }: BookNowClientProps) {
       <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
         <div className="mx-auto max-w-5xl flex flex-wrap items-center gap-4 text-sm text-[var(--muted-foreground)]">
           <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition text-xs font-medium">
-            <span className="rtl:rotate-180">←</span> Edit Search
+            <span className="rtl:rotate-180">←</span> {t('funnel.editSearch')}
           </button>
           <span className="flex items-center gap-1.5">
             <Plane className="h-3.5 w-3.5" style={{ color: isArr || isCity ? '#16a34a' : '#dc2626' }} />
-            {transferLabel}{isCity ? '' : ' Transfer'}
+            {transferLabel}{isCity ? '' : ` ${t('funnel.transferSuffix')}`}
           </span>
           {dateDisplay && (
             <span className="flex items-center gap-1.5">
@@ -131,7 +135,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
           )}
           <span className="flex items-center gap-1.5">
             <Users className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
-            {store.paxCount} passenger{store.paxCount !== 1 ? 's' : ''}
+            {t('funnel.paxCount', { n: store.paxCount })}
           </span>
         </div>
       </div>
@@ -139,15 +143,15 @@ export function BookNowClient({ settings }: BookNowClientProps) {
       <div className="mx-auto max-w-5xl px-4 py-10">
         {/* Step indicator */}
         <div className="mb-10">
-          <BookingSteps current={0} primaryColor={pc} />
+          <BookingSteps current={0} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
         </div>
 
-        <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)] text-center mb-2">Choose your vehicle</h2>
-        <p className="text-[var(--muted-foreground)] text-center text-sm mb-8">All prices are per vehicle, not per person.</p>
+        <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)] text-center mb-2">{t('funnel.chooseVehicle')}</h2>
+        <p className="text-[var(--muted-foreground)] text-center text-sm mb-8">{t('funnel.pricesPerVehicle')}</p>
 
         {loading && (
           <div className="flex justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+            <Loader2 className="h-8 w-8 animate-spin text-[var(--muted-foreground)]" />
           </div>
         )}
 
@@ -155,16 +159,16 @@ export function BookNowClient({ settings }: BookNowClientProps) {
           <div className="rounded-2xl bg-red-50 border border-red-200 p-6 text-center text-red-600 flex flex-col items-center gap-2">
             <AlertCircle className="h-6 w-6" />
             <p>{error}</p>
-            <button onClick={() => router.push('/')} className="mt-2 text-sm underline text-red-500 hover:text-red-700">Go back and try again</button>
+            <button onClick={() => router.push('/')} className="mt-2 text-sm underline text-red-500 hover:text-red-700">{t('funnel.goBackTry')}</button>
           </div>
         )}
 
         {!loading && !error && options.length === 0 && (
-          <div className="rounded-2xl bg-white border border-gray-200 p-10 text-center text-gray-500 shadow-sm">
-            <Car className="h-10 w-10 mx-auto mb-3 text-gray-300" />
-            <p className="font-medium">No vehicles available for this route.</p>
-            <p className="text-sm mt-1">Try a different date or passenger count.</p>
-            <button onClick={() => router.push('/')} className="mt-4 text-sm underline hover:text-gray-900">Edit search</button>
+          <div className="rounded-2xl bg-[var(--card)] border border-[var(--border)] p-10 text-center text-[var(--muted-foreground)] shadow-sm">
+            <Car className="h-10 w-10 mx-auto mb-3 text-[var(--muted-foreground)]" />
+            <p className="font-medium">{t('funnel.noVehicles')}</p>
+            <p className="text-sm mt-1">{t('funnel.tryDifferent')}</p>
+            <button onClick={() => router.push('/')} className="mt-4 text-sm underline hover:text-[var(--foreground)]">{t('funnel.editSearch')}</button>
           </div>
         )}
 
@@ -200,7 +204,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
                     <h3 className="font-bold text-[var(--foreground)] text-base sm:text-lg">{opt.vehicleTypeName}</h3>
                     <span className="flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)] shrink-0">
                       <Users className="h-3.5 w-3.5" />
-                      up to {opt.seatCapacity}
+                      {t('funnel.upTo', { n: opt.seatCapacity })}
                     </span>
                   </div>
                   {opt.description && (
@@ -211,17 +215,17 @@ export function BookNowClient({ settings }: BookNowClientProps) {
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {opt.airConditioning && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
-                          <Snowflake className="h-3 w-3" /> A/C
+                          <Snowflake className="h-3 w-3" /> {t('funnel.ac')}
                         </span>
                       )}
                       {opt.wifi && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
-                          <Wifi className="h-3 w-3" /> Wi-Fi
+                          <Wifi className="h-3 w-3" /> {t('funnel.wifi')}
                         </span>
                       )}
                       {opt.transmission && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)] capitalize">
-                          <Cog className="h-3 w-3" /> {opt.transmission.toLowerCase()}
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
+                          <Cog className="h-3 w-3" /> {t(opt.transmission === 'AUTOMATIC' ? 'funnel.automatic' : 'funnel.manual')}
                         </span>
                       )}
                       {opt.luggageCapacity != null && (
@@ -231,7 +235,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
                       )}
                       {opt.gpsTracked && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
-                          <Navigation className="h-3 w-3" /> GPS
+                          <Navigation className="h-3 w-3" /> {t('funnel.gps')}
                         </span>
                       )}
                     </div>
@@ -240,11 +244,11 @@ export function BookNowClient({ settings }: BookNowClientProps) {
                     <div className="flex flex-col">
                       <span className="text-2xl font-extrabold tracking-tight" style={{ color: pc }}>{opt.currency} {opt.price.toFixed(2)}</span>
                       <span className="text-xs text-[var(--muted-foreground)]">
-                        {store.roundTrip ? 'Round trip · both legs included' : 'Per vehicle · all inclusive'}
+                        {store.roundTrip ? t('funnel.roundTripIncl') : t('funnel.perVehicleIncl')}
                       </span>
                     </div>
                     <span className="inline-flex items-center gap-1 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform group-hover:scale-[1.03]" style={{ backgroundColor: pc }}>
-                      Book now <ChevronRight className="h-4 w-4 rtl:rotate-180" />
+                      {t('funnel.bookNow')} <ChevronRight className="h-4 w-4 rtl:rotate-180" />
                     </span>
                   </div>
                 </div>

@@ -8,6 +8,8 @@ import type { SiteSettings } from '@/lib/site-settings';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { BookingSteps } from '@/components/website/booking-steps';
+import { useLocale } from '@/lib/website-i18n';
+import { translate } from '@/lib/website-translations';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -24,6 +26,8 @@ export function DetailsClient({ settings }: DetailsClientProps) {
   const router = useRouter();
   const store = useBookingStore();
   const pc = settings.primaryColor;
+  const locale = useLocale();
+  const t = (key: string, vars?: Record<string, string | number>) => translate(locale, key, vars);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
@@ -144,38 +148,38 @@ export function DetailsClient({ settings }: DetailsClientProps) {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full" style={{ backgroundColor: `${pc}15` }}>
               <CheckCircle2 className="h-8 w-8" style={{ color: pc }} />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
+            <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">{t('funnel.bookingConfirmed')}</h1>
             {store.bookingRef && (
-              <p className="text-gray-500 mb-1">Your reference: <span className="font-bold text-gray-900">{store.bookingRef}</span></p>
+              <p className="text-[var(--muted-foreground)] mb-1">{t('funnel.yourReference')} <span className="font-bold text-[var(--foreground)]">{store.bookingRef}</span></p>
             )}
-            <p className="text-sm text-gray-400">A confirmation has been sent to {store.guestEmail}</p>
+            <p className="text-sm text-[var(--muted-foreground)]">{t('funnel.confirmationSent', { email: store.guestEmail })}</p>
           </div>
 
           {store.accountCreated && store.accountEmail && (
-            <div className="rounded-2xl border bg-white p-5 shadow-sm" style={{ borderColor: `${pc}40` }}>
+            <div className="rounded-2xl border bg-[var(--card)] p-5 shadow-sm" style={{ borderColor: `${pc}40` }}>
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg" style={{ backgroundColor: `${pc}15` }}>
                   <KeyRound className="h-4 w-4" style={{ color: pc }} />
                 </div>
-                <h3 className="font-semibold text-gray-900 text-sm">Account Created for You</h3>
+                <h3 className="font-semibold text-[var(--foreground)] text-sm">{t('funnel.accountCreated')}</h3>
               </div>
-              <p className="text-xs text-gray-500 mb-3">Log in to manage your booking, track your driver, and amend or cancel your trip.</p>
+              <p className="text-xs text-[var(--muted-foreground)] mb-3">{t('funnel.accountDesc')}</p>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between items-center py-1.5 border-b border-gray-100">
-                  <span className="text-gray-500 text-xs font-medium uppercase tracking-wide">Email (username)</span>
-                  <span className="font-mono font-semibold text-gray-900 text-xs">{store.accountEmail}</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-[var(--border)]">
+                  <span className="text-[var(--muted-foreground)] text-xs font-medium uppercase tracking-wide">{t('funnel.emailUsername')}</span>
+                  <span className="font-mono font-semibold text-[var(--foreground)] text-xs">{store.accountEmail}</span>
                 </div>
                 <div className="flex justify-between items-center py-1.5">
-                  <span className="text-gray-500 text-xs font-medium uppercase tracking-wide">Password</span>
-                  <span className="font-mono font-semibold text-gray-900 text-xs">{store.accountPassword ?? store.guestPhone}</span>
+                  <span className="text-[var(--muted-foreground)] text-xs font-medium uppercase tracking-wide">{t('funnel.password')}</span>
+                  <span className="font-mono font-semibold text-[var(--foreground)] text-xs">{store.accountPassword ?? store.guestPhone}</span>
                 </div>
               </div>
-              <p className="mt-3 text-xs text-gray-400">Your password is your mobile number. You can change it after logging in.</p>
+              <p className="mt-3 text-xs text-[var(--muted-foreground)]">{t('funnel.passwordNote')}</p>
               <a href="/login"
                 className="mt-4 flex items-center justify-center gap-2 w-full rounded-xl py-2.5 text-sm font-bold text-white"
                 style={{ backgroundColor: pc }}>
                 <ExternalLink className="h-3.5 w-3.5" />
-                Go to My Account
+                {t('funnel.goToAccount')}
               </a>
             </div>
           )}
@@ -183,14 +187,14 @@ export function DetailsClient({ settings }: DetailsClientProps) {
           {!store.accountCreated && (
             <div className="text-center">
               <a href="/login" className="text-xs font-medium" style={{ color: pc }}>
-                Already have an account? Log in to manage your booking →
+                {t('funnel.alreadyAccount')}
               </a>
             </div>
           )}
 
           <button onClick={() => { store.reset(); router.push('/'); }}
-            className="w-full rounded-xl px-8 py-3 text-sm font-bold border border-gray-200 text-gray-600 bg-white hover:bg-gray-50 transition">
-            Back to Home
+            className="w-full rounded-xl px-8 py-3 text-sm font-bold border border-[var(--border)] text-[var(--muted-foreground)] bg-[var(--card)] hover:bg-[var(--muted)] transition">
+            {t('funnel.backHome')}
           </button>
         </div>
       </div>
@@ -203,32 +207,32 @@ export function DetailsClient({ settings }: DetailsClientProps) {
       <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
         <div className="mx-auto flex max-w-5xl items-center gap-3">
           <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
-            <span className="rtl:rotate-180">←</span> Back
+            <span className="rtl:rotate-180">←</span> {t('funnel.back')}
           </button>
         </div>
       </div>
 
       <div className="px-4 pt-8">
-        <BookingSteps current={2} primaryColor={pc} />
+        <BookingSteps current={2} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
       </div>
 
       <div className="mx-auto grid max-w-5xl gap-6 px-4 py-8 lg:grid-cols-[1fr_360px] lg:items-start">
         {/* ── Left column: form ── */}
         <div className="space-y-6">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">Your details</h1>
-            <p className="mt-1 text-sm text-[var(--muted-foreground)]">We&apos;ll send your booking confirmation here.</p>
+            <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">{t('funnel.yourDetails')}</h1>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t('funnel.confirmationHere')}</p>
           </div>
 
           {/* Personal info */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 space-y-4" style={{ boxShadow: 'var(--elevation-1)' }}>
             <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm">
               <User className="h-4 w-4" style={{ color: pc }} />
-              Personal Information
+              {t('funnel.personalInfo')}
             </h2>
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Full Name *</Label>
+                <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">{t('funnel.fullName')} *</Label>
                 <Input placeholder="John Smith" value={store.guestName}
                   onChange={(e) => store.setField('guestName', e.target.value)}
                   className="border-[var(--border)] bg-[var(--muted)] focus-visible:ring-1" />
@@ -236,7 +240,7 @@ export function DetailsClient({ settings }: DetailsClientProps) {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider flex items-center gap-1.5">
-                    <Mail className="h-3 w-3" /> Email *
+                    <Mail className="h-3 w-3" /> {t('funnel.email')} *
                   </Label>
                   <Input type="email" placeholder="john@example.com" value={store.guestEmail}
                     onChange={(e) => store.setField('guestEmail', e.target.value)}
@@ -244,7 +248,7 @@ export function DetailsClient({ settings }: DetailsClientProps) {
                 </div>
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider flex items-center gap-1.5">
-                    <Phone className="h-3 w-3" /> Phone *
+                    <Phone className="h-3 w-3" /> {t('funnel.phone')} *
                   </Label>
                   <Input type="tel" placeholder="+20 123 456 789" value={store.guestPhone}
                     onChange={(e) => store.setField('guestPhone', e.target.value)}
@@ -253,7 +257,7 @@ export function DetailsClient({ settings }: DetailsClientProps) {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider flex items-center gap-1.5">
-                  <Globe className="h-3 w-3" /> Country
+                  <Globe className="h-3 w-3" /> {t('funnel.country')}
                 </Label>
                 <Input placeholder="United Kingdom" value={store.guestCountry}
                   onChange={(e) => store.setField('guestCountry', e.target.value)}
@@ -264,10 +268,10 @@ export function DetailsClient({ settings }: DetailsClientProps) {
 
           {/* Payment method */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 space-y-4" style={{ boxShadow: 'var(--elevation-1)' }}>
-            <h2 className="font-semibold text-[var(--foreground)] text-sm">Payment Method</h2>
+            <h2 className="font-semibold text-[var(--foreground)] text-sm">{t('funnel.paymentMethod')}</h2>
             {!onlineEnabled && !cashEnabled ? (
               <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-                Online booking is temporarily unavailable. Please contact us to complete your booking.
+                {t('funnel.paymentUnavailable')}
               </div>
             ) : (
               <div className={`grid gap-3 ${onlineEnabled && cashEnabled ? 'sm:grid-cols-2' : 'grid-cols-1'}`}>
@@ -280,8 +284,8 @@ export function DetailsClient({ settings }: DetailsClientProps) {
                       ? { borderColor: pc, backgroundColor: `${pc}0d` }
                       : { borderColor: 'var(--border)' }}
                   >
-                    <span className="text-sm font-semibold text-[var(--foreground)]">Online Payment</span>
-                    <span className="text-xs text-[var(--muted-foreground)]">Pay securely by card now</span>
+                    <span className="text-sm font-semibold text-[var(--foreground)]">{t('funnel.onlinePayment')}</span>
+                    <span className="text-xs text-[var(--muted-foreground)]">{t('funnel.onlinePaymentDesc')}</span>
                   </button>
                 )}
                 {cashEnabled && (
@@ -293,8 +297,8 @@ export function DetailsClient({ settings }: DetailsClientProps) {
                       ? { borderColor: pc, backgroundColor: `${pc}0d` }
                       : { borderColor: 'var(--border)' }}
                   >
-                    <span className="text-sm font-semibold text-[var(--foreground)]">Pay Cash Upon Arrival</span>
-                    <span className="text-xs text-[var(--muted-foreground)]">Pay your driver in cash</span>
+                    <span className="text-sm font-semibold text-[var(--foreground)]">{t('funnel.cashArrival')}</span>
+                    <span className="text-xs text-[var(--muted-foreground)]">{t('funnel.cashArrivalDesc')}</span>
                   </button>
                 )}
               </div>
@@ -306,10 +310,10 @@ export function DetailsClient({ settings }: DetailsClientProps) {
         <div className="space-y-4 lg:sticky lg:top-24">
           {store.quotePrice !== null && (
             <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5" style={{ boxShadow: 'var(--elevation-2)' }}>
-              <h2 className="mb-3 text-sm font-semibold text-[var(--foreground)]">Booking Summary</h2>
+              <h2 className="mb-3 text-sm font-semibold text-[var(--foreground)]">{t('funnel.bookingSummary')}</h2>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between text-[var(--muted-foreground)]">
-                  <span>Transfer</span>
+                  <span>{t('funnel.transfer')}</span>
                   <span className="font-medium text-[var(--foreground)]">{store.quoteCurrency} {store.quotePrice.toFixed(2)}</span>
                 </div>
                 {extraLines.map((line) => (
@@ -319,7 +323,7 @@ export function DetailsClient({ settings }: DetailsClientProps) {
                   </div>
                 ))}
                 <div className="mt-1 flex items-center justify-between border-t border-[var(--border)] pt-3 text-base font-bold text-[var(--foreground)]">
-                  <span>Total</span>
+                  <span>{t('funnel.total')}</span>
                   <span style={{ color: pc }}>{store.quoteCurrency} {grandTotal.toFixed(2)}</span>
                 </div>
               </div>
@@ -338,22 +342,22 @@ export function DetailsClient({ settings }: DetailsClientProps) {
             style={{ backgroundColor: pc }}
           >
             {submitting
-              ? <><Loader2 className="h-4 w-4 animate-spin" />Processing…</>
-              : (paymentMethod === 'ONLINE' ? 'Proceed to Payment' : 'Confirm Booking')}
+              ? <><Loader2 className="h-4 w-4 animate-spin" />{t('funnel.processing')}</>
+              : (paymentMethod === 'ONLINE' ? t('funnel.proceedPayment') : t('funnel.confirmBooking'))}
           </button>
 
           <p className="text-center text-xs text-[var(--muted-foreground)]">
-            By confirming you agree to our terms of service.{' '}
+            {t('funnel.termsAgree')}{' '}
             {paymentMethod === 'ONLINE'
-              ? "You'll be redirected to our secure payment provider."
-              : 'Payment is collected on arrival.'}
+              ? t('funnel.redirectNote')
+              : t('funnel.payOnArrivalNote')}
           </p>
 
           {/* Cancellation policy */}
           <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-            <p className="text-xs font-semibold text-red-700 mb-0.5">Cancellation Policy</p>
+            <p className="text-xs font-semibold text-red-700 mb-0.5">{t('funnel.cancellationPolicy')}</p>
             <p className="text-xs text-red-600">
-              Free cancellation up to 48 hours before your scheduled pickup. Cancellations within 48 hours of departure cannot be processed.
+              {t('funnel.cancellationPolicyText')}
             </p>
           </div>
         </div>

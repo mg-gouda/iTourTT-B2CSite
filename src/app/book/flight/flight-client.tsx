@@ -8,6 +8,8 @@ import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { BookingSteps } from '@/components/website/booking-steps';
+import { useLocale } from '@/lib/website-i18n';
+import { translate } from '@/lib/website-translations';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -67,6 +69,8 @@ export function FlightClient({ settings }: FlightClientProps) {
   const store = useBookingStore();
   const pc = settings.primaryColor;
   const isArr = store.serviceType === 'ARR';
+  const locale = useLocale();
+  const t = (key: string, vars?: Record<string, string | number>) => translate(locale, key, vars);
 
   const [catalogExtras, setCatalogExtras] = useState<CatalogExtra[]>([]);
   const [vehicleOptions, setVehicleOptions] = useState<VehicleOption[]>([]);
@@ -138,9 +142,10 @@ export function FlightClient({ settings }: FlightClientProps) {
         reason: 'vehicle-type',
         extra: ex,
         desiredQty: next,
-        message:
-          `"${ex.name}" can only be carried by ${(ex.allowedVehicleTypeNames ?? []).join(', ')}.` +
-          ` Switch your vehicle below to add it — no need to start your search over.`,
+        message: t('funnel.alertVehicleType', {
+          extra: ex.name,
+          names: (ex.allowedVehicleTypeNames ?? []).join(', '),
+        }),
       });
       return;
     }
@@ -149,9 +154,11 @@ export function FlightClient({ settings }: FlightClientProps) {
         reason: 'capacity',
         extra: ex,
         desiredQty: next,
-        message:
-          `This ${seatCapacity}-seat vehicle is full with ${store.paxCount} passenger${store.paxCount !== 1 ? 's' : ''}` +
-          ` and the extras already selected. Switch to a larger vehicle below to add "${ex.name}" — no need to start your search over.`,
+        message: t('funnel.alertCapacity', {
+          seats: seatCapacity,
+          pax: store.paxCount,
+          extra: ex.name,
+        }),
       });
       return;
     }
@@ -213,20 +220,20 @@ export function FlightClient({ settings }: FlightClientProps) {
       <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
           <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
-            <span className="rtl:rotate-180">←</span> Back
+            <span className="rtl:rotate-180">←</span> {t('funnel.back')}
           </button>
         </div>
       </div>
 
       <div className="px-4 pt-8">
-        <BookingSteps current={1} primaryColor={pc} />
+        <BookingSteps current={1} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
       </div>
 
       <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-[var(--foreground)]">Flight details</h1>
+          <h1 className="text-2xl font-bold text-[var(--foreground)]">{t('funnel.flightDetails')}</h1>
           <p className="mt-1 text-sm text-[var(--muted-foreground)]">
-            {isArr ? 'Your arrival flight information so we can monitor delays.' : 'Your departure flight information for scheduling.'}
+            {isArr ? t('funnel.flightSubArr') : t('funnel.flightSubDep')}
           </p>
         </div>
 
@@ -234,13 +241,13 @@ export function FlightClient({ settings }: FlightClientProps) {
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm space-y-4">
           <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm">
             <Plane className="h-4 w-4" style={{ color: pc }} />
-            Flight Information
+            {t('funnel.flightInformation')}
           </h2>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
-                Flight Number *
+                {t('funnel.flightNumber')} *
               </Label>
               <Input
                 placeholder="e.g. MS777"
@@ -252,7 +259,7 @@ export function FlightClient({ settings }: FlightClientProps) {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
-                Terminal
+                {t('funnel.terminal')}
               </Label>
               <Input
                 placeholder="e.g. T1"
@@ -266,7 +273,7 @@ export function FlightClient({ settings }: FlightClientProps) {
 
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
-              {isArr ? 'Origin (flying from)' : 'Destination (flying to)'}
+              {isArr ? t('funnel.originFrom') : t('funnel.destinationTo')}
             </Label>
             <Input
               placeholder="e.g. London Heathrow"
@@ -283,12 +290,12 @@ export function FlightClient({ settings }: FlightClientProps) {
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm space-y-4">
             <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm">
               <Plane className="h-4 w-4 rotate-90" style={{ color: pc }} />
-              Return Flight (departure)
+              {t('funnel.returnFlight')}
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
-                  Return Flight Number
+                  {t('funnel.returnFlightNumber')}
                 </Label>
                 <Input
                   placeholder="e.g. MS778"
@@ -300,7 +307,7 @@ export function FlightClient({ settings }: FlightClientProps) {
               </div>
               <div className="space-y-1.5">
                 <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
-                  Terminal
+                  {t('funnel.terminal')}
                 </Label>
                 <Input
                   placeholder="e.g. T1"
@@ -313,7 +320,7 @@ export function FlightClient({ settings }: FlightClientProps) {
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">
-                Destination (flying to)
+                {t('funnel.destinationTo')}
               </Label>
               <Input
                 placeholder="e.g. London Heathrow"
@@ -335,7 +342,7 @@ export function FlightClient({ settings }: FlightClientProps) {
             <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm">
               <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm mb-4">
                 <Car className="h-4 w-4" style={{ color: pc }} />
-                Your Vehicle
+                {t('funnel.yourVehicle')}
               </h2>
               <div className="flex items-center gap-4">
                 {selectedVehicle?.imageUrl && (
@@ -349,23 +356,23 @@ export function FlightClient({ settings }: FlightClientProps) {
                   <p className="font-bold text-[var(--foreground)]">{typeName}</p>
                   <p className="mt-0.5 flex items-center gap-1 text-sm text-[var(--muted-foreground)]">
                     <Users className="h-3.5 w-3.5" />
-                    Capacity: {seats} seat{seats !== 1 ? 's' : ''}
+                    {t('funnel.capacityN', { n: seats })}
                   </p>
                   {selectedVehicle && (selectedVehicle.airConditioning || selectedVehicle.wifi || selectedVehicle.luggageCapacity != null) && (
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {selectedVehicle.airConditioning && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] text-[var(--muted-foreground)]">
-                          <Snowflake className="h-3 w-3" /> A/C
+                          <Snowflake className="h-3 w-3" /> {t('funnel.ac')}
                         </span>
                       )}
                       {selectedVehicle.wifi && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] text-[var(--muted-foreground)]">
-                          <Wifi className="h-3 w-3" /> Wi-Fi
+                          <Wifi className="h-3 w-3" /> {t('funnel.wifi')}
                         </span>
                       )}
                       {selectedVehicle.luggageCapacity != null && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] text-[var(--muted-foreground)]">
-                          <Briefcase className="h-3 w-3" /> {selectedVehicle.luggageCapacity} bags
+                          <Briefcase className="h-3 w-3" /> {t('funnel.bags', { n: selectedVehicle.luggageCapacity })}
                         </span>
                       )}
                     </div>
@@ -380,7 +387,7 @@ export function FlightClient({ settings }: FlightClientProps) {
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm space-y-4">
           <h2 className="flex items-center gap-2 font-semibold text-[var(--foreground)] text-sm">
             <Briefcase className="h-4 w-4" style={{ color: pc }} />
-            Optional Extras
+            {t('funnel.optionalExtras')}
           </h2>
 
           {/* Managed catalog extras */}
@@ -397,7 +404,7 @@ export function FlightClient({ settings }: FlightClientProps) {
                     {candidates.length > 0 ? (
                       <div className="space-y-1.5">
                         <p className="text-[10px] font-semibold uppercase tracking-wider text-amber-700">
-                          Change vehicle
+                          {t('funnel.changeVehicle')}
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {candidates.map((opt) => (
@@ -409,7 +416,7 @@ export function FlightClient({ settings }: FlightClientProps) {
                             >
                               <Car className="h-3.5 w-3.5 text-amber-600" />
                               <span className="font-semibold text-[var(--foreground)]">{opt.vehicleTypeName}</span>
-                              <span className="text-[var(--muted-foreground)]">· up to {opt.seatCapacity}</span>
+                              <span className="text-[var(--muted-foreground)]">· {t('funnel.upTo', { n: opt.seatCapacity })}</span>
                               <span className="font-bold" style={{ color: pc }}>
                                 {opt.currency} {opt.price.toFixed(2)}
                               </span>
@@ -419,7 +426,7 @@ export function FlightClient({ settings }: FlightClientProps) {
                       </div>
                     ) : (
                       <p className="text-amber-700">
-                        No other vehicle on this route can carry the selected passengers and extras.
+                        {t('funnel.noOtherVehicle')}
                       </p>
                     )}
                   </div>
@@ -436,9 +443,9 @@ export function FlightClient({ settings }: FlightClientProps) {
                       <p className="text-xs text-[var(--muted-foreground)]">
                         {ex.description ? `${ex.description} · ` : ''}
                         {ex.currency} {ex.price.toFixed(2)}
-                        {ex.occupiesSeat ? ' · occupies a seat' : ''}
+                        {ex.occupiesSeat ? ` · ${t('funnel.occupiesSeat')}` : ''}
                         {(ex.allowedVehicleTypeIds ?? []).length > 0
-                          ? ` · ${(ex.allowedVehicleTypeNames ?? []).join('/')} only`
+                          ? ` · ${t('funnel.onlySuffix', { names: (ex.allowedVehicleTypeNames ?? []).join('/') })}`
                           : ''}
                       </p>
                     </div>
@@ -456,10 +463,10 @@ export function FlightClient({ settings }: FlightClientProps) {
           )}
 
           <div className="space-y-1.5 pt-2">
-            <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">Special Requests</Label>
+            <Label className="text-xs font-semibold text-[var(--muted-foreground)] uppercase tracking-wider">{t('funnel.specialRequests')}</Label>
             <textarea
               rows={2}
-              placeholder="Any special requirements or notes for the driver…"
+              placeholder={t('funnel.specialRequestsPh')}
               value={store.notes}
               onChange={(e) => store.setField('notes', e.target.value)}
               className="w-full rounded-lg border border-[var(--border)] bg-[var(--muted)] px-3 py-2 text-sm text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-1 resize-none"
@@ -473,19 +480,19 @@ export function FlightClient({ settings }: FlightClientProps) {
           <div className="rounded-2xl px-5 py-4 flex items-center justify-between"
             style={{ background: `linear-gradient(135deg, ${pc}12, ${pc}06)`, border: `1px solid ${pc}25` }}>
             <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-0.5">Your price</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-0.5">{t('funnel.yourPrice')}</p>
               <p className="text-xl font-extrabold text-[var(--foreground)]">
                 {store.quoteCurrency} {(store.quotePrice + customExtrasTotal).toFixed(2)}
               </p>
               {customExtrasTotal > 0 && (
                 <p className="text-xs text-[var(--muted-foreground)]">
-                  incl. {store.quoteCurrency} {customExtrasTotal.toFixed(2)} extras
+                  {t('funnel.inclExtras', { amount: `${store.quoteCurrency} ${customExtrasTotal.toFixed(2)}` })}
                 </p>
               )}
             </div>
             <div className="flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
               <Users className="h-3.5 w-3.5" />
-              {store.paxCount} pax ·
+              {t('funnel.paxShort', { n: store.paxCount })} ·
               <Clock className="h-3.5 w-3.5 ml-1" />
               {store.pickupTime}
             </div>
@@ -499,15 +506,15 @@ export function FlightClient({ settings }: FlightClientProps) {
           className="w-full rounded-xl py-3 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
           style={{ backgroundColor: pc }}
         >
-          Continue to Your Details →
+          {t('funnel.continueDetails')} <span className="rtl:rotate-180 inline-block">→</span>
         </button>
 
         {/* Cancellation policy */}
         <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 flex items-start gap-2">
           <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-[var(--muted-foreground)]" />
           <p className="text-xs text-[var(--muted-foreground)]">
-            <span className="font-semibold text-[var(--foreground)]">Cancellation policy: </span>
-            Free cancellation up to 48 hours before your scheduled pickup. Cancellations within 48 hours of departure cannot be processed.
+            <span className="font-semibold text-[var(--foreground)]">{t('funnel.cancellationPolicyLabel')} </span>
+            {t('funnel.cancellationPolicyText')}
           </p>
         </div>
       </div>
