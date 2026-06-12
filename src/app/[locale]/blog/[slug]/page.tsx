@@ -5,7 +5,7 @@ import { ArrowLeft, CalendarDays, User } from 'lucide-react';
 import { fetchBlogPost } from '@/lib/website-content';
 import { resolveAssetUrl } from '@/lib/site-settings';
 import { JsonLd } from '@/components/JsonLd';
-import { SITE_URL, BRAND_NAME, OG_IMAGE } from '@/lib/seo';
+import { SITE_URL, BRAND_NAME, OG_IMAGE, articleSchema } from '@/lib/seo';
 import { LOCALES } from '@/lib/i18n-config';
 
 export const revalidate = 120;
@@ -66,17 +66,14 @@ export default async function LocaleBlogPostPage({ params }: Props) {
     ],
   };
 
-  const article = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.excerpt ?? undefined,
-    image: image ? [image] : undefined,
-    author: post.author ? { '@type': 'Person', name: post.author } : { '@type': 'Organization', name: BRAND_NAME },
-    publisher: { '@type': 'Organization', name: BRAND_NAME, url: SITE_URL },
-    datePublished: post.publishedAt ?? undefined,
+  const article = articleSchema({
+    title: post.title,
+    description: post.excerpt,
+    image,
+    author: post.author,
     url: `${SITE_URL}${canonical}`,
-  };
+    publishedAt: post.publishedAt,
+  });
 
   return (
     <article className="bg-white">

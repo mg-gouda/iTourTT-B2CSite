@@ -126,6 +126,46 @@ export function localBusinessSchema(opts: {
   };
 }
 
+// Canonical TravelAgency "organization" node for the homepage. Carries a
+// stable @id (#organization) so search/AI crawlers reconcile it with the
+// other org references, plus a ContactPoint for support discovery.
+export function organizationSchema(opts?: {
+  name?: string;
+  telephone?: string | null;
+  email?: string | null;
+}): Record<string, unknown> {
+  const telephone = opts?.telephone || BRAND_PHONE;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'TravelAgency',
+    '@id': `${SITE_URL}/#organization`,
+    name: opts?.name || BRAND_NAME,
+    url: `${SITE_URL}/en`,
+    logo: `${SITE_URL}/logo.svg`,
+    description:
+      'Private airport transfer service across Egypt — Hurghada, Cairo, Sharm El Sheikh, Luxor, Aswan, Marsa Alam and Alexandria.',
+    telephone,
+    email: opts?.email || 'support@transfera.ae',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone,
+      contactType: 'customer support',
+      availableLanguage: ['English', 'Russian'],
+      hoursAvailable: 'Mo-Su 00:00-24:00',
+    },
+    areaServed: [
+      'Hurghada',
+      'Cairo',
+      'Sharm El Sheikh',
+      'Luxor',
+      'Aswan',
+      'Marsa Alam',
+      'Alexandria',
+    ],
+    sameAs: [],
+  };
+}
+
 export function serviceSchema(opts?: {
   name?: string;
   areaServed?: string;
@@ -160,5 +200,38 @@ export function faqSchema(items: FaqItem[] = FAQ_ITEMS): Record<string, unknown>
         text: item.answer,
       },
     })),
+  };
+}
+
+// Article schema for blog posts. `url` must be the full canonical URL of the
+// post. `modifiedAt` falls back to `publishedAt` when no separate edit date
+// is available.
+export function articleSchema(opts: {
+  title: string;
+  description?: string | null;
+  image?: string | null;
+  author?: string | null;
+  url: string;
+  publishedAt?: string | null;
+  modifiedAt?: string | null;
+}): Record<string, unknown> {
+  const published = opts.publishedAt ?? undefined;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: opts.title,
+    description: opts.description ?? undefined,
+    image: opts.image ? [opts.image] : undefined,
+    datePublished: published,
+    dateModified: opts.modifiedAt ?? published,
+    author: opts.author
+      ? { '@type': 'Person', name: opts.author }
+      : { '@type': 'Organization', name: BRAND_NAME, url: `${SITE_URL}/en` },
+    publisher: {
+      '@type': 'Organization',
+      name: BRAND_NAME,
+      logo: { '@type': 'ImageObject', url: `${SITE_URL}/logo.svg` },
+    },
+    mainEntityOfPage: { '@type': 'WebPage', '@id': opts.url },
   };
 }

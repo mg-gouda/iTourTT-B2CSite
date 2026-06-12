@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
 import { JsonLd } from '@/components/JsonLd';
-import { serviceSchema, faqSchema } from '@/lib/seo';
+import { organizationSchema, faqSchema } from '@/lib/seo';
 import { buildPageMetadata } from '@/lib/page-metadata';
 import { WebsiteLandingClient } from '../landing-client';
 
@@ -24,7 +24,13 @@ export default async function LocaleHomePage() {
   try { settings = await fetchSiteSettings(); } catch {}
   return (
     <>
-      <JsonLd data={serviceSchema()} />
+      <JsonLd
+        data={organizationSchema({
+          name: settings.siteName,
+          telephone: settings.contactPhone,
+          email: settings.contactEmail,
+        })}
+      />
       <JsonLd data={faqSchema()} />
       <WebsiteLandingClient settings={settings} />
     </>
