@@ -58,6 +58,11 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
   const pathname = usePathname();
   const defaultNavLinks = useDefaultNavLinks();
   const navLinks = settings.navLinksJson ?? defaultNavLinks;
+  // A single Book-Now CTA lives on the right; drop any "/book" link from the
+  // nav so the call-to-action isn't duplicated.
+  const visibleNavLinks = navLinks.filter(
+    (l) => l.href.replace(/\/+$/, '').toLowerCase() !== '/book',
+  );
   const preset = settings.headerPreset;
 
   const cmsNavItems = useCmsNavItems();
@@ -74,15 +79,15 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       .catch(() => {});
   }, []);
 
-  // Track scroll for transparent preset
+  // Track scroll for every preset: past 60px the bar turns to frosted glass
+  // (translucent themed bg + backdrop blur). The transparent preset also uses
+  // it to go from transparent → solid.
   useEffect(() => {
-    if (preset !== 'transparent') return;
-
-    const onScroll = () => setScrolled(window.scrollY > 48);
+    const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
-  }, [preset]);
+  }, []);
 
   // Close mobile menu on resize
   useEffect(() => {
@@ -95,7 +100,18 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
 
   const isTransparent = preset === 'transparent' && !scrolled;
 
-  const navBg = isTransparent ? 'transparent' : settings.navBgColor;
+  // Frosted glass once scrolled: keep the brand nav colour but make it
+  // translucent and blur what passes behind — stays readable for the white
+  // nav text instead of forcing a white bar that would wash it out.
+  const navStyle: React.CSSProperties = isTransparent
+    ? { backgroundColor: 'transparent' }
+    : scrolled
+      ? {
+          backgroundColor: `color-mix(in srgb, ${settings.navBgColor} 85%, transparent)`,
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+        }
+      : { backgroundColor: settings.navBgColor };
 
   const Logo = () => (
     <Link href={localePath('/')} className="flex items-center gap-2.5">
@@ -127,7 +143,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
 
   const NavItems = ({ className, onClick }: { className?: string; onClick?: () => void }) => (
     <div className={className}>
-      {navLinks.map((link) => (
+      {visibleNavLinks.map((link) => (
         <Link
           key={link.href}
           href={link.external ? link.href : localePath(link.href)}
@@ -320,7 +336,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
             </button>
           </div>
           <div className="flex flex-col gap-1 px-3 py-4">
-            {navLinks.map((link) => (
+            {visibleNavLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.external ? link.href : localePath(link.href)}
@@ -459,7 +475,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       <>
         <nav
           className="sticky top-0 z-50 w-full border-b border-white/10 shadow-lg"
-          style={{ backgroundColor: navBg }}
+          style={navStyle}
         >
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <Logo />
@@ -484,7 +500,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       <>
         <nav
           className="sticky top-0 z-50 w-full border-b border-white/10 shadow-lg"
-          style={{ backgroundColor: navBg }}
+          style={navStyle}
         >
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {/* Top: Logo centered */}
@@ -520,7 +536,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
               ? 'border-b border-white/10 shadow-lg'
               : 'border-b border-transparent',
           )}
-          style={{ backgroundColor: navBg }}
+          style={navStyle}
         >
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <Logo />
@@ -545,7 +561,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
       <>
         <nav
           className="sticky top-0 z-50 w-full border-b border-white/10 shadow-lg"
-          style={{ backgroundColor: navBg }}
+          style={navStyle}
         >
           <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <Logo />
@@ -567,7 +583,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
     <>
       <nav
         className="sticky top-0 z-50 w-full border-b border-white/10 shadow-lg"
-        style={{ backgroundColor: navBg }}
+        style={navStyle}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Logo />
