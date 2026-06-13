@@ -49,12 +49,16 @@ const PRIMARY = 'var(--website-primary)';
 // --website-primary-dark is used directly in the Search button's hover class.
 const SECONDARY = 'var(--website-secondary, #2A1A5E)';
 
-// Fixed structural colours — do NOT vary with the theme.
-const C_BORDER = '#D0D5DD'; // input borders
-const C_DIVIDER = '#F2F4F7'; // hairlines / dividers
-const C_LABEL = '#344054'; // field labels
-const C_MUTED = '#98A2B3'; // icon / placeholder grey
-const C_TEXT = '#212121'; // body text
+// Fixed structural colours — dark widget surface (#191919) with white text.
+// These are only ever applied to elements sitting ON the dark card; the
+// floating popovers (date/time/combobox) keep their own light styling.
+const C_CARD = '#191919'; // widget card background
+const C_INPUT = '#232323'; // input field background (sits on the card)
+const C_BORDER = 'rgba(255,255,255,0.18)'; // input borders
+const C_DIVIDER = 'rgba(255,255,255,0.12)'; // hairlines / dividers
+const C_LABEL = '#D1D5DB'; // field labels
+const C_MUTED = '#9CA3AF'; // icon / placeholder grey
+const C_TEXT = '#FFFFFF'; // body text
 
 interface LocationNode {
   id: string;
@@ -77,7 +81,7 @@ function Field({ icon: Icon, label, children, className }: {
       <label className="text-[10.5px] font-semibold uppercase tracking-wide" style={{ color: C_LABEL }}>
         {label}
       </label>
-      <div className="flex h-12 items-center gap-2 rounded-lg bg-white px-3" style={{ border: `0.8px solid ${C_BORDER}` }}>
+      <div className="flex h-12 items-center gap-2 rounded-lg px-3" style={{ backgroundColor: C_INPUT, border: `0.8px solid ${C_BORDER}` }}>
         {Icon && <Icon className="h-4 w-4 shrink-0" style={{ color: C_MUTED }} />}
         <div className="min-w-0 flex-1">{children}</div>
       </div>
@@ -104,7 +108,7 @@ function Stepper({ value, onChange, min = 0, max = 50 }: {
 }) {
   const cls =
     'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sm font-bold leading-none transition disabled:opacity-30';
-  const st = { border: `1px solid color-mix(in srgb, ${SECONDARY} 15%, transparent)`, color: SECONDARY };
+  const st = { border: '1px solid rgba(255,255,255,0.25)', color: '#fff' };
   return (
     <div className="flex w-full items-center justify-between">
       <button type="button" onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min}
@@ -610,7 +614,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
             <button key={key} type="button" onClick={() => { setActiveTab(key); setPlaceMsg(''); }}
               className="flex items-center gap-2 rounded-t-xl px-4 py-2.5 text-xs font-bold transition sm:px-5 sm:text-sm"
               style={active
-                ? { backgroundColor: '#fff', color: PRIMARY }
+                ? { backgroundColor: C_CARD, color: '#fff' }
                 : { backgroundColor: 'rgba(255,255,255,0.15)', color: '#fff' }}>
               <Icon className="h-4 w-4" />
               {label}
@@ -619,9 +623,9 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
         })}
       </div>
 
-      {/* White form card */}
-      <div className="overflow-hidden rounded-2xl bg-white"
-        style={{ border: `0.8px solid color-mix(in srgb, ${SECONDARY} 6%, transparent)`, boxShadow: '0 20px 60px rgba(0,0,0,0.12)' }}>
+      {/* Dark form card — top-left corner kept square so the active tab merges in. */}
+      <div className="overflow-hidden rounded-2xl rounded-tl-none"
+        style={{ backgroundColor: C_CARD, border: '0.8px solid rgba(255,255,255,0.08)', boxShadow: '0 20px 60px rgba(0,0,0,0.35)' }}>
 
         {/* One Way / Return Transfer radio — Airport tab only, and only when the
             admin has enabled return (2-way) transfers. */}
@@ -769,7 +773,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
                 onSelect={handlePlace}
                 primaryColor={PRIMARY}
                 placeholder={t('booking.searchPlace')}
-                inputClassName="h-12 w-full rounded-lg border-[0.8px] border-[#D0D5DD] bg-white px-3 text-sm text-[#212121] outline-none placeholder:text-[#98A2B3] focus:ring-2"
+                inputClassName="h-12 w-full rounded-lg border-[0.8px] border-white/15 bg-[#232323] px-3 text-sm text-white outline-none placeholder:text-[#9CA3AF] focus:ring-2"
               />
               {placeMsg && <p className="mt-1 text-[11px]" style={{ color: '#667085' }}>{placeMsg}</p>}
             </div>

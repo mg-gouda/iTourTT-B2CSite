@@ -117,24 +117,24 @@ export function BookNowClient({ settings }: BookNowClientProps) {
 
   return (
     <div className="min-h-screen bg-[var(--muted)]">
-      {/* Header bar — dark, flush under the navigation (no rounded corners) */}
-      <div className="rounded-none bg-[#191919] px-4 py-3 shadow-sm">
-        <div className="mx-auto max-w-6xl flex flex-wrap items-center gap-4 text-sm text-white/70">
-          <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-white/80 hover:text-white transition text-xs font-medium">
+      {/* Header bar */}
+      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
+        <div className="mx-auto max-w-6xl flex flex-wrap items-center gap-4 text-sm text-[var(--muted-foreground)]">
+          <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition text-xs font-medium">
             <span className="rtl:rotate-180">←</span> {t('funnel.editSearch')}
           </button>
-          <span className="flex items-center gap-1.5 text-white">
-            <Plane className="h-3.5 w-3.5" style={{ color: isArr || isCity ? '#22c55e' : '#f87171' }} />
+          <span className="flex items-center gap-1.5">
+            <Plane className="h-3.5 w-3.5" style={{ color: isArr || isCity ? '#16a34a' : '#dc2626' }} />
             {transferLabel}{isCity ? '' : ` ${t('funnel.transferSuffix')}`}
           </span>
           {dateDisplay && (
             <span className="flex items-center gap-1.5">
-              <CalendarDays className="h-3.5 w-3.5 text-white/70" />
+              <CalendarDays className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
               {dateDisplay} · {store.pickupTime}
             </span>
           )}
           <span className="flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5 text-white/70" />
+            <Users className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
             {t('funnel.paxCount', { n: store.paxCount })}
           </span>
         </div>
