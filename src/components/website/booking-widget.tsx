@@ -573,6 +573,15 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   };
 
   const handleSearch = () => {
+    // Persist human-readable endpoint names so the funnel's "Your Selected
+    // Route" summary can show them (the store otherwise only carries IDs).
+    if (isCity) {
+      store.setField('fromPlaceName', zoneNameById(store.fromZoneId));
+      store.setField('toPlaceName', zoneNameById(store.toZoneId));
+    } else {
+      store.setField('fromPlaceName', airportName);
+      store.setField('toPlaceName', dropoffName);
+    }
     router.push('/book');
   };
 
