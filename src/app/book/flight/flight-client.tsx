@@ -8,6 +8,8 @@ import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { BookingSteps } from '@/components/website/booking-steps';
+import { useFunnelSticky } from '@/components/website/use-funnel-sticky';
+import { FunnelRouteCard, FunnelPoliciesCard } from '@/components/website/funnel-summary';
 import { useLocale } from '@/lib/website-i18n';
 import { translate } from '@/lib/website-translations';
 
@@ -71,6 +73,7 @@ export function FlightClient({ settings }: FlightClientProps) {
   const isArr = store.serviceType === 'ARR';
   const locale = useLocale();
   const t = (key: string, vars?: Record<string, string | number>) => translate(locale, key, vars);
+  const { headerRef, navTop, asideTop } = useFunnelSticky();
 
   const [catalogExtras, setCatalogExtras] = useState<CatalogExtra[]>([]);
   const [vehicleOptions, setVehicleOptions] = useState<VehicleOption[]>([]);
@@ -216,26 +219,34 @@ export function FlightClient({ settings }: FlightClientProps) {
 
   return (
     <div className="min-h-screen bg-[var(--muted)]">
-      {/* Top bar */}
-      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
-        <div className="mx-auto flex max-w-2xl items-center gap-3">
-          <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
-            <span className="rtl:rotate-180">←</span> {t('funnel.back')}
-          </button>
+      {/* Sticky funnel header: back + progress steps + section title.
+          Pins just below the site navbar and stays put while the form scrolls. */}
+      <div
+        ref={headerRef}
+        className="sticky z-40 border-b border-[var(--border)] bg-[var(--muted)] shadow-sm"
+        style={{ top: navTop }}
+      >
+        {/* Back bar */}
+        <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3">
+          <div className="mx-auto flex max-w-5xl items-center gap-3">
+            <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+              <span className="rtl:rotate-180">←</span> {t('funnel.back')}
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className="px-4 pt-8">
-        <BookingSteps current={1} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
-      </div>
-
-      <div className="mx-auto max-w-2xl px-4 py-8 space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-[var(--foreground)]">{t('funnel.flightDetails')}</h1>
-          <p className="mt-1 text-sm text-[var(--muted-foreground)]">
+        {/* Steps + title */}
+        <div className="mx-auto max-w-5xl px-4 pt-5 pb-4">
+          <BookingSteps current={1} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
+          <h1 className="mt-6 text-center text-xl font-bold tracking-tight text-[var(--foreground)] sm:text-2xl">{t('funnel.flightDetails')}</h1>
+          <p className="hidden text-center text-sm text-[var(--muted-foreground)] sm:block">
             {isArr ? t('funnel.flightSubArr') : t('funnel.flightSubDep')}
           </p>
         </div>
+      </div>
+
+      <div className="mx-auto grid max-w-5xl gap-6 px-4 py-8 lg:grid-cols-[1fr_340px] lg:items-start">
+        {/* ── Left column: flight + extras form ── */}
+        <div className="space-y-6">
 
         {/* Flight info card */}
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-sm space-y-4">
@@ -508,15 +519,13 @@ export function FlightClient({ settings }: FlightClientProps) {
         >
           {t('funnel.continueDetails')} <span className="rtl:rotate-180 inline-block">→</span>
         </button>
-
-        {/* Cancellation policy */}
-        <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] px-4 py-3 flex items-start gap-2">
-          <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-[var(--muted-foreground)]" />
-          <p className="text-xs text-[var(--muted-foreground)]">
-            <span className="font-semibold text-[var(--foreground)]">{t('funnel.cancellationPolicyLabel')} </span>
-            {t('funnel.cancellationPolicyText')}
-          </p>
         </div>
+
+        {/* ── Right column: selected route + policies ── */}
+        <aside className="space-y-4 lg:sticky" style={{ top: asideTop }}>
+          <FunnelRouteCard primaryColor={pc} />
+          <FunnelPoliciesCard primaryColor={pc} />
+        </aside>
       </div>
     </div>
   );

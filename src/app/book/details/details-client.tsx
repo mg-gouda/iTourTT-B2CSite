@@ -8,6 +8,8 @@ import type { SiteSettings } from '@/lib/site-settings';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { BookingSteps } from '@/components/website/booking-steps';
+import { useFunnelSticky } from '@/components/website/use-funnel-sticky';
+import { FunnelRouteCard, FunnelPoliciesCard } from '@/components/website/funnel-summary';
 import { useLocale } from '@/lib/website-i18n';
 import { translate } from '@/lib/website-translations';
 
@@ -28,10 +30,14 @@ export function DetailsClient({ settings }: DetailsClientProps) {
   const pc = settings.primaryColor;
   const locale = useLocale();
   const t = (key: string, vars?: Record<string, string | number>) => translate(locale, key, vars);
+  const { headerRef, navTop, asideTop } = useFunnelSticky();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
   const [catalogExtras, setCatalogExtras] = useState<CatalogExtra[]>([]);
+  // Online payments: hold the hosted-checkout URL so we can show the guest their
+  // booking reference (to put in the payment notes) BEFORE redirecting them.
+  const [pendingPaymentUrl, setPendingPaymentUrl] = useState<string | null>(null);
 
   // Payment method master switches (admin-controlled).
   const onlineEnabled = settings.onlinePaymentEnabled ?? true;
@@ -127,9 +133,11 @@ export function DetailsClient({ settings }: DetailsClientProps) {
       store.setField('accountCreated', data.accountCreated ?? false);
       store.setField('accountEmail', data.accountEmail ?? null);
       store.setField('accountPassword', data.accountPassword ?? null);
-      // Online payment → hand off to the GetPayIn hosted checkout.
+      // Online payment → show the booking reference first (so the guest can add
+      // it to their payment notes for tracking), then hand off to the GetPayIn
+      // hosted checkout from the interstitial.
       if (paymentMethod === 'ONLINE' && data.paymentUrl) {
-        window.location.href = data.paymentUrl;
+        setPendingPaymentUrl(data.paymentUrl);
         return;
       }
       setDone(true);
@@ -139,6 +147,41 @@ export function DetailsClient({ settings }: DetailsClientProps) {
       setSubmitting(false);
     }
   };
+
+  // Online payment interstitial — the guest sees their booking reference and is
+  // told to add it to the payment notes BEFORE being sent to the gateway.
+  if (pendingPaymentUrl) {
+    return (
+      <div className="min-h-screen pt-16 flex items-center justify-center bg-[var(--muted)] px-4">
+        <div className="w-full max-w-md space-y-5">
+          <div className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full" style={{ backgroundColor: `${pc}15` }}>
+              <CheckCircle2 className="h-8 w-8" style={{ color: pc }} />
+            </div>
+            <h1 className="text-2xl font-bold text-[var(--foreground)] mb-2">{t('funnel.paymentRefTitle')}</h1>
+            <p className="text-sm text-[var(--muted-foreground)]">{t('funnel.paymentRefInstruction')}</p>
+          </div>
+
+          {/* Booking reference to copy into the payment notes */}
+          <div className="rounded-2xl border bg-[var(--card)] p-5 text-center shadow-sm" style={{ borderColor: `${pc}40` }}>
+            <p className="text-xs font-medium uppercase tracking-wide text-[var(--muted-foreground)]">{t('funnel.yourReference')}</p>
+            <p className="mt-1 font-mono text-2xl font-bold text-[var(--foreground)]">{store.bookingRef}</p>
+            <p className="mt-3 text-xs text-[var(--muted-foreground)]">{t('funnel.paymentRefNote')}</p>
+          </div>
+
+          <button
+            onClick={() => { window.location.href = pendingPaymentUrl; }}
+            className="flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold text-white shadow-md transition-opacity hover:opacity-95"
+            style={{ backgroundColor: pc }}
+          >
+            <ExternalLink className="h-4 w-4" />
+            {t('funnel.proceedPayment')}
+          </button>
+          <p className="text-center text-xs text-[var(--muted-foreground)]">{t('funnel.redirectNote')}</p>
+        </div>
+      </div>
+    );
+  }
 
   if (done) {
     return (
@@ -203,26 +246,32 @@ export function DetailsClient({ settings }: DetailsClientProps) {
 
   return (
     <div className="min-h-screen bg-[var(--muted)]">
-      {/* Top bar */}
-      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
-        <div className="mx-auto flex max-w-5xl items-center gap-3">
-          <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
-            <span className="rtl:rotate-180">←</span> {t('funnel.back')}
-          </button>
+      {/* Sticky funnel header: back + progress steps + section title.
+          Pins just below the site navbar and stays put while the form scrolls. */}
+      <div
+        ref={headerRef}
+        className="sticky z-40 border-b border-[var(--border)] bg-[var(--muted)] shadow-sm"
+        style={{ top: navTop }}
+      >
+        {/* Back bar */}
+        <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3">
+          <div className="mx-auto flex max-w-5xl items-center gap-3">
+            <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+              <span className="rtl:rotate-180">←</span> {t('funnel.back')}
+            </button>
+          </div>
         </div>
-      </div>
-
-      <div className="px-4 pt-8">
-        <BookingSteps current={2} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
+        {/* Steps + title */}
+        <div className="mx-auto max-w-5xl px-4 pt-5 pb-4">
+          <BookingSteps current={2} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
+          <h1 className="mt-6 text-center text-xl font-bold tracking-tight text-[var(--foreground)] sm:text-2xl">{t('funnel.yourDetails')}</h1>
+          <p className="hidden text-center text-sm text-[var(--muted-foreground)] sm:block">{t('funnel.confirmationHere')}</p>
+        </div>
       </div>
 
       <div className="mx-auto grid max-w-5xl gap-6 px-4 py-8 lg:grid-cols-[1fr_360px] lg:items-start">
         {/* ── Left column: form ── */}
         <div className="space-y-6">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">{t('funnel.yourDetails')}</h1>
-            <p className="mt-1 text-sm text-[var(--muted-foreground)]">{t('funnel.confirmationHere')}</p>
-          </div>
 
           {/* Personal info */}
           <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 space-y-4" style={{ boxShadow: 'var(--elevation-1)' }}>
@@ -286,6 +335,7 @@ export function DetailsClient({ settings }: DetailsClientProps) {
                   >
                     <span className="text-sm font-semibold text-[var(--foreground)]">{t('funnel.onlinePayment')}</span>
                     <span className="text-xs text-[var(--muted-foreground)]">{t('funnel.onlinePaymentDesc')}</span>
+                    <span className="text-[11px] leading-snug text-[var(--muted-foreground)]">{t('funnel.onlinePaymentRefNote')}</span>
                   </button>
                 )}
                 {cashEnabled && (
@@ -307,9 +357,12 @@ export function DetailsClient({ settings }: DetailsClientProps) {
         </div>
 
         {/* ── Right column: sticky order summary + confirm ── */}
-        <div className="space-y-4 lg:sticky lg:top-24">
+        <div className="space-y-4 lg:sticky" style={{ top: asideTop }}>
           {store.quotePrice !== null && (
             <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5" style={{ boxShadow: 'var(--elevation-2)' }}>
+              {/* Route first, then the financial breakdown */}
+              <FunnelRouteCard primaryColor={pc} embedded />
+              <div className="my-4 border-t border-[var(--border)]" />
               <h2 className="mb-3 text-sm font-semibold text-[var(--foreground)]">{t('funnel.bookingSummary')}</h2>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between text-[var(--muted-foreground)]">
@@ -329,6 +382,9 @@ export function DetailsClient({ settings }: DetailsClientProps) {
               </div>
             </div>
           )}
+
+          {/* Cancellation & no-show policies */}
+          <FunnelPoliciesCard primaryColor={pc} />
 
           {error && (
             <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
@@ -353,13 +409,6 @@ export function DetailsClient({ settings }: DetailsClientProps) {
               : t('funnel.payOnArrivalNote')}
           </p>
 
-          {/* Cancellation policy */}
-          <div className="rounded-xl border border-red-100 bg-red-50 px-4 py-3">
-            <p className="text-xs font-semibold text-red-700 mb-0.5">{t('funnel.cancellationPolicy')}</p>
-            <p className="text-xs text-red-600">
-              {t('funnel.cancellationPolicyText')}
-            </p>
-          </div>
         </div>
       </div>
     </div>

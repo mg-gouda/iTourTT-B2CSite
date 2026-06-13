@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Users, Clock, CalendarDays, MapPin, Plane, ChevronRight, Car, Loader2, AlertCircle, Wifi, Snowflake, Cog, Briefcase, Navigation } from 'lucide-react';
+import { Users, CalendarDays, Plane, ChevronRight, Car, Loader2, AlertCircle, Wifi, Snowflake, Cog, Briefcase, Navigation } from 'lucide-react';
 import { format } from 'date-fns';
 import { useBookingStore } from '@/stores/booking-store';
 import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
 import { BookingSteps } from '@/components/website/booking-steps';
+import { useFunnelSticky } from '@/components/website/use-funnel-sticky';
+import { FunnelRouteCard, FunnelPoliciesCard } from '@/components/website/funnel-summary';
 import { useLocale } from '@/lib/website-i18n';
 import { translate } from '@/lib/website-translations';
 
@@ -46,6 +48,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
   const pc = settings.primaryColor;
   const locale = useLocale();
   const t = (key: string, vars?: Record<string, string | number>) => translate(locale, key, vars);
+  const { headerRef, navTop, asideTop } = useFunnelSticky();
 
   useEffect(() => {
     if (!store.fromZoneId || !store.toZoneId || !store.serviceType) {
@@ -117,8 +120,16 @@ export function BookNowClient({ settings }: BookNowClientProps) {
 
   return (
     <div className="min-h-screen bg-[var(--muted)]">
-      {/* Header bar */}
-      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
+      {/* Sticky funnel header: edit-search bar + progress steps + section title.
+          Pins just below the site navbar (navTop) and stays put while the
+          vehicle list scrolls underneath. */}
+      <div
+        ref={headerRef}
+        className="sticky z-40 border-b border-[var(--border)] bg-[var(--muted)] shadow-sm"
+        style={{ top: navTop }}
+      >
+      {/* Edit-search bar */}
+      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3">
         <div className="mx-auto max-w-6xl flex flex-wrap items-center gap-4 text-sm text-[var(--muted-foreground)]">
           <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition text-xs font-medium">
             <span className="rtl:rotate-180">←</span> {t('funnel.editSearch')}
@@ -140,16 +151,17 @@ export function BookNowClient({ settings }: BookNowClientProps) {
         </div>
       </div>
 
-      <div className="mx-auto max-w-6xl px-4 py-10 lg:grid lg:grid-cols-[1fr_340px] lg:gap-8 lg:items-start">
+      {/* Progress steps + section title */}
+      <div className="mx-auto max-w-6xl px-4 pt-5 pb-4">
+        <BookingSteps current={0} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
+        <h2 className="mt-6 text-center text-xl font-bold tracking-tight text-[var(--foreground)] sm:text-2xl">{t('funnel.chooseVehicle')}</h2>
+        <p className="hidden text-center text-sm text-[var(--muted-foreground)] sm:block">{t('funnel.pricesPerVehicle')}</p>
+      </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl px-4 py-8 lg:grid lg:grid-cols-[1fr_340px] lg:gap-8 lg:items-start">
         {/* ── Left column: vehicle selection ── */}
         <div>
-        {/* Step indicator */}
-        <div className="mb-10">
-          <BookingSteps current={0} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
-        </div>
-
-        <h2 className="text-2xl font-bold tracking-tight text-[var(--foreground)] text-center mb-2">{t('funnel.chooseVehicle')}</h2>
-        <p className="text-[var(--muted-foreground)] text-center text-sm mb-8">{t('funnel.pricesPerVehicle')}</p>
 
         {loading && (
           <div className="flex justify-center py-20">
@@ -261,74 +273,9 @@ export function BookNowClient({ settings }: BookNowClientProps) {
         </div>
 
         {/* ── Right column: selected route + policies ── */}
-        <aside className="mt-8 space-y-4 lg:mt-0 lg:sticky lg:top-24">
-          {/* Card 1: Your selected route */}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5" style={{ boxShadow: 'var(--elevation-2)' }}>
-            <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
-              <Navigation className="h-4 w-4" style={{ color: pc }} />
-              {t('funnel.selectedRoute')}
-            </h2>
-            <div className="space-y-3.5 text-sm">
-              <div className="flex items-start gap-2.5">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
-                <div className="min-w-0">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">{t('funnel.routeFrom')}</p>
-                  <p className="font-medium text-[var(--foreground)] break-words">{store.fromPlaceName || '—'}</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2.5">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0" style={{ color: pc }} />
-                <div className="min-w-0">
-                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">{t('funnel.routeTo')}</p>
-                  <p className="font-medium text-[var(--foreground)] break-words">{store.toPlaceName || store.hotelName || '—'}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2.5 border-t border-[var(--border)] pt-3">
-                <Plane className="h-4 w-4 shrink-0" style={{ color: isArr || isCity ? '#16a34a' : '#dc2626' }} />
-                <span className="font-medium text-[var(--foreground)]">{transferLabel}{isCity ? '' : ` ${t('funnel.transferSuffix')}`}</span>
-              </div>
-              {dateDisplay && (
-                <div className="flex items-center gap-2.5">
-                  <CalendarDays className="h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
-                  <span className="text-[var(--foreground)]">
-                    <span className="text-[var(--muted-foreground)]">{t('funnel.routeWhen')}: </span>
-                    {dateDisplay} · {store.pickupTime}
-                  </span>
-                </div>
-              )}
-              {store.roundTrip && store.returnDate && (
-                <div className="flex items-center gap-2.5">
-                  <CalendarDays className="h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
-                  <span className="text-[var(--foreground)]">
-                    <span className="text-[var(--muted-foreground)]">{t('funnel.routeReturn')}: </span>
-                    {format(new Date(store.returnDate + 'T12:00:00'), 'EEE, dd MMM yyyy')}{store.returnTime ? ` · ${store.returnTime}` : ''}
-                  </span>
-                </div>
-              )}
-              <div className="flex items-center gap-2.5">
-                <Users className="h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
-                <span className="text-[var(--foreground)]">{t('funnel.paxCount', { n: store.paxCount })}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: Cancellation & No-Show policies */}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5" style={{ boxShadow: 'var(--elevation-1)' }}>
-            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
-              <AlertCircle className="h-4 w-4" style={{ color: pc }} />
-              {t('funnel.policiesTitle')}
-            </h2>
-            <div className="space-y-3">
-              <div>
-                <p className="text-xs font-semibold text-[var(--foreground)]">{t('funnel.cancellationPolicy')}</p>
-                <p className="mt-0.5 text-xs leading-relaxed text-[var(--muted-foreground)]">{t('funnel.cancellationPolicyText')}</p>
-              </div>
-              <div className="border-t border-[var(--border)] pt-3">
-                <p className="text-xs font-semibold text-[var(--foreground)]">{t('funnel.noShowPolicy')}</p>
-                <p className="mt-0.5 text-xs leading-relaxed text-[var(--muted-foreground)]">{t('funnel.noShowPolicyText')}</p>
-              </div>
-            </div>
-          </div>
+        <aside className="mt-8 space-y-4 lg:mt-0 lg:sticky" style={{ top: asideTop }}>
+          <FunnelRouteCard primaryColor={pc} />
+          <FunnelPoliciesCard primaryColor={pc} />
         </aside>
       </div>
     </div>
