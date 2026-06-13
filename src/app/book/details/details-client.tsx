@@ -202,11 +202,11 @@ export function DetailsClient({ settings }: DetailsClientProps) {
   }
 
   return (
-    <div className="min-h-screen pt-16 bg-[var(--muted)]">
-      {/* Top bar */}
-      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
+    <div className="min-h-screen bg-[var(--muted)]">
+      {/* Top bar — dark, flush under the navigation (no rounded corners) */}
+      <div className="rounded-none bg-[#191919] px-4 py-3 shadow-sm">
         <div className="mx-auto flex max-w-5xl items-center gap-3">
-          <button onClick={() => router.back()} className="text-sm font-medium text-[var(--muted-foreground)] transition hover:text-[var(--foreground)]">
+          <button onClick={() => router.back()} className="text-sm font-medium text-white/80 transition hover:text-white">
             <span className="rtl:rotate-180">←</span> {t('funnel.back')}
           </button>
         </div>

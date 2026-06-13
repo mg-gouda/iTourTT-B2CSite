@@ -116,31 +116,33 @@ export function BookNowClient({ settings }: BookNowClientProps) {
     : '';
 
   return (
-    <div className="min-h-screen pt-16 bg-[var(--muted)]">
-      {/* Header bar */}
-      <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3 shadow-sm">
-        <div className="mx-auto max-w-5xl flex flex-wrap items-center gap-4 text-sm text-[var(--muted-foreground)]">
-          <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition text-xs font-medium">
+    <div className="min-h-screen bg-[var(--muted)]">
+      {/* Header bar — dark, flush under the navigation (no rounded corners) */}
+      <div className="rounded-none bg-[#191919] px-4 py-3 shadow-sm">
+        <div className="mx-auto max-w-6xl flex flex-wrap items-center gap-4 text-sm text-white/70">
+          <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-white/80 hover:text-white transition text-xs font-medium">
             <span className="rtl:rotate-180">←</span> {t('funnel.editSearch')}
           </button>
-          <span className="flex items-center gap-1.5">
-            <Plane className="h-3.5 w-3.5" style={{ color: isArr || isCity ? '#16a34a' : '#dc2626' }} />
+          <span className="flex items-center gap-1.5 text-white">
+            <Plane className="h-3.5 w-3.5" style={{ color: isArr || isCity ? '#22c55e' : '#f87171' }} />
             {transferLabel}{isCity ? '' : ` ${t('funnel.transferSuffix')}`}
           </span>
           {dateDisplay && (
             <span className="flex items-center gap-1.5">
-              <CalendarDays className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
+              <CalendarDays className="h-3.5 w-3.5 text-white/70" />
               {dateDisplay} · {store.pickupTime}
             </span>
           )}
           <span className="flex items-center gap-1.5">
-            <Users className="h-3.5 w-3.5 text-[var(--muted-foreground)]" />
+            <Users className="h-3.5 w-3.5 text-white/70" />
             {t('funnel.paxCount', { n: store.paxCount })}
           </span>
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-4 py-10">
+      <div className="mx-auto max-w-6xl px-4 py-10 lg:grid lg:grid-cols-[1fr_340px] lg:gap-8 lg:items-start">
+        {/* ── Left column: vehicle selection ── */}
+        <div>
         {/* Step indicator */}
         <div className="mb-10">
           <BookingSteps current={0} primaryColor={pc} steps={[t('funnel.step.vehicle'), t('funnel.step.flight'), t('funnel.step.details')]} />
@@ -256,6 +258,78 @@ export function BookNowClient({ settings }: BookNowClientProps) {
             ))}
           </div>
         )}
+        </div>
+
+        {/* ── Right column: selected route + policies ── */}
+        <aside className="mt-8 space-y-4 lg:mt-0 lg:sticky lg:top-24">
+          {/* Card 1: Your selected route */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5" style={{ boxShadow: 'var(--elevation-2)' }}>
+            <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
+              <Navigation className="h-4 w-4" style={{ color: pc }} />
+              {t('funnel.selectedRoute')}
+            </h2>
+            <div className="space-y-3.5 text-sm">
+              <div className="flex items-start gap-2.5">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">{t('funnel.routeFrom')}</p>
+                  <p className="font-medium text-[var(--foreground)] break-words">{store.fromPlaceName || '—'}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0" style={{ color: pc }} />
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--muted-foreground)]">{t('funnel.routeTo')}</p>
+                  <p className="font-medium text-[var(--foreground)] break-words">{store.toPlaceName || store.hotelName || '—'}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 border-t border-[var(--border)] pt-3">
+                <Plane className="h-4 w-4 shrink-0" style={{ color: isArr || isCity ? '#16a34a' : '#dc2626' }} />
+                <span className="font-medium text-[var(--foreground)]">{transferLabel}{isCity ? '' : ` ${t('funnel.transferSuffix')}`}</span>
+              </div>
+              {dateDisplay && (
+                <div className="flex items-center gap-2.5">
+                  <CalendarDays className="h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
+                  <span className="text-[var(--foreground)]">
+                    <span className="text-[var(--muted-foreground)]">{t('funnel.routeWhen')}: </span>
+                    {dateDisplay} · {store.pickupTime}
+                  </span>
+                </div>
+              )}
+              {store.roundTrip && store.returnDate && (
+                <div className="flex items-center gap-2.5">
+                  <CalendarDays className="h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
+                  <span className="text-[var(--foreground)]">
+                    <span className="text-[var(--muted-foreground)]">{t('funnel.routeReturn')}: </span>
+                    {format(new Date(store.returnDate + 'T12:00:00'), 'EEE, dd MMM yyyy')}{store.returnTime ? ` · ${store.returnTime}` : ''}
+                  </span>
+                </div>
+              )}
+              <div className="flex items-center gap-2.5">
+                <Users className="h-4 w-4 shrink-0 text-[var(--muted-foreground)]" />
+                <span className="text-[var(--foreground)]">{t('funnel.paxCount', { n: store.paxCount })}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2: Cancellation & No-Show policies */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5" style={{ boxShadow: 'var(--elevation-1)' }}>
+            <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--foreground)]">
+              <AlertCircle className="h-4 w-4" style={{ color: pc }} />
+              {t('funnel.policiesTitle')}
+            </h2>
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-semibold text-[var(--foreground)]">{t('funnel.cancellationPolicy')}</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-[var(--muted-foreground)]">{t('funnel.cancellationPolicyText')}</p>
+              </div>
+              <div className="border-t border-[var(--border)] pt-3">
+                <p className="text-xs font-semibold text-[var(--foreground)]">{t('funnel.noShowPolicy')}</p>
+                <p className="mt-0.5 text-xs leading-relaxed text-[var(--muted-foreground)]">{t('funnel.noShowPolicyText')}</p>
+              </div>
+            </div>
+          </div>
+        </aside>
       </div>
     </div>
   );
