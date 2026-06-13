@@ -78,19 +78,26 @@ export function TrackBookingClient({ settings }: TrackBookingClientProps) {
   const t = useWT();
   const serviceLabels = useServiceLabels();
   const [searchRef, setSearchRef] = useState('');
+  const [searchEmail, setSearchEmail] = useState('');
   const [booking, setBooking] = useState<BookingData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [cancelling, setCancelling] = useState(false);
 
-  const fetchBooking = async (bookingRef: string) => {
-    if (!bookingRef) return;
+  // Lookup is ownership-gated: the backend requires the email used to book
+  // (sent in the body, not the URL) before returning any booking PII.
+  const fetchBooking = async (bookingRef: string, email: string) => {
+    if (!bookingRef || !email) return;
     setLoading(true);
     setError('');
     setBooking(null);
 
     try {
-      const res = await fetch(`${API}/public/bookings/${encodeURIComponent(bookingRef)}`);
+      const res = await fetch(`${API}/public/bookings/${encodeURIComponent(bookingRef)}/lookup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
       if (!res.ok) {
         if (res.status === 404) throw new Error(t('track.notFound'));
         throw new Error(t('common.error'));
@@ -105,16 +112,22 @@ export function TrackBookingClient({ settings }: TrackBookingClientProps) {
   };
 
   const handleSearch = () => {
-    if (searchRef.trim()) fetchBooking(searchRef.trim());
+    if (searchRef.trim() && searchEmail.trim()) {
+      fetchBooking(searchRef.trim(), searchEmail.trim());
+    }
   };
 
   const handleCancel = async () => {
     if (!booking) return;
     setCancelling(true);
     try {
-      const res = await fetch(`${API}/public/bookings/${encodeURIComponent(booking.bookingRef)}/cancel`, { method: 'POST' });
+      const res = await fetch(`${API}/public/bookings/${encodeURIComponent(booking.bookingRef)}/cancel`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: searchEmail.trim() }),
+      });
       if (!res.ok) throw new Error(t('common.error'));
-      await fetchBooking(booking.bookingRef);
+      await fetchBooking(booking.bookingRef, searchEmail.trim());
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : t('common.error'));
     } finally {
@@ -144,8 +157,8 @@ export function TrackBookingClient({ settings }: TrackBookingClientProps) {
             {t('track.enterRef')}
           </p>
 
-          {/* Search bar inside hero */}
-          <div className="mx-auto mt-8 flex max-w-xl gap-2">
+          {/* Search bar inside hero — booking ref + the email used to book */}
+          <div className="mx-auto mt-8 flex max-w-xl flex-col gap-2 sm:flex-row">
             <Input
               placeholder={t('track.placeholder')}
               value={searchRef}
@@ -153,9 +166,17 @@ export function TrackBookingClient({ settings }: TrackBookingClientProps) {
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               className="flex-1 border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus-visible:ring-1"
             />
+            <Input
+              type="email"
+              placeholder={t('track.emailPlaceholder')}
+              value={searchEmail}
+              onChange={(e) => setSearchEmail(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              className="flex-1 border-gray-200 bg-white text-gray-900 placeholder:text-gray-400 focus-visible:ring-1"
+            />
             <Button
               onClick={handleSearch}
-              disabled={!searchRef.trim() || loading}
+              disabled={!searchRef.trim() || !searchEmail.trim() || loading}
               className="gap-2 font-semibold text-white shadow-lg"
               style={{ backgroundColor: pc }}
             >
@@ -163,6 +184,9 @@ export function TrackBookingClient({ settings }: TrackBookingClientProps) {
               {t('track.search')}
             </Button>
           </div>
+          <p className="mx-auto mt-3 max-w-xl text-xs text-gray-400">
+            {t('track.emailHint')}
+          </p>
         </div>
       </section>
 
