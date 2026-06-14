@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Phone, Mail } from 'lucide-react';
+import { Loader2, Lock, Mail } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { SiteSettings } from '@/lib/site-settings';
@@ -71,15 +71,21 @@ export function LoginClient({ settings }: LoginClientProps) {
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
-              <Phone className="h-3 w-3" /> Mobile Number (password)
-            </Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
+                <Lock className="h-3 w-3" /> Password
+              </Label>
+              <a href="/forgot-password" className="text-xs font-medium hover:underline" style={{ color: pc }}>
+                Forgot password?
+              </a>
+            </div>
             <Input
-              type="tel"
-              placeholder="+20 123 456 789"
+              type="password"
+              placeholder="••••••••"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
+              autoComplete="current-password"
               className="border-gray-200 bg-gray-50 focus-visible:ring-1"
               style={{ '--tw-ring-color': pc } as React.CSSProperties}
             />
@@ -99,7 +105,7 @@ export function LoginClient({ settings }: LoginClientProps) {
           </button>
 
           <p className="text-center text-xs text-gray-400">
-            Your password is your mobile number as entered at booking.
+            Your initial password is your mobile number as entered at booking. You can change it once signed in.
           </p>
         </form>
 
