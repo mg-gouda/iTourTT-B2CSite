@@ -5,10 +5,72 @@ import { useRouter } from 'next/navigation';
 import {
   Loader2, ArrowLeft, Plane, Car, Calendar, Clock, Users,
   Phone, User, AlertTriangle, CheckCircle2, XCircle, AlertCircle,
+  Camera, MapPin,
 } from 'lucide-react';
 import type { SiteSettings } from '@/lib/site-settings';
 
-const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/w-api`;
+const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL ?? '';
+const API = `${API_ORIGIN}/api/w-api`;
+
+interface EvidenceItem {
+  stage: 'IN_PLACE' | 'IN_PROGRESS' | 'COMPLETED' | 'NO_SHOW' | string;
+  by: 'DRIVER' | 'REP' | 'STAFF';
+  gpsMapLink: string | null;
+  createdAt: string;
+  images: string[];
+}
+
+const STAGE_LABEL: Record<string, string> = {
+  IN_PLACE: 'Rep in place',
+  IN_PROGRESS: 'Trip in progress',
+  COMPLETED: 'Trip completed',
+  NO_SHOW: 'No-show reported',
+};
+
+function byLabel(by: EvidenceItem['by']) {
+  return by === 'REP' ? 'by your rep' : by === 'DRIVER' ? 'by your driver' : 'by our team';
+}
+
+// Renders one evidence image. Local files (`/uploads/...`) are public and served
+// straight from the backend; Drive-proxied files (`/w-api/.../evidence-file/...`)
+// are JWT-guarded, so they must be blob-fetched with the bearer token.
+function EvidenceImage({ path }: { path: string }) {
+  const needsAuth = path.startsWith('/w-api/');
+  const publicSrc = path.startsWith('http') ? path : `${API_ORIGIN}${path}`;
+  const [src, setSrc] = useState<string | null>(needsAuth ? null : publicSrc);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    if (!needsAuth) return;
+    let objectUrl: string | null = null;
+    let cancelled = false;
+    const token = localStorage.getItem('b2c_token') ?? '';
+    fetch(`${API_ORIGIN}/api${path}`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((r) => (r.ok ? r.blob() : Promise.reject(new Error('fetch failed'))))
+      .then((blob) => {
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        setSrc(objectUrl);
+      })
+      .catch(() => { if (!cancelled) setFailed(true); });
+    return () => { cancelled = true; if (objectUrl) URL.revokeObjectURL(objectUrl); };
+  }, [path, needsAuth]);
+
+  if (failed) return null;
+  if (!src) return <div className="aspect-square rounded-lg bg-gray-100 animate-pulse" />;
+  return (
+    <a href={src} target="_blank" rel="noopener noreferrer" className="block">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt="Trip evidence"
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className="aspect-square w-full rounded-lg object-cover border border-gray-100"
+      />
+    </a>
+  );
+}
 
 interface BookingDetail {
   id: string;
@@ -41,6 +103,7 @@ interface BookingDetail {
     } | null;
     flight: { flightNo: string; carrier: string | null; terminal: string | null } | null;
   } | null;
+  evidence?: EvidenceItem[];
 }
 
 interface Props { settings: SiteSettings; bookingRef: string; }
@@ -243,6 +306,41 @@ export function BookingDetailClient({ settings, bookingRef }: Props) {
                 </span>
               } />
             )}
+          </div>
+        )}
+
+        {/* Trip photos & status updates from the driver/rep */}
+        {booking.evidence && booking.evidence.length > 0 && (
+          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-4">
+              <Camera className="h-4 w-4" style={{ color: pc }} /> Trip Photos &amp; Updates
+            </h2>
+            <div className="space-y-5">
+              {booking.evidence.map((ev, i) => (
+                <div key={i}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-gray-700">
+                      {STAGE_LABEL[ev.stage] ?? ev.stage}
+                      <span className="ml-1 font-normal text-gray-400">{byLabel(ev.by)}</span>
+                    </span>
+                    <span className="text-[11px] text-gray-400">
+                      {new Date(ev.createdAt).toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  {ev.images.length > 0 && (
+                    <div className="grid grid-cols-3 gap-2">
+                      {ev.images.map((src, j) => <EvidenceImage key={j} path={src} />)}
+                    </div>
+                  )}
+                  {ev.gpsMapLink && (
+                    <a href={ev.gpsMapLink} target="_blank" rel="noopener noreferrer"
+                      className="mt-2 inline-flex items-center gap-1 text-xs font-medium" style={{ color: pc }}>
+                      <MapPin className="h-3 w-3" /> View pickup location
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
