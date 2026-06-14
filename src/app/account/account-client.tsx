@@ -30,6 +30,8 @@ interface Booking {
       vehicle: { plateNumber: string } | null;
       driver: { name: string; mobileNumber: string } | null;
       rep: { name: string; mobileNumber: string } | null;
+      externalDriverName: string | null;
+      supplierCarType: { vehicleType: { name: string } | null } | null;
     } | null;
   } | null;
 }
@@ -143,11 +145,13 @@ export function AccountClient({ settings }: AccountClientProps) {
                   <ChevronRight className="h-4 w-4 text-gray-300 shrink-0 mt-1" />
                 </div>
 
-                {b.trafficJob?.assignment?.driver && (
+                {(b.trafficJob?.assignment?.driver || b.trafficJob?.assignment?.externalDriverName) && (
                   <div className="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-500 flex items-center gap-2">
                     <span className="font-medium text-emerald-600">Driver assigned:</span>
-                    <span>{b.trafficJob.assignment.driver.name}</span>
-                    {b.trafficJob.assignment.vehicle && <span className="ml-auto font-mono text-gray-400">{b.trafficJob.assignment.vehicle.plateNumber}</span>}
+                    <span>{b.trafficJob.assignment.driver?.name ?? b.trafficJob.assignment.externalDriverName}</span>
+                    {(b.trafficJob.assignment.vehicle || b.trafficJob.assignment.supplierCarType?.vehicleType) && (
+                      <span className="ml-auto font-mono text-gray-400">{b.trafficJob.assignment.vehicle?.plateNumber ?? b.trafficJob.assignment.supplierCarType?.vehicleType?.name}</span>
+                    )}
                   </div>
                 )}
               </button>

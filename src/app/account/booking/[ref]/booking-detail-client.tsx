@@ -100,6 +100,9 @@ interface BookingDetail {
       vehicle: { plateNumber: string; carBrand: string | null; carModel: string | null } | null;
       driver: { name: string; mobileNumber: string } | null;
       rep: { name: string; mobileNumber: string } | null;
+      externalDriverName: string | null;
+      externalDriverPhone: string | null;
+      supplierCarType: { vehicleType: { name: string } | null } | null;
     } | null;
     flight: { flightNo: string; carrier: string | null; terminal: string | null } | null;
   } | null;
@@ -209,7 +212,10 @@ export function BookingDetailClient({ settings, bookingRef }: Props) {
   const canAmend = isActive && hoursUntilJob >= 24;
   const canCancel = isActive && hoursUntilJob >= 48;
 
-  const assigned = booking.trafficJob?.assignment?.driver || booking.trafficJob?.assignment?.vehicle;
+  const a = booking.trafficJob?.assignment;
+  // Show the team card for "Own" assignments (vehicle/driver relations) AND for
+  // supplier/external sources (supplier car type + external driver) and rep-only.
+  const assigned = a?.driver || a?.vehicle || a?.externalDriverName || a?.supplierCarType || a?.rep;
 
   return (
     <div className="min-h-screen pt-20 bg-gray-50">
@@ -283,25 +289,38 @@ export function BookingDetailClient({ settings, bookingRef }: Props) {
             <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-3">
               <CheckCircle2 className="h-4 w-4" style={{ color: pc }} /> Your Transfer Team
             </h2>
-            {booking.trafficJob?.assignment?.vehicle && (
-              <InfoRow label="Vehicle" value={<span className="font-mono">{booking.trafficJob.assignment.vehicle.plateNumber}{booking.trafficJob.assignment.vehicle.carBrand ? ` — ${[booking.trafficJob.assignment.vehicle.carBrand, booking.trafficJob.assignment.vehicle.carModel].filter(Boolean).join(' ')}` : ''}</span>} />
+            {a?.vehicle ? (
+              <InfoRow label="Vehicle" value={<span className="font-mono">{a.vehicle.plateNumber}{a.vehicle.carBrand ? ` — ${[a.vehicle.carBrand, a.vehicle.carModel].filter(Boolean).join(' ')}` : ''}</span>} />
+            ) : a?.supplierCarType?.vehicleType && (
+              <InfoRow label="Vehicle" value={a.supplierCarType.vehicleType.name} />
             )}
-            {booking.trafficJob?.assignment?.driver && (
+            {a?.driver ? (
               <InfoRow label="Driver" value={
                 <span className="flex items-center gap-2">
-                  <User className="h-3 w-3 text-gray-400" /> {booking.trafficJob.assignment.driver.name}
-                  <a href={`tel:${booking.trafficJob.assignment.driver.mobileNumber}`} className="flex items-center gap-1 text-xs font-medium" style={{ color: pc }}>
-                    <Phone className="h-3 w-3" /> {booking.trafficJob.assignment.driver.mobileNumber}
+                  <User className="h-3 w-3 text-gray-400" /> {a.driver.name}
+                  <a href={`tel:${a.driver.mobileNumber}`} className="flex items-center gap-1 text-xs font-medium" style={{ color: pc }}>
+                    <Phone className="h-3 w-3" /> {a.driver.mobileNumber}
                   </a>
                 </span>
               } />
+            ) : a?.externalDriverName && (
+              <InfoRow label="Driver" value={
+                <span className="flex items-center gap-2">
+                  <User className="h-3 w-3 text-gray-400" /> {a.externalDriverName}
+                  {a.externalDriverPhone && (
+                    <a href={`tel:${a.externalDriverPhone}`} className="flex items-center gap-1 text-xs font-medium" style={{ color: pc }}>
+                      <Phone className="h-3 w-3" /> {a.externalDriverPhone}
+                    </a>
+                  )}
+                </span>
+              } />
             )}
-            {booking.trafficJob?.assignment?.rep && (
+            {a?.rep && (
               <InfoRow label="Rep" value={
                 <span className="flex items-center gap-2">
-                  <User className="h-3 w-3 text-gray-400" /> {booking.trafficJob.assignment.rep.name}
-                  <a href={`tel:${booking.trafficJob.assignment.rep.mobileNumber}`} className="flex items-center gap-1 text-xs font-medium" style={{ color: pc }}>
-                    <Phone className="h-3 w-3" /> {booking.trafficJob.assignment.rep.mobileNumber}
+                  <User className="h-3 w-3 text-gray-400" /> {a.rep.name}
+                  <a href={`tel:${a.rep.mobileNumber}`} className="flex items-center gap-1 text-xs font-medium" style={{ color: pc }}>
+                    <Phone className="h-3 w-3" /> {a.rep.mobileNumber}
                   </a>
                 </span>
               } />
