@@ -40,10 +40,19 @@ export function middleware(request: NextRequest) {
     acceptLocales.find((l) => (LOCALES as readonly string[]).includes(l)) ??
     DEFAULT_LOCALE;
 
-  // Redirect to locale-prefixed URL (308 Permanent).
+  // Redirect unprefixed paths to a locale. The destination is content-negotiated
+  // on the Accept-Language header, so this MUST be a TEMPORARY (307) redirect and
+  // MUST advertise `Vary: Accept-Language`. A permanent (308) redirect would tell
+  // Google the per-language target is the canonical location of the URL - but the
+  // target changes per crawler/Accept-Language, producing a non-deterministic
+  // permanent redirect that Search Console reports as a "Redirect error" and that
+  // blocks indexing. Crawlers sending no Accept-Language receive the default
+  // locale (/en), which is the hreflang x-default.
   const url = request.nextUrl.clone();
   url.pathname = `/${preferred}${pathname === '/' ? '' : pathname}`;
-  return NextResponse.redirect(url, { status: 308 });
+  const res = NextResponse.redirect(url, { status: 307 });
+  res.headers.set('Vary', 'Accept-Language');
+  return res;
 }
 
 export const config = {
