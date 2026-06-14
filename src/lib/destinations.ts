@@ -41,9 +41,9 @@ export const DESTINATIONS: Destination[] = [
       'Every transfer is a fixed price confirmed at the time of booking — what you see is what you pay, with no hidden surcharges and free cancellation up to 24 hours before pickup. Modern, air-conditioned vehicles, child seats on request, and 24/7 customer support make Transfera the reliable choice for your Hurghada arrival and departure.',
     ],
     routes: [
-      { slug: 'el-gouna', to: 'El Gouna', distanceKm: 35, durationMin: 30 },
-      { slug: 'makadi-bay', to: 'Makadi Bay', distanceKm: 35, durationMin: 30 },
-      { slug: 'soma-bay', to: 'Soma Bay', distanceKm: 60, durationMin: 45 },
+      { slug: 'el-gouna', to: 'El Gouna', distanceKm: 25, durationMin: 30 },
+      { slug: 'makadi-bay', to: 'Makadi Bay', distanceKm: 38, durationMin: 38 },
+      { slug: 'soma-bay', to: 'Soma Bay', distanceKm: 60, durationMin: 50 },
       { slug: 'sahl-hasheesh', to: 'Sahl Hasheesh', distanceKm: 25, durationMin: 25 },
       { slug: 'safaga', to: 'Safaga', distanceKm: 55, durationMin: 50 },
       { slug: 'hurghada-city', to: 'Hurghada City & Marina', distanceKm: 15, durationMin: 20 },

@@ -1,0 +1,258 @@
+{
+  "hurghada/el-gouna": {
+    "body": [
+      "El Gouna is a self-contained lagoon town built around a network of canals and islands just north of Hurghada, popular with kitesurfers, divers and families who want a polished, walkable resort with its own marina, golf course and downtown. Most guests stay at the Mövenpick, Steigenberger or one of the lagoon hotels around Abu Tig Marina.",
+      "The drive up the coastal road from Hurghada International Airport is short and straightforward, with the last stretch winding through El Gouna's bridges to your specific hotel jetty or reception. Because the town is spread across several islands, we confirm your exact property at booking so the driver takes you to the right entrance rather than a central drop-off."
+    ],
+    "faqQ": "Will the driver take me to my specific hotel inside El Gouna?",
+    "faqA": "Yes. El Gouna is spread across several islands and districts, so we use the hotel name you give at booking to drop you at the correct reception or marina entrance, not a general town centre point."
+  },
+  "hurghada/makadi-bay": {
+    "body": [
+      "Makadi Bay is a quiet, purpose-built resort strip south of Hurghada, known for its all-inclusive family hotels, shallow house reefs and the Makadi Water World aqua park. It suits travellers who want a self-contained beach holiday with snorkelling straight off the shore rather than a busy town.",
+      "Your transfer follows the main coastal highway south past the airport turn-off, a smooth run with no town traffic until you reach the resort gates. As most Makadi properties sit along a single bay road, your driver delivers you directly to your hotel lobby, which is handy after a long flight with children and luggage."
+    ],
+    "faqQ": "Is Makadi Bay far from Hurghada Airport?",
+    "faqA": "Makadi Bay is roughly 35–40 km south of Hurghada International Airport, about 35–40 minutes by private car on the coastal highway, with no town centre traffic along the way."
+  },
+  "hurghada/soma-bay": {
+    "body": [
+      "Soma Bay sits on a private peninsula south of Safaga and is one of Egypt's more upmarket Red Sea destinations, home to The Cascades golf course, the Kempinski and Sheraton Soma Bay, and some of the best wall diving and kitesurfing on this coast. It is favoured by golfers, divers and couples looking for calm.",
+      "The journey is the longest of the popular Hurghada resort routes, heading south along the coastal road past Safaga before turning onto the Soma Bay peninsula. We allow for the extra distance so your fixed price and pickup timing are set correctly in advance, with no surprises at the end of a long drive."
+    ],
+    "faqQ": "How long does the transfer to Soma Bay take?",
+    "faqA": "Soma Bay is about 60 km south of Hurghada Airport, typically 45–55 minutes by private car depending on traffic through Safaga. The fare is fixed at booking regardless of the longer distance."
+  },
+  "hurghada/sahl-hasheesh": {
+    "body": [
+      "Sahl Hasheesh is a planned resort bay just south of Hurghada, arranged around a crescent of beach with a pedestrian promenade, an old-town piazza and a long house reef that drops off close to shore. It draws couples and families who want a tidy, modern resort within easy reach of Hurghada's nightlife.",
+      "It is one of the closest resort areas to the airport, so the transfer is quick: a short hop down the coastal road and onto the Sahl Hasheesh access road to your hotel. The proximity makes it a comfortable choice if you land late or have an early-morning departure flight."
+    ],
+    "faqQ": "Is Sahl Hasheesh a good choice for a late-night arrival?",
+    "faqA": "Yes. Sahl Hasheesh is only about 25 km from Hurghada Airport, roughly 25 minutes by car, so it is one of the quickest transfers if you arrive late or leave very early."
+  },
+  "hurghada/safaga": {
+    "body": [
+      "Safaga is a working port town south of Hurghada with a more local feel, known for its therapeutic black sand, steady winds that make it a windsurfing and kitesurfing base, and as a gateway port for Red Sea cruise ships and day boats. Visitors here are often divers, wind-sport travellers or cruise passengers.",
+      "The transfer runs south along the coastal highway and into Safaga town or its port area, so we confirm whether you are heading to a hotel, the marina or the cruise terminal. Cruise passengers in particular should share the ship and berth details at booking so the driver can reach the correct gate."
+    ],
+    "faqQ": "Can you drop me at the Safaga cruise port?",
+    "faqA": "Yes. Safaga is a cruise gateway, and we can drop you at the port terminal or marina — just include your ship name and berth or hotel at booking so the driver reaches the right gate."
+  },
+  "hurghada/hurghada-city": {
+    "body": [
+      "Hurghada city and the Marina Boulevard are the lively heart of the destination, with the restaurants, bars and shops of El Dahar and Sekalla, the yacht-lined Hurghada Marina and easy access to dive centres and day-trip boats. It suits independent travellers who want to be in the middle of things rather than a sealed resort.",
+      "Because the city covers a long stretch from El Dahar in the north to the marina and Village Road hotels, your exact address matters. The drive from the airport is short, and we use the hotel or apartment you provide to navigate the city streets directly to your door."
+    ],
+    "faqQ": "Do you cover apartments and small hotels in Hurghada city, not just resorts?",
+    "faqA": "Yes. We cover hotels, apartments and guesthouses across El Dahar, Sekalla, the Marina and Village Road. Give the exact address at booking and the driver takes you to the door."
+  },
+  "cairo/downtown-cairo": {
+    "body": [
+      "Downtown Cairo is the historic commercial core around Tahrir Square, Talaat Harb and the Egyptian Museum, with its belle-époque architecture, busy cafés and proximity to Islamic and Coptic Cairo. It is a base for travellers who want to be among the museums, markets and street life of the old city centre.",
+      "The route from Cairo International Airport crosses the city, so timing depends heavily on traffic — the Ring Road and 6th of October flyover can be quick off-peak and slow at rush hour. We track your flight and build in realistic timing, and the fixed price means heavy traffic never inflates your fare."
+    ],
+    "faqQ": "Does Cairo traffic affect the price of my downtown transfer?",
+    "faqA": "No. Your fare to Downtown Cairo is fixed at booking with no meter, so even if traffic on the Ring Road or 6th of October flyover is heavy, the price you agreed does not change."
+  },
+  "cairo/giza-pyramids": {
+    "body": [
+      "The Giza plateau is home to the Great Pyramids, the Sphinx and the Grand Egyptian Museum, and the surrounding hotels in Giza and along the Alexandria Desert Road let you wake up with a pyramid view. It is the obvious base for visitors whose priority is the ancient sites rather than the city centre.",
+      "Giza sits on the western side of Cairo, so the transfer from the airport crosses the city and can take an hour or more in traffic. We plan for that and bring you directly to your Giza or pyramid-view hotel, which is far easier than negotiating a taxi for the long cross-town run on arrival."
+    ],
+    "faqQ": "Can you take me to a pyramid-view hotel in Giza directly from the airport?",
+    "faqA": "Yes. We drive directly from Cairo Airport to your Giza or pyramid-view hotel. It is on the far west side of the city, so allow around an hour; the fixed fare covers the full cross-town distance."
+  },
+  "cairo/zamalek": {
+    "body": [
+      "Zamalek is the leafy island district on the Nile in the middle of Cairo, known for its embassies, galleries, the Cairo Opera House and some of the city's best restaurants and boutique hotels. It is a calmer, greener base than the downtown bustle while still being central.",
+      "Reaching Zamalek means crossing the city from the airport and one of the Nile bridges onto Gezira Island, where streets are narrow and one-way. Your driver knows the bridge approaches, and we use your exact building address so you are dropped right outside rather than circling the island."
+    ],
+    "faqQ": "Are the narrow streets of Zamalek a problem for the driver?",
+    "faqA": "No. Our drivers know Gezira Island's one-way streets and bridge approaches. Provide your exact building address and you will be dropped right at the door rather than at a general point."
+  },
+  "cairo/new-cairo": {
+    "body": [
+      "New Cairo is the modern, planned city east of the airport, with the AUC campus, large malls such as Cairo Festival City, gated compounds and many business hotels. It is a practical base for business travellers and anyone wanting newer accommodation away from the congestion of the old centre.",
+      "Conveniently, New Cairo lies on the same eastern side of the metropolis as the airport, so this is one of the shorter and more predictable Cairo transfers. The roads are wide and modern, and we use your compound or hotel name to navigate the large districts directly to your destination."
+    ],
+    "faqQ": "Is New Cairo closer to the airport than central Cairo?",
+    "faqA": "Yes. New Cairo is on the same eastern side as Cairo Airport, so the transfer is typically shorter and more predictable than crossing to the city centre, usually around 35 minutes."
+  },
+  "cairo/heliopolis": {
+    "body": [
+      "Heliopolis is an elegant early-20th-century suburb right beside the airport, with its distinctive Heliopolis-style architecture, the Baron Empain Palace and plenty of hotels used for short stays and layovers. It is the natural choice for travellers with early flights or a brief stop in Cairo.",
+      "As the closest district to Cairo International Airport, Heliopolis is the quickest transfer of all — a short drive with minimal traffic. That makes it ideal for overnight layovers, and our flight tracking means the driver is ready even if your arrival time shifts."
+    ],
+    "faqQ": "Is Heliopolis good for a short layover near Cairo Airport?",
+    "faqA": "Very much so. Heliopolis is the closest district to the airport, only about 12 km, so it is the fastest transfer and a popular choice for overnight layovers and early departures."
+  },
+  "sharm-el-sheikh/naama-bay": {
+    "body": [
+      "Naama Bay is the original tourist heart of Sharm El Sheikh, a pedestrian promenade lined with hotels, restaurants, bars and shops curving around a sheltered swimming bay. It suits travellers who want nightlife, dining and shopping within walking distance of the beach.",
+      "The transfer from Sharm El Sheikh International Airport is short and easy, dropping down to the bay-front hotels. Because Naama Bay properties range from the promenade to the hillside above, we use your hotel name to deliver you to the correct entrance rather than the busy central strip."
+    ],
+    "faqQ": "Is Naama Bay within walking distance of restaurants and nightlife?",
+    "faqA": "Yes. Naama Bay's promenade puts restaurants, bars and shops within walking distance of most hotels, which is why it is the liveliest base in Sharm. The airport transfer takes about 20 minutes."
+  },
+  "sharm-el-sheikh/nabq-bay": {
+    "body": [
+      "Nabq Bay is the resort area closest to Sharm El Sheikh airport, a strip of large all-inclusive family hotels set beside the Nabq protected area and its mangroves. It is quieter than Naama Bay and popular with families and divers who prefer a self-contained resort.",
+      "This is the shortest Sharm transfer, a quick run from the airport to the bay-front resorts, which is a real advantage with tired children after a flight. Your driver takes you straight to your hotel gate along the single resort road that links the Nabq properties."
+    ],
+    "faqQ": "Which Sharm resort area is closest to the airport?",
+    "faqA": "Nabq Bay is the closest resort area to Sharm El Sheikh airport, only about 10 km, so it is the quickest transfer — ideal for families travelling with young children."
+  },
+  "sharm-el-sheikh/sharks-bay": {
+    "body": [
+      "Sharks Bay is a small bay just north of the airport, known for its dive centres, the SOHO Square entertainment complex and easy access to the famous reefs of Ras Mohammed and Tiran. It draws divers and snorkellers who want to be close to the water and the dive boats.",
+      "It is one of the nearest areas to the airport, so the transfer is very short. We confirm your specific hotel or dive resort at booking, as Sharks Bay properties sit along the cliff and bay with separate access roads down to the shore."
+    ],
+    "faqQ": "Is Sharks Bay a good base for diving in Sharm?",
+    "faqA": "Yes. Sharks Bay is close to the airport and to the dive sites of Ras Mohammed and Tiran, with many dive centres on its doorstep, making it a favourite base for divers and snorkellers."
+  },
+  "sharm-el-sheikh/ras-um-sid": {
+    "body": [
+      "Ras Um Sid sits on the cliffs of the Hadaba headland at the southern end of Sharm, famous for its dramatic drop-off reef right off the lighthouse and a cluster of clifftop hotels with sea views. It appeals to snorkellers and travellers who want a quieter, scenic setting.",
+      "The transfer from the airport runs through Sharm to the Hadaba plateau and down to the Ras Um Sid clifftop. Because hotels here are perched above the reef with their own access, we use your hotel name to reach the right clifftop entrance directly."
+    ],
+    "faqQ": "What is Ras Um Sid known for?",
+    "faqA": "Ras Um Sid is known for its spectacular clifftop reef and drop-off near the lighthouse, plus sea-view hotels on the Hadaba headland. The transfer from the airport takes around 25 minutes."
+  },
+  "sharm-el-sheikh/hadaba": {
+    "body": [
+      "Hadaba (the Hadaba plateau) is the elevated district above Ras Um Sid and Sharm El Maya, with a mix of resorts, apartments and the older town area, offering panoramic sea views and a slightly more local, residential feel than Naama Bay. It suits longer stays and travellers who want space and views.",
+      "Reaching Hadaba means a short climb up onto the plateau from the coastal road, and the district is spread out, so your exact address matters. Your driver uses the hotel or apartment you provide to navigate the plateau directly to your accommodation."
+    ],
+    "faqQ": "How is Hadaba different from Naama Bay?",
+    "faqA": "Hadaba sits up on a plateau with panoramic sea views and a more residential, spread-out feel, while Naama Bay is a compact, lively promenade. Both are short transfers from the airport."
+  },
+  "luxor/east-bank": {
+    "body": [
+      "The East Bank is the modern city side of Luxor and home to Luxor Temple, the vast Karnak complex and the Corniche hotels strung along the Nile. It is where most visitors stay, with the temples, museum, market and cruise moorings all close at hand.",
+      "Luxor International Airport sits just east of the city, so the East Bank transfer is short and direct to your Corniche hotel or guesthouse. If you are joining a Nile cruise moored on the East Bank, share the boat name at booking so the driver can find the correct mooring."
+    ],
+    "faqQ": "Is Luxor Temple and Karnak on the East Bank?",
+    "faqA": "Yes. Luxor Temple and the Karnak complex are both on the East Bank, along with most hotels and the Corniche. The airport is just east of the city, so the transfer is short and direct."
+  },
+  "luxor/west-bank": {
+    "body": [
+      "The West Bank of Luxor is the land of the dead in ancient Thebes, with the Valley of the Kings, the Temple of Hatshepsut, the Colossi of Memnon and a growing number of peaceful guesthouses and boutique hotels among the farmland. It draws travellers who want quiet, rural lodging beside the great monuments.",
+      "Your transfer crosses from the airport over the Nile bridge to the West Bank, a longer run than the East Bank that passes through villages and fields. We confirm your guesthouse or hotel at booking, as West Bank lodgings are scattered among the antiquities and small lanes."
+    ],
+    "faqQ": "Do you cross the Nile to reach West Bank guesthouses?",
+    "faqA": "Yes. The transfer crosses the Nile bridge from the airport to the West Bank, passing villages and farmland to reach guesthouses near the Valley of the Kings. Allow around 25 minutes."
+  },
+  "luxor/nile-cruise-docks": {
+    "body": [
+      "Luxor is the main start or end point for Nile cruises, and the cruise vessels moor along the East Bank Corniche, often rafted several boats deep. Travellers here are typically beginning or ending a Luxor–Aswan cruise and need to reach a specific ship.",
+      "Reaching the right vessel is the key detail: boats moor together and you may need to cross through neighbouring ships to board yours. We ask for your cruise line and boat name at booking so the driver brings you to the correct mooring point on the Corniche."
+    ],
+    "faqQ": "How do you find my specific Nile cruise boat in Luxor?",
+    "faqA": "Cruise boats moor together along the Corniche, so we use the cruise line and boat name you provide at booking to drop you at the right mooring, where you board directly or cross through adjacent boats."
+  },
+  "luxor/luxor-city": {
+    "body": [
+      "Luxor city centre clusters around the Corniche and the souk near Luxor Temple, with hotels, restaurants and the everyday life of a Nile town within walking distance of the main sights. It is a convenient, central base for first-time visitors who want everything close by.",
+      "The airport is only a short drive from the centre, so this is one of the quickest transfers in Egypt. We use your hotel or apartment address to navigate the city streets and the often-busy area around the temple and market directly to your door."
+    ],
+    "faqQ": "Is Luxor city centre walkable to the main sights?",
+    "faqA": "Yes. The city centre around the Corniche and souk puts Luxor Temple, restaurants and the market within walking distance. The airport transfer is short, usually about 12–15 minutes."
+  },
+  "marsa-alam/port-ghalib": {
+    "body": [
+      "Port Ghalib is the marina resort town built right next to Marsa Alam International Airport, with a waterfront promenade, yacht harbour, hotels and the embarkation point for many liveaboard dive boats. It is the natural first stop for divers and travellers wanting to be steps from the water on arrival.",
+      "Because Port Ghalib is essentially at the airport's doorstep, this is the shortest transfer of all the Marsa Alam routes — a few minutes by car. That makes it especially convenient if you are catching an early liveaboard departure or arriving on a late flight."
+    ],
+    "faqQ": "How close is Port Ghalib to Marsa Alam Airport?",
+    "faqA": "Port Ghalib is right beside Marsa Alam International Airport, only a few kilometres away and well under fifteen minutes by car — the quickest of all the Marsa Alam transfers."
+  },
+  "marsa-alam/abu-dabbab": {
+    "body": [
+      "Abu Dabbab is a sheltered bay north of Marsa Alam famous for its seagrass beds, where snorkellers regularly see green turtles and dugongs, alongside a handful of beach resorts. It is a destination for nature-focused travellers, snorkellers and families who want gentle, shallow water.",
+      "The transfer heads north from the airport along the coastal road to the Abu Dabbab bay resorts. It is a moderate drive through open desert coast, and your driver takes you directly to your hotel rather than the public beach access, so you arrive at the right reception."
+    ],
+    "faqQ": "Can you see turtles at Abu Dabbab?",
+    "faqA": "Abu Dabbab is well known for green turtles and occasional dugongs grazing on its seagrass beds, which is why snorkellers love it. The bay is about 30 km north of Marsa Alam Airport."
+  },
+  "marsa-alam/coraya-bay": {
+    "body": [
+      "Coraya Bay is a horseshoe-shaped bay just north of the airport, ringed by all-inclusive resorts and known for its calm, snorkelling-friendly house reef and dive bases. It suits families and divers who want an easy, self-contained beach holiday close to the airport.",
+      "The drive from Marsa Alam International Airport is short, heading a little way up the coast to the bay's cluster of resorts. Your driver delivers you straight to your hotel on the bay, an easy arrival after what is often a long international flight to this remote coast."
+    ],
+    "faqQ": "Is Coraya Bay close to Marsa Alam Airport?",
+    "faqA": "Yes. Coraya Bay is only about 12 km north of the airport, roughly 15 minutes by car, making it a quick and easy transfer to its cluster of beachfront resorts."
+  },
+  "marsa-alam/el-quseir": {
+    "body": [
+      "El Quseir is a historic Red Sea port town north of Marsa Alam, with an Ottoman fort, old coral-stone buildings and a quieter, more authentic atmosphere than the big resort strips, along with some characterful eco and boutique hotels nearby. It appeals to travellers seeking history and calm.",
+      "This is one of the longer Marsa Alam transfers, a steady drive north along the coastal road. We account for the distance in your fixed price and pickup timing, and the driver takes you directly to your hotel or to the town itself as needed."
+    ],
+    "faqQ": "How far is El Quseir from Marsa Alam Airport?",
+    "faqA": "El Quseir is roughly 80 km north of Marsa Alam International Airport, about 70 minutes by private car along the coastal road. The fare is fixed at booking for the full distance."
+  },
+  "aswan/aswan-city": {
+    "body": [
+      "Aswan's Corniche and city centre stretch along a beautiful curve of the Nile dotted with feluccas, with the Nubian Museum, the souk and riverfront hotels such as the Old Cataract close at hand. It is the relaxed southern gateway to Nubia and a base for many travellers' Nile journeys.",
+      "Aswan International Airport lies a little outside the city, so the transfer brings you in along the Nile to your Corniche hotel or island resort. For island hotels reached by boat, we coordinate the drop-off point with you so the handover to your hotel launch is smooth."
+    ],
+    "faqQ": "How do I reach an island hotel in Aswan from the airport?",
+    "faqA": "For Aswan's island hotels, we drive you to the agreed jetty on the Corniche where your hotel's boat collects you. Tell us the hotel at booking so we use the correct drop-off point."
+  },
+  "aswan/nile-cruise-docks": {
+    "body": [
+      "Aswan is the southern terminus for most Nile cruises, with vessels mooring near the city for Aswan–Luxor sailings and Lake Nasser cruises departing from the High Dam area. Travellers here are usually starting or finishing a cruise and need to reach a specific boat.",
+      "As in Luxor, boats moor together and the exact berth matters, so we ask for your cruise line and vessel name at booking. Lake Nasser cruises depart from a different dock near the High Dam, so we confirm which type of cruise you are joining to reach the right place."
+    ],
+    "faqQ": "Are Lake Nasser cruises and Nile cruises in the same place in Aswan?",
+    "faqA": "No. Nile cruises moor near the city, while Lake Nasser cruises depart from a dock near the High Dam. Tell us your cruise line and boat at booking so the driver reaches the correct dock."
+  },
+  "aswan/philae-high-dam": {
+    "body": [
+      "The Philae Temple and the Aswan High Dam lie just south of the city, with Philae set on its island in the reservoir and the dam offering views over Lake Nasser. This route suits travellers heading to sites, a Lake Nasser cruise embarkation, or hotels in the dam area.",
+      "The transfer runs south from the airport area to the dam and the Philae boat landing. If you are visiting Philae, your driver can drop you at the landing where launches cross to the temple island; for cruise embarkation we confirm the exact dock at booking."
+    ],
+    "faqQ": "Do I take a boat to reach Philae Temple?",
+    "faqA": "Yes. Philae Temple sits on an island, so the driver drops you at the boat landing near the High Dam where small launches ferry visitors across to the temple. The area is just south of Aswan."
+  },
+  "aswan/abu-simbel": {
+    "body": [
+      "Abu Simbel lies near the Sudanese border, around 280 km south of Aswan, where Ramses II's colossal rock-cut temples stand above Lake Nasser. It is one of Egypt's most spectacular sights and a major long-distance journey rather than a short hop.",
+      "This is a serious desert drive across the Western Desert road, so timing, comfort and a reliable vehicle matter. We set the fixed price for the full round distance and coordinate an early start, since many travellers visit the temples and return the same day; share your plan so we time the pickup correctly."
+    ],
+    "faqQ": "How long is the drive from Aswan to Abu Simbel?",
+    "faqA": "Abu Simbel is about 280 km from Aswan, roughly a 3 to 3.5 hour drive each way across the desert road. Many visitors go and return in a day, so we arrange an early, comfortable departure."
+  },
+  "alexandria/downtown-alexandria": {
+    "body": [
+      "Downtown Alexandria and the Corniche run along the Mediterranean from the Citadel of Qaitbay to the Bibliotheca Alexandrina, with seafront hotels, historic cafés and the city's faded cosmopolitan charm. It is the central base for exploring Egypt's great Mediterranean port.",
+      "Borg El Arab Airport sits well outside the city to the west, so the transfer into downtown is a substantial drive along the desert road into the centre. We plan for the distance and bring you directly to your Corniche or downtown hotel, which is far easier than arranging onward transport from the remote airport."
+    ],
+    "faqQ": "Is Borg El Arab Airport far from downtown Alexandria?",
+    "faqA": "Yes. Borg El Arab Airport is well west of the city, so reaching downtown Alexandria is about 45 km and roughly 50 minutes by car. The fixed fare covers the full distance into the centre."
+  },
+  "alexandria/san-stefano-montazah": {
+    "body": [
+      "The eastern seafront districts of San Stefano and Montazah are among Alexandria's most desirable areas, with the landmark San Stefano Grand Plaza, the Montazah Palace gardens and beaches, and upmarket seafront hotels. They suit travellers who want the coast and quieter, greener surroundings east of the centre.",
+      "These districts lie at the far eastern end of the long Corniche, so the transfer from Borg El Arab is the longest cross-city run, passing through or around the centre to the eastern seafront. Your driver uses your hotel name to reach the correct seafront entrance along this extended coast road."
+    ],
+    "faqQ": "Where are San Stefano and Montazah in Alexandria?",
+    "faqA": "They are on the eastern seafront, with San Stefano's landmark mall and the Montazah Palace gardens. They sit at the far east of the Corniche, so it is the longest transfer from Borg El Arab Airport."
+  },
+  "alexandria/north-coast": {
+    "body": [
+      "The North Coast (Sahel) is Egypt's summer Mediterranean playground, a long ribbon of gated beach resorts and compounds west of Alexandria with turquoise water and white sand, busiest from June to September. Visitors are typically heading to a specific resort or chalet for a summer break.",
+      "Many North Coast resorts lie west of Borg El Arab Airport along the coastal and desert roads, and the developments are vast, so your exact compound and gate matter. We confirm the resort name and entrance at booking so the driver reaches the right gate rather than a general area along the coast."
+    ],
+    "faqQ": "Do you cover the gated compounds on the North Coast?",
+    "faqA": "Yes. We cover the Sahel resorts and gated compounds west of Alexandria. Because the developments are large, give the resort name and gate at booking so the driver reaches the correct entrance."
+  },
+  "alexandria/marina": {
+    "body": [
+      "Marina El Alamein is one of the best-known North Coast resort towns, a large gated development around lagoons and a yacht marina, popular for upmarket summer chalets and a lively seasonal social scene. It is a destination in its own right west of Alexandria.",
+      "Marina lies a good distance west of Borg El Arab Airport along the coast, so this is one of the longer Alexandria-area transfers. The development is extensive and divided into numbered gates, so we use the gate or chalet details you provide to bring you to the correct entrance."
+    ],
+    "faqQ": "How do I reach the right gate at Marina El Alamein?",
+    "faqA": "Marina is large and split into numbered gates, so we use the gate number or chalet details you provide at booking to bring you to the correct entrance. It is a longer transfer west of Borg El Arab Airport."
+  }
+}

@@ -5,6 +5,7 @@
 // so every page is genuinely unique AND fully localized server-side.
 
 import { DESTINATIONS, getDestination, type Destination, type RouteInfo } from './destinations';
+import { getRouteContent } from './route-content';
 import type { Locale } from './i18n-config';
 
 export interface ResolvedRoute {
@@ -330,13 +331,25 @@ export function buildRouteCopy(
   };
   const f = (s: string) => fill(s, vars);
 
+  // Unique, destination-specific copy keeps every route page from being a
+  // near-duplicate of its siblings. Body: 2 unique paragraphs + 1 shared trust
+  // paragraph. FAQ: a destination-specific Q&A ahead of the 3 generic ones.
+  const unique = getRouteContent(locale, dest.slug, route.slug);
+  const intro = unique ? [...unique.body, f(pack.intro2)] : [f(pack.intro1), f(pack.intro2)];
+  const faqs = [
+    ...(unique ? [{ question: unique.faqQ, answer: unique.faqA }] : []),
+    { question: f(pack.faq1q), answer: f(pack.faq1a) },
+    { question: f(pack.faq2q), answer: f(pack.faq2a) },
+    { question: f(pack.faq3q), answer: f(pack.faq3a) },
+  ];
+
   return {
     title: f(pack.title),
     metaDescription: f(pack.metaDescription),
     kicker: f(pack.kicker),
     h1: f(pack.h1),
     subtitle: f(pack.subtitle),
-    intro: [f(pack.intro1), f(pack.intro2)],
+    intro,
     info: [
       { label: f(pack.distanceLabel), value: f(pack.kmUnit) },
       { label: f(pack.durationLabel), value: f(pack.minUnit) },
@@ -344,11 +357,7 @@ export function buildRouteCopy(
     ],
     otherRoutesTitle: f(pack.otherRoutesTitle),
     faqTitle: f(pack.faqTitle),
-    faqs: [
-      { question: f(pack.faq1q), answer: f(pack.faq1a) },
-      { question: f(pack.faq2q), answer: f(pack.faq2a) },
-      { question: f(pack.faq3q), answer: f(pack.faq3a) },
-    ],
+    faqs,
     bookCta: f(pack.bookCta),
     ctaTitle: f(pack.ctaTitle),
     ctaDesc: f(pack.ctaDesc),
