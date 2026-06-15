@@ -130,7 +130,9 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
       const res = await fetch(`${API}/ai-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next, locale, draft }),
+        // Only send a recent window — the full booking state rides in `draft`, so
+        // long conversations don't grow the payload (or hit the server's cap).
+        body: JSON.stringify({ messages: next.slice(-12), locale, draft }),
       });
       const body = await res.json();
       const result: AiResult = body?.data ?? body;
