@@ -15,6 +15,7 @@ import {
   Check,
   ChevronsUpDown,
   Building2,
+  Sparkles,
 } from 'lucide-react';
 import {
   format,
@@ -36,10 +37,11 @@ import { useBookingStore } from '@/stores/booking-store';
 import type { SiteSettings } from '@/lib/site-settings';
 import { useWT } from '@/lib/website-i18n';
 import { PlaceAutocomplete, type PickedPlace } from '@/components/website/place-autocomplete';
+import { AiModeChat } from '@/components/website/ai-mode-chat';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
-type Tab = 'AIRPORT' | 'CITY';
+type Tab = 'AIRPORT' | 'CITY' | 'AI';
 
 /* ─── Theme contract ───
  * CTA/action colour and its hover shade come from the admin-injected CMS
@@ -370,6 +372,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
     [
       { key: 'AIRPORT' as Tab, label: t('booking.airportTransfer'), Icon: Plane, on: true },
       { key: 'CITY' as Tab, label: t('booking.cityToCity'), Icon: Building2, on: settings.enableCityToCityTab },
+      { key: 'AI' as Tab, label: t('booking.aiMode'), Icon: Sparkles, on: settings.enableAiMode },
     ] as const
   ).filter((d) => d.on);
 
@@ -632,7 +635,11 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
         })}
       </div>
 
-      {/* Dark form card — top-left corner kept square so the active tab merges in. */}
+      {/* AI Mode replaces the manual form card with a chat panel. */}
+      {activeTab === 'AI' ? (
+        <AiModeChat primaryColor={PRIMARY} cardColor={C_CARD} />
+      ) : (
+      /* Dark form card — top-left corner kept square so the active tab merges in. */
       <div className="overflow-hidden rounded-2xl rounded-tl-none"
         style={{ backgroundColor: C_CARD, border: '0.8px solid rgba(255,255,255,0.08)', boxShadow: '0 20px 60px rgba(0,0,0,0.35)' }}>
 
@@ -789,6 +796,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }

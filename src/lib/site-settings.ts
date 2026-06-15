@@ -108,6 +108,7 @@ export interface SiteSettings {
   enableTwoWayTab: boolean;
   enableCityToCityTab: boolean;
   enableMapSelector: boolean;
+  enableAiMode: boolean;
   bookingTabsOrder: string;
 
   // SEO
@@ -136,6 +137,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   enableTwoWayTab: false,
   enableCityToCityTab: false,
   enableMapSelector: false,
+  enableAiMode: false,
   bookingTabsOrder: 'ARR,DEP',
   heroTitle: 'Egypt Airport Transfers — Hurghada, Cairo & Sharm El Sheikh',
   heroSubtitle:
