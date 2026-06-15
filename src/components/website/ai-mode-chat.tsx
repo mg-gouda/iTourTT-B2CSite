@@ -132,7 +132,13 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
         headers: { 'Content-Type': 'application/json' },
         // Only send a recent window — the full booking state rides in `draft`, so
         // long conversations don't grow the payload (or hit the server's cap).
-        body: JSON.stringify({ messages: next.slice(-12), locale, draft }),
+        // Also clamp each turn's length: the model's own replies (echoed back)
+        // can be long, and would otherwise exceed the per-message size limit.
+        body: JSON.stringify({
+          messages: next.slice(-12).map((m) => ({ role: m.role, content: m.content.slice(0, 3500) })),
+          locale,
+          draft,
+        }),
       });
       const body = await res.json();
       const result: AiResult = body?.data ?? body;
