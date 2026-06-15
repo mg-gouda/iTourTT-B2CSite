@@ -9,7 +9,7 @@ import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
 import { BookingSteps } from '@/components/website/booking-steps';
 import { useFunnelSticky } from '@/components/website/use-funnel-sticky';
 import { FunnelRouteCard, FunnelPoliciesCard } from '@/components/website/funnel-summary';
-import { useLocale } from '@/lib/website-i18n';
+import { useLocale, useLocalePath } from '@/lib/website-i18n';
 import { translate } from '@/lib/website-translations';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
@@ -41,6 +41,7 @@ interface BookNowClientProps {
 
 export function BookNowClient({ settings }: BookNowClientProps) {
   const router = useRouter();
+  const localePath = useLocalePath();
   const store = useBookingStore();
   const [options, setOptions] = useState<VehicleOption[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,7 +53,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
 
   useEffect(() => {
     if (!store.fromZoneId || !store.toZoneId || !store.serviceType) {
-      router.replace('/');
+      router.replace(localePath('/'));
       return;
     }
     const quote = (serviceType: string, fromZoneId: string, toZoneId: string) =>
@@ -102,7 +103,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
       driverTip: opt.driverTip,
     });
     // City-to-city has no flight — skip straight to guest details.
-    router.push(store.serviceType === 'CITY_TO_CITY' ? '/book/details' : '/book/flight');
+    router.push(localePath(store.serviceType === 'CITY_TO_CITY' ? '/book/details' : '/book/flight'));
   };
 
   const isArr = store.serviceType === 'ARR';
@@ -131,7 +132,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
       {/* Edit-search bar */}
       <div className="border-b border-[var(--border)] bg-[var(--card)] px-4 py-3">
         <div className="mx-auto max-w-6xl flex flex-wrap items-center gap-4 text-sm text-[var(--muted-foreground)]">
-          <button onClick={() => router.push('/')} className="flex items-center gap-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition text-xs font-medium">
+          <button onClick={() => router.push(localePath('/'))} className="flex items-center gap-1.5 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition text-xs font-medium">
             <span className="rtl:rotate-180">←</span> {t('funnel.editSearch')}
           </button>
           <span className="flex items-center gap-1.5">
@@ -173,7 +174,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
           <div className="rounded-2xl bg-red-50 border border-red-200 p-6 text-center text-red-600 flex flex-col items-center gap-2">
             <AlertCircle className="h-6 w-6" />
             <p>{error}</p>
-            <button onClick={() => router.push('/')} className="mt-2 text-sm underline text-red-500 hover:text-red-700">{t('funnel.goBackTry')}</button>
+            <button onClick={() => router.push(localePath('/'))} className="mt-2 text-sm underline text-red-500 hover:text-red-700">{t('funnel.goBackTry')}</button>
           </div>
         )}
 
@@ -182,7 +183,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
             <Car className="h-10 w-10 mx-auto mb-3 text-[var(--muted-foreground)]" />
             <p className="font-medium">{t('funnel.noVehicles')}</p>
             <p className="text-sm mt-1">{t('funnel.tryDifferent')}</p>
-            <button onClick={() => router.push('/')} className="mt-4 text-sm underline hover:text-[var(--foreground)]">{t('funnel.editSearch')}</button>
+            <button onClick={() => router.push(localePath('/'))} className="mt-4 text-sm underline hover:text-[var(--foreground)]">{t('funnel.editSearch')}</button>
           </div>
         )}
 

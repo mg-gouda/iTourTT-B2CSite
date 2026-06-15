@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { BookingSteps } from '@/components/website/booking-steps';
 import { useFunnelSticky } from '@/components/website/use-funnel-sticky';
 import { FunnelRouteCard, FunnelPoliciesCard } from '@/components/website/funnel-summary';
-import { useLocale } from '@/lib/website-i18n';
+import { useLocale, useLocalePath } from '@/lib/website-i18n';
 import { translate } from '@/lib/website-translations';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
@@ -68,6 +68,7 @@ function Stepper({ value, onChange, min = 0, max = 10, color }: {
 
 export function FlightClient({ settings }: FlightClientProps) {
   const router = useRouter();
+  const localePath = useLocalePath();
   const store = useBookingStore();
   const pc = settings.primaryColor;
   const isArr = store.serviceType === 'ARR';
@@ -80,7 +81,7 @@ export function FlightClient({ settings }: FlightClientProps) {
   const [capacityAlert, setCapacityAlert] = useState<CapacityAlert | null>(null);
 
   useEffect(() => {
-    if (!store.vehicleTypeId) { router.replace('/book'); }
+    if (!store.vehicleTypeId) { router.replace(localePath('/book')); }
   }, [store.vehicleTypeId, router]);
 
   useEffect(() => {
@@ -512,7 +513,7 @@ export function FlightClient({ settings }: FlightClientProps) {
 
         <button
           type="button"
-          onClick={() => router.push('/book/details')}
+          onClick={() => router.push(localePath('/book/details'))}
           disabled={!canContinue}
           className="w-full rounded-xl py-3 text-sm font-bold text-white shadow-md transition-opacity disabled:opacity-40"
           style={{ backgroundColor: pc }}

@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { BookingSteps } from '@/components/website/booking-steps';
 import { useFunnelSticky } from '@/components/website/use-funnel-sticky';
 import { FunnelRouteCard, FunnelPoliciesCard } from '@/components/website/funnel-summary';
-import { useLocale } from '@/lib/website-i18n';
+import { useLocale, useLocalePath } from '@/lib/website-i18n';
 import { translate } from '@/lib/website-translations';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
@@ -26,6 +26,7 @@ interface DetailsClientProps { settings: SiteSettings; }
 
 export function DetailsClient({ settings }: DetailsClientProps) {
   const router = useRouter();
+  const localePath = useLocalePath();
   const store = useBookingStore();
   const pc = settings.primaryColor;
   const locale = useLocale();
@@ -60,8 +61,8 @@ export function DetailsClient({ settings }: DetailsClientProps) {
 
   useEffect(() => {
     // City-to-city has no flight step, so don't require a flight number for it.
-    if (!store.vehicleTypeId) { router.replace('/book'); return; }
-    if (!store.flightNo && store.serviceType !== 'CITY_TO_CITY') { router.replace('/book/flight'); }
+    if (!store.vehicleTypeId) { router.replace(localePath('/book')); return; }
+    if (!store.flightNo && store.serviceType !== 'CITY_TO_CITY') { router.replace(localePath('/book/flight')); }
   }, [store.vehicleTypeId, store.flightNo, store.serviceType, router]);
 
   useEffect(() => {
@@ -260,7 +261,7 @@ export function DetailsClient({ settings }: DetailsClientProps) {
             </div>
           )}
 
-          <button onClick={() => { store.reset(); router.push('/'); }}
+          <button onClick={() => { store.reset(); router.push(localePath('/')); }}
             className="w-full rounded-xl px-8 py-3 text-sm font-bold border border-[var(--border)] text-[var(--muted-foreground)] bg-[var(--card)] hover:bg-[var(--muted)] transition">
             {t('funnel.backHome')}
           </button>

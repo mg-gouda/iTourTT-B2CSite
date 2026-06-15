@@ -35,7 +35,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { cn } from '@/lib/utils';
 import { useBookingStore } from '@/stores/booking-store';
 import type { SiteSettings } from '@/lib/site-settings';
-import { useWT } from '@/lib/website-i18n';
+import { useWT, useLocalePath } from '@/lib/website-i18n';
 import { PlaceAutocomplete, type PickedPlace } from '@/components/website/place-autocomplete';
 import { AiModeChat } from '@/components/website/ai-mode-chat';
 
@@ -364,6 +364,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   const [placeMsg, setPlaceMsg] = useState('');
 
   const t = useWT();
+  const localePath = useLocalePath();
 
   // Two tabs only: Airport Transfer (always on; One Way / Return Transfer via the
   // radio inside it) and City-to-City (admin master switch). The old separate
@@ -585,7 +586,7 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
       store.setField('fromPlaceName', airportName);
       store.setField('toPlaceName', dropoffName);
     }
-    router.push('/book');
+    router.push(localePath('/book'));
   };
 
   const baseValid = store.fromZoneId && store.toZoneId && store.jobDate && store.pickupTime && store.paxCount > 0;

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Sparkles, Send, Loader2 } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking-store';
-import { useWT, useLocale } from '@/lib/website-i18n';
+import { useWT, useLocale, useLocalePath } from '@/lib/website-i18n';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -13,26 +13,43 @@ interface ChatMessage {
   content: string;
 }
 
+interface CompleteQuery {
+  serviceType: string;
+  fromZoneId: string;
+  toZoneId: string;
+  originAirportId?: string;
+  destinationAirportId?: string;
+  hotelId?: string;
+  hotelName?: string;
+  fromPlaceName?: string;
+  toPlaceName?: string;
+  jobDate: string;
+  pickupTime: string;
+  paxCount: number;
+  roundTrip?: boolean;
+  returnDate?: string;
+  returnTime?: string;
+  vehicleTypeId: string;
+  vehicleTypeName: string;
+  quotePrice: number;
+  quoteCurrency: string;
+  seatCapacity: number;
+  driverTip: number;
+  returnQuotePrice?: number | null;
+  flightNo?: string;
+  carrier?: string;
+  terminal?: string;
+  returnFlightNo?: string;
+  returnCarrier?: string;
+  returnTerminal?: string;
+  customExtras?: { extraId: string; qty: number }[];
+}
+
 interface AiResult {
-  intent: 'results' | 'no_route' | 'need_info' | 'off_topic' | 'error';
+  intent: 'collecting' | 'complete' | 'off_topic' | 'error';
   reply?: string;
-  query?: {
-    serviceType: string;
-    fromZoneId: string;
-    toZoneId: string;
-    originAirportId?: string;
-    destinationAirportId?: string;
-    hotelId?: string;
-    hotelName?: string;
-    fromPlaceName?: string;
-    toPlaceName?: string;
-    jobDate: string;
-    pickupTime: string;
-    paxCount: number;
-    roundTrip?: boolean;
-    returnDate?: string;
-    returnTime?: string;
-  };
+  draft?: Record<string, unknown>;
+  query?: CompleteQuery;
 }
 
 interface Props {
@@ -46,19 +63,24 @@ interface Props {
 export function AiModeChat({ primaryColor, cardColor }: Props) {
   const t = useWT();
   const locale = useLocale();
+  const localePath = useLocalePath();
   const router = useRouter();
   const store = useBookingStore();
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  // The evolving booking the backend maintains; resent each turn for continuity.
+  const [draft, setDraft] = useState<Record<string, unknown> | undefined>(undefined);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, loading]);
 
-  const applyResultAndGo = (q: NonNullable<AiResult['query']>) => {
+  // A complete booking: pre-fill the whole of funnel steps 1 & 2, then hand off
+  // to the normal personal-details page.
+  const applyCompleteAndGo = (q: CompleteQuery) => {
     store.reset();
     store.setField('serviceType', q.serviceType);
     store.setField('fromZoneId', q.fromZoneId);
@@ -75,7 +97,26 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
     store.setField('roundTrip', !!q.roundTrip);
     store.setField('returnDate', q.returnDate ?? '');
     store.setField('returnTime', q.returnTime ?? '');
-    router.push('/book');
+    // Vehicle + quote (mirrors /book selectVehicle()).
+    store.setField('vehicleTypeId', q.vehicleTypeId);
+    store.setField('returnQuotePrice', q.returnQuotePrice ?? null);
+    store.setQuote(q.quotePrice, q.quoteCurrency, {
+      vehicleType: q.vehicleTypeName,
+      seatCapacity: q.seatCapacity,
+      driverTip: q.driverTip,
+    });
+    // Flight (airport transfers).
+    store.setField('flightNo', q.flightNo ?? '');
+    store.setField('carrier', q.carrier ?? '');
+    store.setField('terminal', q.terminal ?? '');
+    store.setField('returnFlightNo', q.returnFlightNo ?? '');
+    store.setField('returnCarrier', q.returnCarrier ?? '');
+    store.setField('returnTerminal', q.returnTerminal ?? '');
+    // Extras.
+    store.setField('customExtras', q.customExtras ?? []);
+    // Keep the guest's selected language on the funnel (unprefixed paths get
+    // re-negotiated to Accept-Language by middleware, which would drop it).
+    router.push(localePath('/book/details'));
   };
 
   const send = async () => {
@@ -89,14 +130,16 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
       const res = await fetch(`${API}/ai-search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: next, locale }),
+        body: JSON.stringify({ messages: next, locale, draft }),
       });
       const body = await res.json();
       const result: AiResult = body?.data ?? body;
 
-      if (result.intent === 'results' && result.query) {
+      if (result.draft) setDraft(result.draft);
+
+      if (result.intent === 'complete' && result.query) {
         if (result.reply) setMessages((m) => [...m, { role: 'assistant', content: result.reply! }]);
-        applyResultAndGo(result.query);
+        applyCompleteAndGo(result.query);
         return;
       }
       setMessages((m) => [...m, { role: 'assistant', content: result.reply || t('booking.aiError') }]);
