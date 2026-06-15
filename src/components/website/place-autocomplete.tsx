@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -12,16 +12,18 @@ export interface PickedPlace {
   lng: number;
 }
 
-// Load the Google Maps JS API (Places library) exactly once per page.
+// Load the Google Maps JS API exactly once per page. We use the new Places API
+// (AutocompleteSuggestion / Place), which — unlike the legacy
+// google.maps.places.Autocomplete widget — is available to new Cloud projects.
 let mapsPromise: Promise<void> | null = null;
 function loadMaps(key: string): Promise<void> {
   if (typeof window === 'undefined') return Promise.resolve();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if ((window as any).google?.maps?.places) return Promise.resolve();
+  if ((window as any).google?.maps?.importLibrary) return Promise.resolve();
   if (mapsPromise) return mapsPromise;
   mapsPromise = new Promise<void>((resolve, reject) => {
     const s = document.createElement('script');
-    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&libraries=places`;
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&libraries=places&loading=async`;
     s.async = true;
     s.defer = true;
     s.onload = () => resolve();
@@ -42,12 +44,27 @@ interface Props {
   biasLng?: number;
 }
 
-// A Google Places autocomplete input. Renders nothing if the backend has no
-// Maps key configured, so it degrades gracefully (the manual zone select stays).
+interface Suggestion {
+  placeId: string;
+  primary: string;
+  secondary: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prediction: any;
+}
+
+// A Google Places autocomplete input built on the new Places API. Renders
+// nothing if the backend has no Maps key configured, so it degrades gracefully
+// (the manual zone select stays).
 export function PlaceAutocomplete({ onSelect, placeholder, primaryColor, inputClassName, biasLat, biasLng }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [ready, setReady] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
+  const [value, setValue] = useState('');
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+  const [open, setOpen] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const tokenRef = useRef<any>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,43 +80,113 @@ export function PlaceAutocomplete({ onSelect, placeholder, primaryColor, inputCl
     return () => { cancelled = true; };
   }, []);
 
-  useEffect(() => {
-    if (!ready || !inputRef.current) return;
+  const fetchSuggestions = useCallback(async (input: string) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const g = (window as any).google;
-    if (!g?.maps?.places) return;
-    const opts: Record<string, unknown> = {
-      fields: ['place_id', 'name', 'formatted_address', 'geometry'],
-    };
-    if (biasLat != null && biasLng != null) {
-      const c = new g.maps.LatLng(biasLat, biasLng);
-      opts.bounds = new g.maps.LatLngBounds(c, c);
+    if (!g?.maps?.importLibrary || !input.trim()) {
+      setSuggestions([]);
+      setOpen(false);
+      return;
     }
-    const ac = new g.maps.places.Autocomplete(inputRef.current, opts);
-    const listener = ac.addListener('place_changed', () => {
-      const p = ac.getPlace();
-      if (!p?.place_id || !p.geometry?.location) return;
+    try {
+      const { AutocompleteSuggestion, AutocompleteSessionToken } = await g.maps.importLibrary('places');
+      if (!tokenRef.current) tokenRef.current = new AutocompleteSessionToken();
+      const request: Record<string, unknown> = {
+        input,
+        sessionToken: tokenRef.current,
+      };
+      if (biasLat != null && biasLng != null) {
+        request.locationBias = { center: { lat: biasLat, lng: biasLng }, radius: 50000 };
+      }
+      const { suggestions: res } = await AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+      const mapped: Suggestion[] = (res ?? [])
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        .map((s: any) => {
+          const p = s.placePrediction;
+          return {
+            placeId: p?.placeId,
+            primary: p?.mainText?.text ?? p?.text?.text ?? '',
+            secondary: p?.secondaryText?.text ?? '',
+            prediction: p,
+          };
+        })
+        .filter((s: Suggestion) => !!s.placeId);
+      setSuggestions(mapped);
+      setOpen(mapped.length > 0);
+    } catch {
+      setSuggestions([]);
+      setOpen(false);
+    }
+  }, [biasLat, biasLng]);
+
+  const onChange = (v: string) => {
+    setValue(v);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => fetchSuggestions(v), 250);
+  };
+
+  const handlePick = async (s: Suggestion) => {
+    setOpen(false);
+    setValue(s.primary);
+    try {
+      const place = s.prediction.toPlace();
+      await place.fetchFields({ fields: ['id', 'displayName', 'formattedAddress', 'location'] });
+      const loc = place.location;
       onSelect({
-        placeId: p.place_id,
-        name: p.name ?? p.formatted_address ?? '',
-        address: p.formatted_address ?? '',
-        lat: p.geometry.location.lat(),
-        lng: p.geometry.location.lng(),
+        placeId: place.id ?? s.placeId,
+        name: place.displayName ?? s.primary,
+        address: place.formattedAddress ?? [s.primary, s.secondary].filter(Boolean).join(', '),
+        lat: typeof loc?.lat === 'function' ? loc.lat() : loc?.lat,
+        lng: typeof loc?.lng === 'function' ? loc.lng() : loc?.lng,
       });
-    });
-    return () => listener?.remove?.();
-  }, [ready, biasLat, biasLng, onSelect]);
+    } catch {
+      /* fetchFields failed — keep the typed value, no selection emitted */
+    }
+    // Start a fresh session token after a selection (Places billing best practice).
+    tokenRef.current = null;
+  };
+
+  // Close the dropdown when clicking outside the widget.
+  useEffect(() => {
+    const onDoc = (e: MouseEvent) => {
+      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, []);
 
   if (unavailable) return null;
 
   return (
-    <input
-      ref={inputRef}
-      type="text"
-      placeholder={placeholder ?? 'Search a place on the map…'}
-      className={inputClassName ?? "w-full rounded-lg border border-white/15 bg-white/95 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2"}
-      style={{ ['--tw-ring-color' as string]: primaryColor }}
-      onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
-    />
+    <div ref={wrapRef} className="relative">
+      <input
+        type="text"
+        value={value}
+        disabled={!ready}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => { if (suggestions.length) setOpen(true); }}
+        placeholder={placeholder ?? 'Search a place on the map…'}
+        className={inputClassName ?? "w-full rounded-lg border border-white/15 bg-white/95 px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2"}
+        style={{ ['--tw-ring-color' as string]: primaryColor }}
+        onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
+        autoComplete="off"
+      />
+      {open && suggestions.length > 0 && (
+        <ul className="absolute z-50 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+          {suggestions.map((s) => (
+            <li key={s.placeId}>
+              <button
+                type="button"
+                onClick={() => handlePick(s)}
+                className="flex w-full flex-col items-start px-3 py-2 text-left hover:bg-gray-50"
+              >
+                <span className="text-sm text-gray-900">{s.primary}</span>
+                {s.secondary && <span className="text-xs text-gray-500">{s.secondary}</span>}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

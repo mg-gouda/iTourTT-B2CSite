@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Phone, Globe, Loader2, CheckCircle2, KeyRound, ExternalLink } from 'lucide-react';
+import { User, Mail, Phone, Globe, Loader2, CheckCircle2, KeyRound, ExternalLink, Copy, Check } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking-store';
 import type { SiteSettings } from '@/lib/site-settings';
 import { Input } from '@/components/ui/input';
@@ -38,6 +38,18 @@ export function DetailsClient({ settings }: DetailsClientProps) {
   // Online payments: hold the hosted-checkout URL so we can show the guest their
   // booking reference (to put in the payment notes) BEFORE redirecting them.
   const [pendingPaymentUrl, setPendingPaymentUrl] = useState<string | null>(null);
+  const [refCopied, setRefCopied] = useState(false);
+
+  const copyReference = async () => {
+    if (!store.bookingRef) return;
+    try {
+      await navigator.clipboard.writeText(store.bookingRef);
+      setRefCopied(true);
+      setTimeout(() => setRefCopied(false), 2000);
+    } catch {
+      /* clipboard unavailable — ignore */
+    }
+  };
 
   // Payment method master switches (admin-controlled).
   const onlineEnabled = settings.onlinePaymentEnabled ?? true;
@@ -165,7 +177,20 @@ export function DetailsClient({ settings }: DetailsClientProps) {
           {/* Booking reference to copy into the payment notes */}
           <div className="rounded-2xl border bg-[var(--card)] p-5 text-center shadow-sm" style={{ borderColor: `${pc}40` }}>
             <p className="text-xs font-medium uppercase tracking-wide text-[var(--muted-foreground)]">{t('funnel.yourReference')}</p>
-            <p className="mt-1 font-mono text-2xl font-bold text-[var(--foreground)]">{store.bookingRef}</p>
+            <div className="mt-1 flex items-center justify-center gap-2">
+              <p className="font-mono text-2xl font-bold text-[var(--foreground)]">{store.bookingRef}</p>
+              <button
+                type="button"
+                onClick={copyReference}
+                title={refCopied ? t('funnel.copied') : t('funnel.copyReference')}
+                aria-label={refCopied ? t('funnel.copied') : t('funnel.copyReference')}
+                className="inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs font-medium text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)]"
+                style={{ borderColor: `${pc}40` }}
+              >
+                {refCopied ? <Check className="h-4 w-4" style={{ color: pc }} /> : <Copy className="h-4 w-4" />}
+                {refCopied ? t('funnel.copied') : t('funnel.copy')}
+              </button>
+            </div>
             <p className="mt-3 text-xs text-[var(--muted-foreground)]">{t('funnel.paymentRefNote')}</p>
           </div>
 

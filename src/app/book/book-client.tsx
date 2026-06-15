@@ -216,7 +216,7 @@ export function BookNowClient({ settings }: BookNowClientProps) {
                 <div className="flex flex-1 flex-col p-4 sm:p-5">
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <h3 className="font-bold text-[var(--foreground)] text-base sm:text-lg">{opt.vehicleTypeName}</h3>
-                    <span className="flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)] shrink-0">
+                    <span title={t('funnel.tipSeats')} className="flex items-center gap-1 text-xs font-medium text-[var(--muted-foreground)] shrink-0">
                       <Users className="h-3.5 w-3.5" />
                       {t('funnel.upTo', { n: opt.seatCapacity })}
                     </span>
@@ -228,27 +228,27 @@ export function BookNowClient({ settings }: BookNowClientProps) {
                   {(opt.airConditioning || opt.wifi || opt.gpsTracked || opt.transmission || opt.luggageCapacity != null) && (
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {opt.airConditioning && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
+                        <span title={t('funnel.tipAc')} className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Snowflake className="h-3 w-3" /> {t('funnel.ac')}
                         </span>
                       )}
                       {opt.wifi && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
+                        <span title={t('funnel.tipWifi')} className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Wifi className="h-3 w-3" /> {t('funnel.wifi')}
                         </span>
                       )}
                       {opt.transmission && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
+                        <span title={t('funnel.tipTransmission')} className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Cog className="h-3 w-3" /> {t(opt.transmission === 'AUTOMATIC' ? 'funnel.automatic' : 'funnel.manual')}
                         </span>
                       )}
                       {opt.luggageCapacity != null && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
+                        <span title={t('funnel.tipLuggage')} className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Briefcase className="h-3 w-3" /> {opt.luggageCapacity}
                         </span>
                       )}
                       {opt.gpsTracked && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
+                        <span title={t('funnel.tipGps')} className="inline-flex items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-0.5 text-[11px] font-medium text-[var(--muted-foreground)]">
                           <Navigation className="h-3 w-3" /> {t('funnel.gps')}
                         </span>
                       )}

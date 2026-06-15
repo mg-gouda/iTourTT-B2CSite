@@ -427,6 +427,28 @@ export function BookingDetailClient({ settings, bookingRef }: Props) {
                     )}
                   </div>
                 )}
+
+                {/* Cancellation policy — shown when the booking is active but the
+                    48h self-service cancellation window has closed. */}
+                {isActive && !canCancel && (
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-900">
+                    <h3 className="flex items-center gap-1.5 text-sm font-semibold">
+                      <AlertCircle className="h-4 w-4" /> Cancellation Policy
+                    </h3>
+                    <p className="mt-2 text-xs leading-relaxed">
+                      Free cancellation is available up to 48 hours before your scheduled
+                      pickup. As your transfer is within 48 hours, this booking can no
+                      longer be cancelled online.
+                    </p>
+                    <p className="mt-2 text-xs leading-relaxed">
+                      Need to cancel within this period? Email us at{' '}
+                      <a href="mailto:support@transfera.ae" className="font-semibold underline">
+                        support@transfera.ae
+                      </a>{' '}
+                      and our team will assist you.
+                    </p>
+                  </div>
+                )}
               </>
             )}
 
