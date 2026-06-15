@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
 
@@ -64,7 +65,18 @@ export function PlaceAutocomplete({ onSelect, placeholder, primaryColor, inputCl
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tokenRef = useRef<any>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLUListElement>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Fixed-position rect for the portaled dropdown (so it can't be clipped by an
+  // ancestor's overflow-hidden, e.g. the booking card).
+  const [pos, setPos] = useState<{ left: number; top: number; width: number } | null>(null);
+
+  const updatePos = useCallback(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    setPos({ left: r.left, top: r.bottom + 4, width: r.width });
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -146,10 +158,25 @@ export function PlaceAutocomplete({ onSelect, placeholder, primaryColor, inputCl
     tokenRef.current = null;
   };
 
-  // Close the dropdown when clicking outside the widget.
+  // Keep the portaled dropdown aligned to the input while open.
+  useEffect(() => {
+    if (!open || !suggestions.length) return;
+    updatePos();
+    window.addEventListener('scroll', updatePos, true);
+    window.addEventListener('resize', updatePos);
+    return () => {
+      window.removeEventListener('scroll', updatePos, true);
+      window.removeEventListener('resize', updatePos);
+    };
+  }, [open, suggestions.length, updatePos]);
+
+  // Close the dropdown when clicking outside the input AND outside the dropdown
+  // (the dropdown is portaled, so it isn't inside wrapRef).
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
-      if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (wrapRef.current?.contains(t) || dropdownRef.current?.contains(t)) return;
+      setOpen(false);
     };
     document.addEventListener('mousedown', onDoc);
     return () => document.removeEventListener('mousedown', onDoc);
@@ -171,22 +198,29 @@ export function PlaceAutocomplete({ onSelect, placeholder, primaryColor, inputCl
         onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
         autoComplete="off"
       />
-      {open && suggestions.length > 0 && (
-        <ul className="absolute z-50 mt-1 max-h-64 w-full overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
-          {suggestions.map((s) => (
-            <li key={s.placeId}>
-              <button
-                type="button"
-                onClick={() => handlePick(s)}
-                className="flex w-full flex-col items-start px-3 py-2 text-left hover:bg-gray-50"
-              >
-                <span className="text-sm text-gray-900">{s.primary}</span>
-                {s.secondary && <span className="text-xs text-gray-500">{s.secondary}</span>}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      {open && suggestions.length > 0 && pos && typeof document !== 'undefined' &&
+        createPortal(
+          <ul
+            ref={dropdownRef}
+            style={{ position: 'fixed', left: pos.left, top: pos.top, width: pos.width, zIndex: 9999 }}
+            className="max-h-72 overflow-auto rounded-lg border border-gray-200 bg-white py-1 shadow-xl"
+          >
+            {suggestions.map((s) => (
+              <li key={s.placeId}>
+                <button
+                  type="button"
+                  // Pick on mousedown so the selection fires before the input blurs.
+                  onMouseDown={(e) => { e.preventDefault(); handlePick(s); }}
+                  className="flex w-full flex-col items-start px-3 py-2 text-left hover:bg-gray-50"
+                >
+                  <span className="text-sm text-gray-900">{s.primary}</span>
+                  {s.secondary && <span className="text-xs text-gray-500">{s.secondary}</span>}
+                </button>
+              </li>
+            ))}
+          </ul>,
+          document.body,
+        )}
     </div>
   );
 }
