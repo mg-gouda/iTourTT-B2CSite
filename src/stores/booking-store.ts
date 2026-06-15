@@ -1,6 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface BookingExtras {
   boosterSeatQty: number;
@@ -129,28 +130,46 @@ const initialState = {
   accountPassword: null,
 };
 
-export const useBookingStore = create<BookingState>((set) => ({
-  ...initialState,
+// Server-safe no-op storage so persist doesn't touch sessionStorage during SSR.
+const noopStorage = { getItem: () => null, setItem: () => {}, removeItem: () => {} };
 
-  setField: (field: string, value: unknown) =>
-    set((state) => {
-      if (field.startsWith('extras.')) {
-        const extraKey = field.split('.')[1] as keyof BookingExtras;
-        return { extras: { ...state.extras, [extraKey]: value } };
-      }
-      return { [field]: value } as Partial<BookingState>;
+export const useBookingStore = create<BookingState>()(
+  persist(
+    (set) => ({
+      ...initialState,
+
+      setField: (field: string, value: unknown) =>
+        set((state) => {
+          if (field.startsWith('extras.')) {
+            const extraKey = field.split('.')[1] as keyof BookingExtras;
+            return { extras: { ...state.extras, [extraKey]: value } };
+          }
+          return { [field]: value } as Partial<BookingState>;
+        }),
+
+      setQuote: (price: number, currency: string, breakdown: Record<string, unknown>) =>
+        set({ quotePrice: price, quoteCurrency: currency, quoteBreakdown: breakdown }),
+
+      setCustomExtraQty: (extraId: string, qty: number) =>
+        set((state) => {
+          const others = state.customExtras.filter((e) => e.extraId !== extraId);
+          return {
+            customExtras: qty > 0 ? [...others, { extraId, qty }] : others,
+          };
+        }),
+
+      reset: () => set(initialState),
     }),
-
-  setQuote: (price: number, currency: string, breakdown: Record<string, unknown>) =>
-    set({ quotePrice: price, quoteCurrency: currency, quoteBreakdown: breakdown }),
-
-  setCustomExtraQty: (extraId: string, qty: number) =>
-    set((state) => {
-      const others = state.customExtras.filter((e) => e.extraId !== extraId);
-      return {
-        customExtras: qty > 0 ? [...others, { extraId, qty }] : others,
-      };
-    }),
-
-  reset: () => set(initialState),
-}));
+    {
+      // Persist the in-progress booking so it survives navigation between funnel
+      // steps and page refreshes (e.g. the AI hands off straight to /book/details).
+      // sessionStorage → scoped to the tab and cleared when it closes.
+      name: 'b2c-booking',
+      storage: createJSONStorage(() =>
+        typeof window !== 'undefined' ? window.sessionStorage : noopStorage,
+      ),
+      // Don't persist actions or the post-booking account secret.
+      partialize: ({ setField, setQuote, setCustomExtraQty, reset, accountPassword, ...rest }) => rest,
+    },
+  ),
+);
