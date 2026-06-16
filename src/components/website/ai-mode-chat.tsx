@@ -1,12 +1,46 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Send, Loader2 } from 'lucide-react';
+import { Sparkles, Send, Loader2, Mic, Volume2, VolumeX } from 'lucide-react';
 import { useBookingStore } from '@/stores/booking-store';
-import { useWT, useLocale, useLocalePath } from '@/lib/website-i18n';
+import { useWT, useLocale, useLocalePath, type Locale } from '@/lib/website-i18n';
 
 const API = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/public`;
+
+// BCP-47 tags for the Web Speech APIs, keyed by the site's UI locale. Arabic
+// uses the Egyptian variant since these are Egypt-based transfer bookings.
+const SPEECH_LANG: Record<Locale, string> = {
+  en: 'en-US',
+  ar: 'ar-EG',
+  de: 'de-DE',
+  fr: 'fr-FR',
+  it: 'it-IT',
+  nl: 'nl-NL',
+  ru: 'ru-RU',
+};
+
+// ---- Minimal typings for the Web Speech API (not in lib.dom for all targets).
+interface SpeechRecognitionResultLike {
+  0: { transcript: string };
+  isFinal: boolean;
+}
+interface SpeechRecognitionEventLike {
+  resultIndex: number;
+  results: { length: number; [i: number]: SpeechRecognitionResultLike };
+}
+interface SpeechRecognitionLike {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+  onresult: ((e: SpeechRecognitionEventLike) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+}
+type SpeechRecognitionCtor = new () => SpeechRecognitionLike;
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -57,9 +91,15 @@ interface Props {
   cardColor: string;
 }
 
+// Strip emoji / pictographs so they aren't read aloud as "grinning face" etc.
+const cleanForSpeech = (text: string): string =>
+  text.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}️]/gu, '').trim();
+
 // Conversational booking panel. Replaces the manual form when the "AI Mode" tab
-// is active. Sends the running conversation to /public/ai-search; on a `results`
+// is active. Sends the running conversation to /public/ai-search; on a `complete`
 // intent it pre-fills the booking store and hands off to the normal /book funnel.
+// Supports voice: speech-to-text input (mic) and text-to-speech replies (Web
+// Speech API), so guests can book hands-free.
 export function AiModeChat({ primaryColor, cardColor }: Props) {
   const t = useWT();
   const locale = useLocale();
@@ -74,13 +114,74 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
   const [draft, setDraft] = useState<Record<string, unknown> | undefined>(undefined);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // ---- Voice state.
+  const [voiceOut, setVoiceOut] = useState(false); // speak assistant replies
+  const [listening, setListening] = useState(false);
+  const [sttSupported, setSttSupported] = useState(false);
+  const [ttsSupported, setTtsSupported] = useState(false);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, loading]);
 
+  // Detect browser support + restore the guest's voice-output preference. This
+  // must run after mount: `window`/`localStorage` aren't available during SSR,
+  // and the values gate which controls render — so a synchronous setState here
+  // is intentional (hence the disable).
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const w = window as unknown as {
+      SpeechRecognition?: SpeechRecognitionCtor;
+      webkitSpeechRecognition?: SpeechRecognitionCtor;
+      speechSynthesis?: SpeechSynthesis;
+    };
+    setSttSupported(!!(w.SpeechRecognition || w.webkitSpeechRecognition));
+    setTtsSupported(!!w.speechSynthesis);
+    setVoiceOut(localStorage.getItem('transfera_ai_voice') === '1');
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  // Speak a reply aloud when voice output is enabled.
+  const speak = useCallback(
+    (text: string) => {
+      if (!voiceOut || typeof window === 'undefined' || !window.speechSynthesis) return;
+      const clean = cleanForSpeech(text);
+      if (!clean) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(clean);
+      u.lang = SPEECH_LANG[locale];
+      const match = window.speechSynthesis.getVoices().find((v) => v.lang?.startsWith(locale));
+      if (match) u.voice = match;
+      window.speechSynthesis.speak(u);
+    },
+    [voiceOut, locale],
+  );
+
+  // Stop any in-flight speech (on unmount, or when leaving for the funnel).
+  const stopSpeaking = useCallback(() => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel();
+  }, []);
+
+  useEffect(() => () => {
+    stopSpeaking();
+    recognitionRef.current?.abort();
+  }, [stopSpeaking]);
+
+  const toggleVoiceOut = () => {
+    setVoiceOut((prev) => {
+      const next = !prev;
+      if (typeof window !== 'undefined') localStorage.setItem('transfera_ai_voice', next ? '1' : '0');
+      if (!next) stopSpeaking();
+      return next;
+    });
+  };
+
   // A complete booking: pre-fill the whole of funnel steps 1 & 2, then hand off
   // to the normal personal-details page.
   const applyCompleteAndGo = (q: CompleteQuery) => {
+    stopSpeaking();
     store.reset();
     store.setField('serviceType', q.serviceType);
     store.setField('fromZoneId', q.fromZoneId);
@@ -119,8 +220,8 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
     router.push(localePath('/book/details'));
   };
 
-  const send = async () => {
-    const text = input.trim();
+  const send = async (override?: string) => {
+    const text = (override ?? input).trim();
     if (!text || loading) return;
     const next: ChatMessage[] = [...messages, { role: 'user', content: text }];
     setMessages(next);
@@ -146,11 +247,16 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
       if (result.draft) setDraft(result.draft);
 
       if (result.intent === 'complete' && result.query) {
-        if (result.reply) setMessages((m) => [...m, { role: 'assistant', content: result.reply! }]);
+        if (result.reply) {
+          setMessages((m) => [...m, { role: 'assistant', content: result.reply! }]);
+          speak(result.reply);
+        }
         applyCompleteAndGo(result.query);
         return;
       }
-      setMessages((m) => [...m, { role: 'assistant', content: result.reply || t('booking.aiError') }]);
+      const reply = result.reply || t('booking.aiError');
+      setMessages((m) => [...m, { role: 'assistant', content: reply }]);
+      speak(reply);
     } catch {
       setMessages((m) => [...m, { role: 'assistant', content: t('booking.aiError') }]);
     } finally {
@@ -158,11 +264,77 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
     }
   };
 
+  // Start/stop dictation. The transcript streams into the input box; on a final
+  // result we auto-send so voice conversations feel hands-free.
+  const toggleListening = () => {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const w = window as unknown as {
+      SpeechRecognition?: SpeechRecognitionCtor;
+      webkitSpeechRecognition?: SpeechRecognitionCtor;
+    };
+    const Ctor = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!Ctor) return;
+    stopSpeaking(); // don't talk over the guest
+    const rec = new Ctor();
+    rec.lang = SPEECH_LANG[locale];
+    rec.continuous = false;
+    rec.interimResults = true;
+    rec.onresult = (e) => {
+      let transcript = '';
+      let isFinal = false;
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        transcript += e.results[i][0].transcript;
+        if (e.results[i].isFinal) isFinal = true;
+      }
+      setInput(transcript);
+      if (isFinal && transcript.trim()) {
+        // Speaking implies the guest wants spoken replies back.
+        if (!voiceOut) {
+          setVoiceOut(true);
+          if (typeof window !== 'undefined') localStorage.setItem('transfera_ai_voice', '1');
+        }
+        send(transcript);
+      }
+    };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => setListening(false);
+    recognitionRef.current = rec;
+    setListening(true);
+    rec.start();
+  };
+
   return (
     <div
       className="flex h-[420px] flex-col overflow-hidden rounded-2xl rounded-tl-none"
       style={{ backgroundColor: cardColor, border: '0.8px solid rgba(255,255,255,0.08)', boxShadow: '0 20px 60px rgba(0,0,0,0.35)' }}
     >
+      {/* Header — Transfera AI Assistant identity + voice-output toggle */}
+      <div className="flex items-center gap-2.5 border-b border-white/10 px-4 py-3">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: `${primaryColor}26`, color: primaryColor }}>
+          <Sparkles className="h-4 w-4" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-white">{t('booking.aiTitle')}</p>
+          <p className="truncate text-[11px] text-white/50">{t('booking.aiSubtitle')}</p>
+        </div>
+        {ttsSupported && (
+          <button
+            type="button"
+            onClick={toggleVoiceOut}
+            aria-label={t(voiceOut ? 'booking.aiVoiceOn' : 'booking.aiVoiceOff')}
+            aria-pressed={voiceOut}
+            title={t(voiceOut ? 'booking.aiVoiceOn' : 'booking.aiVoiceOff')}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors"
+            style={voiceOut ? { backgroundColor: `${primaryColor}26`, color: primaryColor } : { color: 'rgba(255,255,255,0.5)' }}
+          >
+            {voiceOut ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
+          </button>
+        )}
+      </div>
+
       {/* Messages */}
       <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto p-4">
         {/* Intro bubble */}
@@ -215,13 +387,31 @@ export function AiModeChat({ primaryColor, cardColor }: Props) {
             }}
             rows={1}
             maxLength={1000}
-            placeholder={t('booking.aiPlaceholder')}
+            placeholder={listening ? t('booking.aiListening') : t('booking.aiPlaceholder')}
             className="max-h-28 min-h-[44px] flex-1 resize-none rounded-xl bg-white/95 px-3 py-2.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2"
             style={{ ['--tw-ring-color' as string]: primaryColor }}
           />
+          {sttSupported && (
+            <button
+              type="button"
+              onClick={toggleListening}
+              disabled={loading}
+              aria-label={t('booking.aiMic')}
+              aria-pressed={listening}
+              title={t('booking.aiMic')}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-opacity disabled:opacity-40"
+              style={
+                listening
+                  ? { backgroundColor: primaryColor, color: '#fff' }
+                  : { backgroundColor: 'rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.85)' }
+              }
+            >
+              <Mic className={`h-4 w-4 ${listening ? 'animate-pulse' : ''}`} />
+            </button>
+          )}
           <button
             type="button"
-            onClick={send}
+            onClick={() => send()}
             disabled={loading || !input.trim()}
             aria-label={t('booking.aiSend')}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-white transition-opacity disabled:opacity-40"
