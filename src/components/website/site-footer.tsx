@@ -105,7 +105,7 @@ function Copyright({ siteName }: { siteName: string }) {
   const t = useWT();
   return (
     <div className="border-t border-white/10 pt-6 text-center text-xs text-white/40">
-      &copy; {new Date().getFullYear()} {siteName}. {t('footer.rights')}
+      &copy; {new Date().getFullYear()} {siteName}. {t('footer.rights')} Powered by Fulvago Travel
     </div>
   );
 }
@@ -214,7 +214,7 @@ function MinimalFooter({ settings }: SiteFooterProps) {
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-xs text-white/40">
-            &copy; {new Date().getFullYear()} {settings.siteName}. {t('footer.rights')}
+            &copy; {new Date().getFullYear()} {settings.siteName}. {t('footer.rights')} Powered by Fulvago Travel
           </p>
           <div className="flex items-center gap-4">
             {quickLinks.map((link) => (
