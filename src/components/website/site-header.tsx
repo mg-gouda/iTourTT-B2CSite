@@ -323,10 +323,10 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
         />
         {/* Panel */}
         <div
-          className="absolute right-0 top-0 h-full w-72 shadow-2xl"
+          className="absolute right-0 top-0 flex h-full w-72 flex-col shadow-2xl"
           style={{ backgroundColor: settings.navBgColor }}
         >
-          <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+          <div className="flex shrink-0 items-center justify-between px-5 py-4 border-b border-white/10">
             <span className="text-base font-semibold text-white">{t('nav.menu')}</span>
             <button
               onClick={() => setMobileOpen(false)}
@@ -335,7 +335,7 @@ export function SiteHeader({ settings }: SiteHeaderProps) {
               <X className="h-5 w-5" />
             </button>
           </div>
-          <div className="flex flex-col gap-1 px-3 py-4">
+          <div className="flex flex-1 flex-col gap-1 overflow-y-auto overscroll-contain px-3 py-4">
             {visibleNavLinks.map((link) => (
               <Link
                 key={link.href}
