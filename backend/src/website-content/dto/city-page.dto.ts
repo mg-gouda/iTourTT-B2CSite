@@ -5,7 +5,10 @@ import {
   IsString,
   IsArray,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { SeoMetaDto } from './blog.dto.js';
 
 export class CityPageBodySectionDto {
   @IsOptional() @IsString() heading?: string;
@@ -35,4 +38,5 @@ export class UpsertCityPageDto {
 
   @IsOptional() @IsString() @MaxLength(180) metaTitle?: string;
   @IsOptional() @IsString() @MaxLength(320) metaDescription?: string;
+  @IsOptional() @ValidateNested() @Type(() => SeoMetaDto) seo?: SeoMetaDto;
 }

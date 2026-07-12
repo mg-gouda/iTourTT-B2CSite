@@ -9,6 +9,7 @@ import {
 } from '@/components/admin/ui';
 import { RichEditor } from '@/components/admin/rich-editor';
 import { TranslationPanel } from '@/components/admin/translation-panel';
+import { SeoPanel, type SeoMeta } from '@/components/admin/seo-panel';
 import { ArrowLeft, ImagePlus, Plus, Save, Trash2, X } from 'lucide-react';
 
 interface BodySection { heading: string; body: string }
@@ -26,6 +27,7 @@ interface CityPageForm {
   faqJson: FaqItem[];
   metaTitle: string;
   metaDescription: string;
+  seo: SeoMeta;
 }
 
 const slugify = (s: string) =>
@@ -35,6 +37,7 @@ const EMPTY: CityPageForm = {
   slug: '', isPublished: false, showInMenu: false, menuOrder: 0,
   heroHeadline: '', heroImageUrl: '', introText: '', contentHtml: '',
   bodyJson: [], faqJson: [], metaTitle: '', metaDescription: '',
+  seo: { schemaType: 'Article' },
 };
 
 function findCityName(tree: any[], id: string): string | null {
@@ -74,6 +77,7 @@ export default function CityPageEditor() {
           bodyJson: Array.isArray(p.bodyJson) ? p.bodyJson : [],
           faqJson: Array.isArray(p.faqJson) ? p.faqJson : [],
           metaTitle: p.metaTitle ?? '', metaDescription: p.metaDescription ?? '',
+          seo: p.seo ?? { schemaType: 'Article' },
         });
       })
       .catch((e: any) => {
@@ -269,17 +273,21 @@ export default function CityPageEditor() {
           </Panel>
 
           {/* SEO */}
-          <Panel className="p-4">
-            <h3 className="mb-3 text-sm font-semibold">SEO</h3>
-            <div className="space-y-3">
-              <Field label="Meta title" hint={`${form.metaTitle.length}/180`}>
-                <Input maxLength={180} value={form.metaTitle} onChange={(e) => set('metaTitle', e.target.value)} />
-              </Field>
-              <Field label="Meta description" hint={`${form.metaDescription.length}/320`}>
-                <Textarea maxLength={320} value={form.metaDescription} onChange={(e) => set('metaDescription', e.target.value)} />
-              </Field>
-            </div>
-          </Panel>
+          <SeoPanel
+            content={{
+              title: form.heroHeadline || cityName,
+              contentHtml: form.contentHtml,
+              author: '',
+              coverImageUrl: form.heroImageUrl ? assetUrl(form.heroImageUrl) : '',
+            }}
+            metaTitle={form.metaTitle}
+            metaDescription={form.metaDescription}
+            slug={form.slug}
+            onMeta={(patch) => setForm((f) => ({ ...f, ...patch }))}
+            seo={form.seo}
+            onSeo={(patch) => setForm((f) => ({ ...f, seo: { ...f.seo, ...patch } }))}
+            pathPrefix="/transfers/"
+          />
 
           <TranslationPanel
             entity="city_page"

@@ -47,6 +47,7 @@ import { WebsiteContentModule } from './website-content/website-content.module.j
 import { ContactMessagesModule } from './contact-messages/contact-messages.module.js';
 import { PartnerClientModule } from './partner-client/partner-client.module.js';
 import { JobSyncModule } from './job-sync/job-sync.module.js';
+import { AiVisibilityModule } from './ai-visibility/ai-visibility.module.js';
 
 @Module({
   imports: [
@@ -95,6 +96,7 @@ import { JobSyncModule } from './job-sync/job-sync.module.js';
     ContactMessagesModule,
     PartnerClientModule,
     JobSyncModule,
+    AiVisibilityModule,
   ],
   controllers: [AppController],
   providers: [

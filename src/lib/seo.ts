@@ -273,11 +273,13 @@ export function articleSchema(opts: {
   url: string;
   publishedAt?: string | null;
   modifiedAt?: string | null;
+  type?: string | null;
 }): Record<string, unknown> {
   const published = opts.publishedAt ?? undefined;
+  const t = opts.type && opts.type !== 'none' ? opts.type : 'Article';
   return {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': ['Article', 'BlogPosting', 'NewsArticle'].includes(t) ? t : 'Article',
     headline: opts.title,
     description: opts.description ?? undefined,
     image: opts.image ? [opts.image] : undefined,

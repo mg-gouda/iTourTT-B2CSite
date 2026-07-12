@@ -61,6 +61,7 @@ export class CityPagesService {
       faqJson: dto.faqJson as object | undefined,
       metaTitle: dto.metaTitle,
       metaDescription: dto.metaDescription,
+      seo: dto.seo as any,
     };
 
     return this.prisma.cityPage.upsert({

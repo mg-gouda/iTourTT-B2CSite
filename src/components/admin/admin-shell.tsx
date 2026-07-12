@@ -7,7 +7,7 @@ import { adminToken, api } from '@/lib/admin-api';
 import {
   LayoutDashboard, FileText, Files, MapPin, Search, Tag, Puzzle,
   Image as ImageIcon, Languages, Settings, Users, LogOut, Menu, X, ShieldCheck,
-  Sun, Moon, Shield,
+  Sun, Moon, Shield, Radar,
 } from 'lucide-react';
 
 type NavItem = { href: string; label: string; icon: any; perm?: string };
@@ -39,6 +39,7 @@ const NAV: { group: string; items: NavItem[] }[] = [
     items: [
       { href: '/admin/settings', label: 'Settings', icon: Settings, perm: 'company' },
       { href: '/admin/users', label: 'Users', icon: Users, perm: 'users' },
+      { href: '/admin/ai-visibility', label: 'AI Visibility', icon: Radar, perm: 'users' },
       { href: '/admin/permissions', label: 'Permissions', icon: Shield, perm: 'users.roles' },
     ],
   },

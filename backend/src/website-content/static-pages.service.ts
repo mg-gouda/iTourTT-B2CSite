@@ -42,6 +42,7 @@ export class StaticPagesService {
         menuOrder: dto.menuOrder ?? 0,
         metaTitle: dto.metaTitle,
         metaDescription: dto.metaDescription,
+        seo: dto.seo as any,
       },
     });
   }
@@ -66,6 +67,7 @@ export class StaticPagesService {
         menuOrder: dto.menuOrder ?? existing.menuOrder,
         metaTitle: dto.metaTitle ?? existing.metaTitle,
         metaDescription: dto.metaDescription ?? existing.metaDescription,
+        seo: dto.seo as any,
       },
     });
   }

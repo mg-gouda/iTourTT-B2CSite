@@ -169,6 +169,7 @@ export class BlogService {
           author: true,
           publishedAt: true,
           tags: true,
+          seo: true,
           categories: { select: { name: true, slug: true } },
         },
       }),

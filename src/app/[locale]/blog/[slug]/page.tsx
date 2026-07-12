@@ -25,10 +25,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await fetchBlogPost(slug, locale);
   if (!post) return {};
 
+  const seo = post.seo ?? {};
   const title = post.metaTitle ?? `${post.title} | Transfera`;
   const description = post.metaDescription ?? post.excerpt ?? undefined;
-  const canonical = `/${locale}/blog/${post.slug}`;
-  const image = resolveAssetUrl(post.coverImageUrl);
+  const canonical = seo.canonicalUrl || `/${locale}/blog/${post.slug}`;
+  const image = resolveAssetUrl(seo.ogImage || post.coverImageUrl);
+  const twImage = resolveAssetUrl(seo.twitterImage || seo.ogImage || post.coverImageUrl);
 
   const languages: Record<string, string> = { 'x-default': `${SITE_URL}/en/blog/${post.slug}` };
   LOCALES.forEach((loc) => { languages[loc] = `${SITE_URL}/${loc}/blog/${post.slug}`; });
@@ -37,15 +39,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical, languages },
+    robots: { index: !seo.robotsNoindex, follow: !seo.robotsNofollow },
     openGraph: {
       type: 'article',
-      url: `${SITE_URL}${canonical}`,
+      url: seo.canonicalUrl || `${SITE_URL}${canonical}`,
       siteName: BRAND_NAME,
-      title,
-      description,
-      images: [{ url: image ?? OG_IMAGE, alt: title }],
+      title: seo.ogTitle || title,
+      description: seo.ogDescription || description,
+      images: [{ url: image ?? OG_IMAGE, alt: seo.ogTitle || title }],
     },
-    twitter: { card: 'summary_large_image', title, description, images: [image ?? OG_IMAGE] },
+    twitter: {
+      card: 'summary_large_image',
+      title: seo.twitterTitle || title,
+      description: seo.twitterDescription || description,
+      images: [twImage ?? OG_IMAGE],
+    },
   };
 }
 
@@ -63,7 +71,7 @@ export default async function LocaleBlogPostPage({ params }: Props) {
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/${locale}` },
       { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/${locale}/blog` },
-      { '@type': 'ListItem', position: 3, name: post.title, item: `${SITE_URL}${canonical}` },
+      { '@type': 'ListItem', position: 3, name: post.seo?.breadcrumbTitle || post.title, item: `${SITE_URL}${canonical}` },
     ],
   };
 
@@ -74,6 +82,7 @@ export default async function LocaleBlogPostPage({ params }: Props) {
     author: post.author,
     url: `${SITE_URL}${canonical}`,
     publishedAt: post.publishedAt,
+    type: post.seo?.schemaType,
   });
 
   return (

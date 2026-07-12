@@ -16,27 +16,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await fetchBlogPost(slug);
   if (!post) return {};
+  const seo = post.seo ?? {};
   const title = post.metaTitle ?? `${post.title} | Transfera`;
   const description = post.metaDescription ?? post.excerpt ?? undefined;
-  const canonical = `/blog/${post.slug}`;
-  const image = resolveAssetUrl(post.coverImageUrl);
+  const canonical = seo.canonicalUrl || `/blog/${post.slug}`;
+  const image = resolveAssetUrl(seo.ogImage || post.coverImageUrl);
+  const twImage = resolveAssetUrl(seo.twitterImage || seo.ogImage || post.coverImageUrl);
   return {
     title,
     description,
     alternates: { canonical },
+    robots: { index: !seo.robotsNoindex, follow: !seo.robotsNofollow },
     openGraph: {
       type: 'article',
-      url: `${SITE_URL}${canonical}`,
+      url: seo.canonicalUrl || `${SITE_URL}/blog/${post.slug}`,
       siteName: BRAND_NAME,
-      title,
-      description,
-      images: image ? [{ url: image, alt: title }] : ['/og-image.jpg'],
+      title: seo.ogTitle || title,
+      description: seo.ogDescription || description,
+      images: image ? [{ url: image, alt: seo.ogTitle || title }] : ['/og-image.jpg'],
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description,
-      images: [image ?? '/og-image.jpg'],
+      title: seo.twitterTitle || title,
+      description: seo.twitterDescription || description,
+      images: [twImage ?? '/og-image.jpg'],
     },
   };
 }
@@ -57,7 +60,7 @@ export default async function BlogPostPage({ params }: Props) {
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
       { '@type': 'ListItem', position: 2, name: 'Blog', item: `${SITE_URL}/blog` },
-      { '@type': 'ListItem', position: 3, name: post.title, item: `${SITE_URL}${canonical}` },
+      { '@type': 'ListItem', position: 3, name: post.seo?.breadcrumbTitle || post.title, item: `${SITE_URL}${canonical}` },
     ],
   };
 
@@ -68,6 +71,7 @@ export default async function BlogPostPage({ params }: Props) {
     author: post.author,
     url: `${SITE_URL}${canonical}`,
     publishedAt: post.publishedAt,
+    type: post.seo?.schemaType,
   });
 
   return (

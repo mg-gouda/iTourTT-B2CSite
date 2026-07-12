@@ -2164,6 +2164,8 @@ model CityPage {
   // ── SEO ──
   metaTitle       String? @map("meta_title")
   metaDescription String? @map("meta_description")
+  // Yoast-style extras (see BlogPost.seo)
+  seo             Json?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -2252,6 +2254,8 @@ model StaticPage {
   // ── SEO ──
   metaTitle       String? @map("meta_title")
   metaDescription String? @map("meta_description") @db.Text
+  // Yoast-style extras (see BlogPost.seo)
+  seo             Json?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

@@ -70,6 +70,7 @@ export interface BlogListItem {
   publishedAt: string | null;
   tags: string[];
   categories: BlogCategoryRef[];
+  seo?: SeoFields | null;
 }
 export interface BlogListResponse {
   items: BlogListItem[];
@@ -78,10 +79,23 @@ export interface BlogListResponse {
   pageSize: number;
   totalPages: number;
 }
+export interface SeoFields {
+  focusKeyphrase?: string;
+  canonicalUrl?: string;
+  robotsNoindex?: boolean;
+  robotsNofollow?: boolean;
+  ogTitle?: string; ogDescription?: string; ogImage?: string;
+  twitterTitle?: string; twitterDescription?: string; twitterImage?: string;
+  schemaType?: string;
+  cornerstone?: boolean;
+  breadcrumbTitle?: string;
+}
+
 export interface BlogPost extends BlogListItem {
   contentHtml: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
+  seo?: SeoFields | null;
 }
 
 export function fetchBlogList(opts: {

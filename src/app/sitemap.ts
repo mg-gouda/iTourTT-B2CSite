@@ -30,7 +30,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogSlugs: { slug: string; publishedAt: string | null }[] = [];
   try {
     const data = await fetchBlogList({ page: 1 });
-    blogSlugs = data?.items?.map((p) => ({ slug: p.slug, publishedAt: p.publishedAt })) ?? [];
+    // Exclude posts flagged noindex from the sitemap (respect the robots setting).
+    blogSlugs = data?.items
+      ?.filter((p) => !p.seo?.robotsNoindex)
+      .map((p) => ({ slug: p.slug, publishedAt: p.publishedAt })) ?? [];
   } catch {
     // Sitemap still valid without blog posts
   }
