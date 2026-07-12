@@ -3,40 +3,43 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { adminToken } from '@/lib/admin-api';
+import { adminToken, api } from '@/lib/admin-api';
 import {
   LayoutDashboard, FileText, Files, MapPin, Search, Tag, Puzzle,
   Image as ImageIcon, Languages, Settings, Users, LogOut, Menu, X, ShieldCheck,
   Sun, Moon, Shield,
 } from 'lucide-react';
 
-const NAV: { group: string; items: { href: string; label: string; icon: any }[] }[] = [
+type NavItem = { href: string; label: string; icon: any; perm?: string };
+// `perm` = permission key required to see this window. Items with no perm are
+// always shown. A group with no visible items is hidden.
+const NAV: { group: string; items: NavItem[] }[] = [
   { group: '', items: [{ href: '/admin', label: 'Dashboard', icon: LayoutDashboard }] },
   {
     group: 'Content',
     items: [
-      { href: '/admin/posts', label: 'Posts', icon: FileText },
-      { href: '/admin/categories', label: 'Categories', icon: Tag },
-      { href: '/admin/pages', label: 'Pages', icon: Files },
-      { href: '/admin/destinations', label: 'Destinations', icon: MapPin },
-      { href: '/admin/media', label: 'Media', icon: ImageIcon },
-      { href: '/admin/seo', label: 'SEO', icon: Search },
-      { href: '/admin/translations', label: 'Translations', icon: Languages },
+      { href: '/admin/posts', label: 'Posts', icon: FileText, perm: 'website-content.blog' },
+      { href: '/admin/categories', label: 'Categories', icon: Tag, perm: 'website-content.blog' },
+      { href: '/admin/pages', label: 'Pages', icon: Files, perm: 'website-content.pages' },
+      { href: '/admin/destinations', label: 'Destinations', icon: MapPin, perm: 'website-content.cityPages' },
+      { href: '/admin/media', label: 'Media', icon: ImageIcon, perm: 'website-content' },
+      { href: '/admin/seo', label: 'SEO', icon: Search, perm: 'website-content.pageSeo' },
+      { href: '/admin/translations', label: 'Translations', icon: Languages, perm: 'website-content' },
     ],
   },
   {
     group: 'Commerce',
     items: [
-      { href: '/admin/pricing', label: 'Pricing', icon: Tag },
-      { href: '/admin/extras', label: 'Extras', icon: Puzzle },
+      { href: '/admin/pricing', label: 'Pricing', icon: Tag, perm: 'public-prices' },
+      { href: '/admin/extras', label: 'Extras', icon: Puzzle, perm: 'extras' },
     ],
   },
   {
     group: 'System',
     items: [
-      { href: '/admin/settings', label: 'Settings', icon: Settings },
-      { href: '/admin/users', label: 'Users', icon: Users },
-      { href: '/admin/permissions', label: 'Permissions', icon: Shield },
+      { href: '/admin/settings', label: 'Settings', icon: Settings, perm: 'company' },
+      { href: '/admin/users', label: 'Users', icon: Users, perm: 'users' },
+      { href: '/admin/permissions', label: 'Permissions', icon: Shield, perm: 'users.roles' },
     ],
   },
 ];
@@ -52,6 +55,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<{ name?: string; email?: string; role?: string } | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  // null until loaded — show nothing gated until we know the user's permissions.
+  const [perms, setPerms] = useState<Set<string> | null>(null);
 
   useEffect(() => {
     try {
@@ -61,7 +66,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     const t = (localStorage.getItem(THEME_KEY) as 'light' | 'dark') || 'dark';
     setTheme(t);
     applyTheme(t);
+    api.get<{ permissionKeys: string[] }>('/permissions/mine')
+      .then((r) => setPerms(new Set(r?.permissionKeys ?? [])))
+      .catch(() => setPerms(new Set())); // no perms → only ungated items show
   }, []);
+
+  const canSee = (perm?: string) => !perm || (perms?.has(perm) ?? false);
+  const visibleNav = NAV
+    .map((s) => ({ ...s, items: s.items.filter((i) => canSee(i.perm)) }))
+    .filter((s) => s.items.length > 0);
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -94,7 +107,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <span className="text-sm font-semibold tracking-tight">Transferra Admin</span>
         </div>
         <nav className="scrollbar-thin h-[calc(100vh-3.5rem)] overflow-y-auto px-3 py-3">
-          {NAV.map((section, i) => (
+          {visibleNav.map((section, i) => (
             <div key={i} className="mb-4">
               {section.group && (
                 <div className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
