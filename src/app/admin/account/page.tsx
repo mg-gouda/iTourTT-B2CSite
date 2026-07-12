@@ -79,7 +79,7 @@ export default function AccountPage() {
       <Panel className="p-5">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-sky-400" />
+            <ShieldCheck className="h-5 w-5 text-[#2271b1]" />
             <h2 className="text-sm font-semibold">Two-factor authentication</h2>
           </div>
           {me.twoFactorEnabled

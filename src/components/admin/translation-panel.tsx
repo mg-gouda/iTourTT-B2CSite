@@ -125,7 +125,7 @@ export function TranslationPanel({
         className="flex w-full items-center justify-between px-4 py-3 text-left"
       >
         <span className="flex items-center gap-2 text-sm font-semibold">
-          <Languages className="h-4 w-4 text-sky-400" /> Translations
+          <Languages className="h-4 w-4 text-[#2271b1]" /> Translations
           <span className="text-xs font-normal text-slate-500">
             {disabled ? '(save first)' : `${Object.keys(byLocale).length}/${LOCALES.length} locales`}
           </span>
@@ -148,7 +148,7 @@ export function TranslationPanel({
                 onClick={() => setLocale(l.code)}
                 className={cn(
                   'flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs transition',
-                  locale === l.code ? 'bg-sky-500/15 text-sky-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800',
+                  locale === l.code ? 'bg-[#e5f0f8] text-[#2271b1]' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800',
                 )}
               >
                 <span>{l.flag}</span> {l.label}

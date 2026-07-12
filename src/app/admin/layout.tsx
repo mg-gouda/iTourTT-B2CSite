@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { adminToken } from '@/lib/admin-api';
 import { AdminShell, applyTheme } from '@/components/admin/admin-shell';
 import { Toaster } from 'sonner';
+import './wp-admin.css';
 
 // Client-side guard: /admin/login renders bare; everything else requires a token.
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

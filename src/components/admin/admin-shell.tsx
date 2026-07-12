@@ -6,43 +6,33 @@ import { useEffect, useState } from 'react';
 import { adminToken, api } from '@/lib/admin-api';
 import {
   LayoutDashboard, FileText, Files, MapPin, Search, Tag, Puzzle,
-  Image as ImageIcon, Languages, Settings, Users, LogOut, Menu, X, ShieldCheck,
-  Sun, Moon, Shield, Radar,
+  Image as ImageIcon, Languages, Settings, Users, Shield, Sparkles,
+  Plus, LogOut, ChevronsLeft, ChevronsRight, Menu as MenuIcon,
 } from 'lucide-react';
 
 type NavItem = { href: string; label: string; icon: any; perm?: string };
-// `perm` = permission key required to see this window. Items with no perm are
-// always shown. A group with no visible items is hidden.
-const NAV: { group: string; items: NavItem[] }[] = [
-  { group: '', items: [{ href: '/admin', label: 'Dashboard', icon: LayoutDashboard }] },
-  {
-    group: 'Content',
-    items: [
-      { href: '/admin/posts', label: 'Posts', icon: FileText, perm: 'website-content.blog' },
-      { href: '/admin/categories', label: 'Categories', icon: Tag, perm: 'website-content.blog' },
-      { href: '/admin/pages', label: 'Pages', icon: Files, perm: 'website-content.pages' },
-      { href: '/admin/destinations', label: 'Destinations', icon: MapPin, perm: 'website-content.cityPages' },
-      { href: '/admin/media', label: 'Media', icon: ImageIcon, perm: 'website-content' },
-      { href: '/admin/seo', label: 'SEO', icon: Search, perm: 'website-content.pageSeo' },
-      { href: '/admin/translations', label: 'Translations', icon: Languages, perm: 'website-content' },
-    ],
-  },
-  {
-    group: 'Commerce',
-    items: [
-      { href: '/admin/pricing', label: 'Pricing', icon: Tag, perm: 'public-prices' },
-      { href: '/admin/extras', label: 'Extras', icon: Puzzle, perm: 'extras' },
-    ],
-  },
-  {
-    group: 'System',
-    items: [
-      { href: '/admin/settings', label: 'Settings', icon: Settings, perm: 'company' },
-      { href: '/admin/users', label: 'Users', icon: Users, perm: 'users' },
-      { href: '/admin/ai-visibility', label: 'AI Visibility', icon: Radar, perm: 'users' },
-      { href: '/admin/permissions', label: 'Permissions', icon: Shield, perm: 'users.roles' },
-    ],
-  },
+// WordPress-style menu. `sep: true` inserts a divider before the item.
+const NAV: (NavItem & { sep?: boolean })[] = [
+  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/posts', label: 'Posts', icon: FileText, perm: 'website-content.blog', sep: true },
+  { href: '/admin/categories', label: 'Categories', icon: Tag, perm: 'website-content.blog' },
+  { href: '/admin/pages', label: 'Pages', icon: Files, perm: 'website-content.pages' },
+  { href: '/admin/destinations', label: 'Destinations', icon: MapPin, perm: 'website-content.cityPages' },
+  { href: '/admin/media', label: 'Media', icon: ImageIcon, perm: 'website-content' },
+  { href: '/admin/seo', label: 'SEO', icon: Search, perm: 'website-content.pageSeo' },
+  { href: '/admin/translations', label: 'Translations', icon: Languages, perm: 'website-content' },
+  { href: '/admin/ai-visibility', label: 'AI Visibility', icon: Sparkles, perm: 'website-content' },
+  { href: '/admin/pricing', label: 'Pricing', icon: Tag, perm: 'public-prices', sep: true },
+  { href: '/admin/extras', label: 'Extras', icon: Puzzle, perm: 'extras' },
+  { href: '/admin/settings', label: 'Settings', icon: Settings, perm: 'company', sep: true },
+  { href: '/admin/users', label: 'Users', icon: Users, perm: 'users' },
+  { href: '/admin/permissions', label: 'Permissions', icon: Shield, perm: 'users.roles' },
+];
+
+// New-post/page quick links for the "+ New" admin-bar menu.
+const NEW_LINKS = [
+  { href: '/admin/posts/new', label: 'Post', perm: 'website-content.blog' },
+  { href: '/admin/pages/new', label: 'Page', perm: 'website-content.pages' },
 ];
 
 const THEME_KEY = 'b2c_admin_theme';
@@ -53,123 +43,98 @@ export function applyTheme(theme: 'light' | 'dark') {
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<{ name?: string; email?: string; role?: string } | null>(null);
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  // null until loaded — show nothing gated until we know the user's permissions.
+  const [user, setUser] = useState<{ name?: string; email?: string } | null>(null);
   const [perms, setPerms] = useState<Set<string> | null>(null);
+  const [folded, setFolded] = useState(false);
+  const [newOpen, setNewOpen] = useState(false);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem('b2c_admin_user');
       if (raw) setUser(JSON.parse(raw));
     } catch { /* ignore */ }
-    const t = (localStorage.getItem(THEME_KEY) as 'light' | 'dark') || 'dark';
-    setTheme(t);
-    applyTheme(t);
+    setFolded(localStorage.getItem('b2c_admin_folded') === '1');
+    applyTheme('light'); // wp-admin default scheme is light content
     api.get<{ permissionKeys: string[] }>('/permissions/mine')
       .then((r) => setPerms(new Set(r?.permissionKeys ?? [])))
-      .catch(() => setPerms(new Set())); // no perms → only ungated items show
+      .catch(() => setPerms(new Set()));
   }, []);
 
   const canSee = (perm?: string) => !perm || (perms?.has(perm) ?? false);
-  const visibleNav = NAV
-    .map((s) => ({ ...s, items: s.items.filter((i) => canSee(i.perm)) }))
-    .filter((s) => s.items.length > 0);
+  const nav = NAV.filter((i) => canSee(i.perm));
+  const newLinks = NEW_LINKS.filter((i) => canSee(i.perm));
 
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    localStorage.setItem(THEME_KEY, next);
-    applyTheme(next);
+  const isActive = (href: string) =>
+    href === '/admin' ? pathname === '/admin' : pathname.startsWith(href);
+
+  const toggleFold = () => {
+    const v = !folded; setFolded(v);
+    localStorage.setItem('b2c_admin_folded', v ? '1' : '0');
   };
-
   const logout = () => {
     adminToken.clear();
     localStorage.removeItem('b2c_admin_user');
     router.push('/admin/login');
   };
 
-  const isActive = (href: string) =>
-    href === '/admin' ? pathname === '/admin' : pathname.startsWith(href);
-
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-      {/* Sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 z-40 w-60 transform border-r border-slate-200 bg-white transition-transform dark:border-slate-800 dark:bg-slate-900 lg:translate-x-0 ${
-          open ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="flex h-14 items-center gap-2 border-b border-slate-200 px-4 dark:border-slate-800">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-500/20 ring-1 ring-sky-400/30">
-            <ShieldCheck className="h-4 w-4 text-sky-500 dark:text-sky-400" />
+    <div className="wpwrap wp-shell">
+      {/* Admin bar */}
+      <div className="wp-adminbar">
+        <button className="ab-item" onClick={toggleFold} title="Collapse menu">
+          <MenuIcon />
+        </button>
+        <Link href="/" target="_blank" className="ab-item ab-site">Transferra</Link>
+        {newLinks.length > 0 && (
+          <div style={{ position: 'relative', display: 'flex' }}
+               onMouseLeave={() => setNewOpen(false)}>
+            <button className="ab-item" onClick={() => setNewOpen((o) => !o)} onMouseEnter={() => setNewOpen(true)}>
+              <Plus /> New
+            </button>
+            {newOpen && (
+              <div style={{ position: 'absolute', top: 32, left: 0, minWidth: 140, background: '#2c3338', boxShadow: '0 3px 5px rgba(0,0,0,.2)', zIndex: 100000 }}>
+                {newLinks.map((l) => (
+                  <Link key={l.href} href={l.href} className="ab-item" style={{ display: 'flex', width: '100%' }}>{l.label}</Link>
+                ))}
+              </div>
+            )}
           </div>
-          <span className="text-sm font-semibold tracking-tight">Transferra Admin</span>
+        )}
+        <div className="ab-right">
+          <span className="ab-item">Howdy, {user?.name ?? 'Admin'}</span>
+          <button className="ab-item" onClick={logout} title="Log Out"><LogOut /> Log Out</button>
         </div>
-        <nav className="scrollbar-thin h-[calc(100vh-3.5rem)] overflow-y-auto px-3 py-3">
-          {visibleNav.map((section, i) => (
-            <div key={i} className="mb-4">
-              {section.group && (
-                <div className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-                  {section.group}
-                </div>
-              )}
-              {section.items.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className={`mb-0.5 flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition ${
-                      active
-                        ? 'bg-sky-500/15 text-sky-600 dark:text-sky-300'
-                        : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
-                    }`}
-                  >
-                    <Icon className="h-4 w-4 shrink-0" />
-                    {item.label}
-                  </Link>
-                );
-              })}
-            </div>
-          ))}
-        </nav>
-      </aside>
+      </div>
 
-      {open && (
-        <div className="fixed inset-0 z-30 bg-black/50 lg:hidden" onClick={() => setOpen(false)} />
-      )}
-
-      {/* Main */}
-      <div className="lg:pl-60">
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-slate-200 bg-white/80 px-4 backdrop-blur dark:border-slate-800 dark:bg-slate-950/80">
-          <button className="lg:hidden" onClick={() => setOpen(!open)}>
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      {/* Admin menu */}
+      <div className={`wp-adminmenu${folded ? ' folded' : ''}`}>
+        <nav style={{ paddingTop: 4 }}>
+          {nav.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.href}>
+                {item.sep && <div className="wp-menu-sep" />}
+                <Link
+                  href={item.href}
+                  title={item.label}
+                  className={`wp-menu-item${isActive(item.href) ? ' current' : ''}`}
+                >
+                  <Icon /><span>{item.label}</span>
+                </Link>
+              </div>
+            );
+          })}
+          <div className="wp-menu-sep" />
+          <button className="wp-menu-collapse" onClick={toggleFold}>
+            {folded ? <ChevronsRight style={{ width: 18, height: 18 }} /> : <ChevronsLeft style={{ width: 18, height: 18 }} />}
+            <span>Collapse menu</span>
           </button>
-          <div className="ml-auto flex items-center gap-2">
-            <button
-              onClick={toggleTheme}
-              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
-            >
-              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </button>
-            <Link href="/admin/account" className="rounded-lg px-2 py-1 text-right leading-tight transition hover:bg-slate-100 dark:hover:bg-slate-800">
-              <div className="text-sm font-medium">{user?.name ?? 'Admin'}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400">{user?.email}</div>
-            </Link>
-            <button
-              onClick={logout}
-              className="flex items-center gap-1.5 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800"
-            >
-              <LogOut className="h-3.5 w-3.5" /> Sign out
-            </button>
-          </div>
-        </header>
-        <main className="p-4 sm:p-6">{children}</main>
+        </nav>
+      </div>
+
+      {/* Content */}
+      <div className={`wp-content${folded ? ' folded' : ''}`}>
+        <div className="wrap">{children}</div>
       </div>
     </div>
   );

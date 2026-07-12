@@ -159,7 +159,7 @@ export default function AiVisibilityPage() {
                 className={cn(
                   'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium transition',
                   on
-                    ? 'border-sky-500/60 bg-sky-500/10 text-sky-700 dark:text-sky-300'
+                    ? 'border-[#2271b1] bg-[#e5f0f8] text-[#2271b1] dark:text-[#2271b1]'
                     : 'border-slate-300 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800',
                 )}
               >
@@ -169,7 +169,7 @@ export default function AiVisibilityPage() {
                     !configured
                       ? 'bg-amber-400'
                       : on
-                        ? 'bg-sky-500'
+                        ? 'bg-[#2271b1]'
                         : 'bg-slate-300 dark:bg-slate-600',
                   )}
                 />
@@ -193,7 +193,7 @@ export default function AiVisibilityPage() {
                   setQuery(q);
                   run(q);
                 }}
-                className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-600 transition hover:border-sky-400 hover:text-sky-600 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:border-sky-500/50 dark:hover:text-sky-300"
+                className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs text-slate-600 transition hover:border-[#2271b1] hover:text-[#135e96] dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:border-[#2271b1] dark:hover:text-[#135e96]"
               >
                 {q}
               </button>
@@ -282,7 +282,7 @@ function ResultCard({ result: r }: { result: EngineResult }) {
                   href={s}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline dark:text-sky-400"
+                  className="inline-flex items-center gap-1 text-xs text-[#135e96] hover:underline dark:text-[#2271b1]"
                 >
                   <ExternalLink className="h-3 w-3 shrink-0" />
                   <span className="truncate">{s}</span>

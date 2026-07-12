@@ -273,7 +273,7 @@ export default function PermissionsPage() {
                     onClick={() => setSelectedId(r.id)}
                     className={cn(
                       'flex w-full flex-col items-start gap-1 rounded-lg px-2.5 py-2 text-left transition',
-                      active ? 'bg-sky-500/15 text-sky-200 ring-1 ring-sky-500/30' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800',
+                      active ? 'bg-[#e5f0f8] text-[#2271b1] ring-1 ring-[#2271b1]/30' : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800',
                     )}
                   >
                     <span className="flex w-full items-center justify-between gap-2">
@@ -296,8 +296,8 @@ export default function PermissionsPage() {
           <div className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-500/15 ring-1 ring-sky-400/30">
-                  <ShieldCheck className="h-4 w-4 text-sky-400" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#e5f0f8] ring-1 ring-[#2271b1]/30">
+                  <ShieldCheck className="h-4 w-4 text-[#2271b1]" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-slate-100">

@@ -82,7 +82,7 @@ export default function PostsPage() {
                     <button
                       title="Edit"
                       onClick={() => router.push(`/admin/posts/${p.id}`)}
-                      className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-sky-400"
+                      className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#135e96]"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>

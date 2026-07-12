@@ -26,7 +26,7 @@ export function RichEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit,
-      Link.configure({ openOnClick: false, HTMLAttributes: { rel: 'noopener', class: 'text-sky-400 underline' } }),
+      Link.configure({ openOnClick: false, HTMLAttributes: { rel: 'noopener', class: 'text-[#2271b1] underline' } }),
       Image.configure({ HTMLAttributes: { class: 'rounded-lg max-w-full' } }),
       Placeholder.configure({ placeholder }),
     ],
@@ -34,7 +34,7 @@ export function RichEditor({
     editorProps: {
       attributes: {
         class:
-          'prose prose-invert max-w-none min-h-[320px] px-4 py-3 focus:outline-none prose-headings:font-semibold prose-a:text-sky-400',
+          'prose prose-invert max-w-none min-h-[320px] px-4 py-3 focus:outline-none prose-headings:font-semibold prose-a:text-[#2271b1]',
       },
     },
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
@@ -59,7 +59,7 @@ export function RichEditor({
       onClick={on}
       className={cn(
         'flex h-8 w-8 items-center justify-center rounded-md transition',
-        active ? 'bg-sky-500/20 text-sky-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100',
+        active ? 'bg-[#e5f0f8] text-[#2271b1]' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100',
       )}
     >
       {children}
@@ -79,8 +79,8 @@ export function RichEditor({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-slate-200 dark:border-slate-800 bg-slate-900/80 px-2 py-1.5">
+    <div className="overflow-hidden rounded border border-[#c3c4c7] bg-white">
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-[#c3c4c7] bg-[#f6f7f7] px-2 py-1.5">
         <Btn title="Bold" on={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')}><Bold className="h-4 w-4" /></Btn>
         <Btn title="Italic" on={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')}><Italic className="h-4 w-4" /></Btn>
         <Btn title="Strike" on={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')}><Strikethrough className="h-4 w-4" /></Btn>

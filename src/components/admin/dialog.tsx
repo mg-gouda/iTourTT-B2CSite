@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { Dialog as RxDialog } from 'radix-ui';
 import { X } from 'lucide-react';
-import { Button, cn } from './ui';
+import { Button } from './ui';
 
 export function Modal({
   open, onOpenChange, title, description, children, size = 'md',
@@ -15,31 +15,39 @@ export function Modal({
   children: React.ReactNode;
   size?: 'md' | 'lg' | 'xl';
 }) {
-  const width = { md: 'max-w-md', lg: 'max-w-2xl', xl: 'max-w-4xl' }[size];
+  const maxW = { md: 480, lg: 720, xl: 960 }[size];
   return (
     <RxDialog.Root open={open} onOpenChange={onOpenChange}>
       <RxDialog.Portal>
-        <RxDialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in" />
+        <RxDialog.Overlay
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.7)', zIndex: 100010 }}
+        />
         <RxDialog.Content
-          className={cn(
-            'fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 text-slate-900 dark:text-slate-100 shadow-2xl',
-            width,
-          )}
+          className="wpwrap"
+          style={{
+            position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
+            width: 'calc(100vw - 2rem)', maxWidth: maxW, maxHeight: '90vh', overflowY: 'auto',
+            background: '#fff', border: '1px solid #c3c4c7', boxShadow: '0 3px 6px rgba(0,0,0,.3)',
+            zIndex: 100011,
+          }}
         >
-          <div className="mb-4 flex items-start justify-between gap-4">
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, padding: '12px 16px', borderBottom: '1px solid #c3c4c7' }}>
             <div>
-              <RxDialog.Title className="text-base font-semibold">{title}</RxDialog.Title>
+              <RxDialog.Title style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#1d2327' }}>{title}</RxDialog.Title>
               {description && (
-                <RxDialog.Description className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                <RxDialog.Description style={{ margin: '2px 0 0', fontSize: 13, color: '#646970' }}>
                   {description}
                 </RxDialog.Description>
               )}
             </div>
-            <RxDialog.Close className="rounded-lg p-1 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white">
-              <X className="h-4 w-4" />
+            <RxDialog.Close
+              style={{ background: 'transparent', border: 0, cursor: 'pointer', color: '#646970', padding: 2, lineHeight: 0 }}
+              aria-label="Close"
+            >
+              <X style={{ width: 18, height: 18 }} />
             </RxDialog.Close>
           </div>
-          {children}
+          <div style={{ padding: 16 }}>{children}</div>
         </RxDialog.Content>
       </RxDialog.Portal>
     </RxDialog.Root>
@@ -59,8 +67,8 @@ export function ConfirmDialog({
   const [busy, setBusy] = React.useState(false);
   return (
     <Modal open={open} onOpenChange={onOpenChange} title={title} size="md">
-      <p className="text-sm text-slate-700 dark:text-slate-300">{message}</p>
-      <div className="mt-5 flex justify-end gap-2">
+      <p style={{ fontSize: 13, color: '#3c434a', margin: 0 }}>{message}</p>
+      <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
         <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
         <Button
           variant="danger"
