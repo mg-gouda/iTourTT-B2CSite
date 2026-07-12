@@ -103,12 +103,14 @@ export class CityPagesService {
       select: {
         slug: true,
         heroHeadline: true,
+        heroImageUrl: true,
         city: { select: { name: true } },
       },
     });
     return pages.map((p) => ({
       slug: p.slug,
       name: p.city?.name ?? p.heroHeadline ?? p.slug,
+      heroImageUrl: p.heroImageUrl ?? null,
     }));
   }
 

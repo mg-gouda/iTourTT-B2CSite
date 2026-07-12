@@ -23,6 +23,7 @@ async function getJson<T>(url: string, revalidate = 300): Promise<T | null> {
 export interface CityMenuItem {
   slug: string;
   name: string;
+  heroImageUrl?: string | null;
 }
 
 export interface CityPageBodySection {

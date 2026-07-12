@@ -14,18 +14,27 @@ import { HeroSection } from '@/components/website/hero-section';
 import { BookingWidget } from '@/components/website/booking-widget';
 import { FeaturesSection } from '@/components/website/features-section';
 import { TrustBar } from '@/components/website/trust-bar';
-import type { SiteSettings } from '@/lib/site-settings';
+import { resolveAssetUrl, type SiteSettings } from '@/lib/site-settings';
+import type { CityMenuItem } from '@/lib/website-content';
 import { useWT, useLocalePath } from '@/lib/website-i18n';
 import { AIRPORTS } from '@/lib/seo';
 
 interface LandingClientProps {
   settings: SiteSettings;
+  destinations?: CityMenuItem[];
 }
 
-export function WebsiteLandingClient({ settings }: LandingClientProps) {
+export function WebsiteLandingClient({ settings, destinations = [] }: LandingClientProps) {
   const t = useWT();
   const localePath = useLocalePath();
   const primary = settings.primaryColor;
+
+  // Map each airport's slug → the hero image set on its destination page (admin).
+  const destImage = new Map(
+    destinations
+      .filter((d) => d.heroImageUrl)
+      .map((d) => [d.slug, resolveAssetUrl(d.heroImageUrl)!]),
+  );
 
   return (
     <>
@@ -128,11 +137,21 @@ export function WebsiteLandingClient({ settings }: LandingClientProps) {
           </div>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {AIRPORTS.map((airport) => {
+              const img = destImage.get(airport.slug);
               const card = (
                 <div
-                  className="placeholder-gradient group relative flex h-44 flex-col justify-end overflow-hidden rounded-2xl p-5 transition-transform duration-200 hover:-translate-y-1"
+                  className={`group relative flex h-44 flex-col justify-end overflow-hidden rounded-2xl p-5 transition-transform duration-200 hover:-translate-y-1${img ? '' : ' placeholder-gradient'}`}
                   style={{ boxShadow: 'var(--elevation-2)' }}
                 >
+                  {img && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={img}
+                      alt=""
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                   <span className="absolute left-4 top-4 rounded-full bg-black/35 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-sm">
                     {airport.iata}

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { fetchSiteSettings, DEFAULT_SITE_SETTINGS } from '@/lib/site-settings';
+import { fetchCityMenu, type CityMenuItem } from '@/lib/website-content';
 import { JsonLd } from '@/components/JsonLd';
 import { organizationSchema, faqSchema, transportationServiceSchema, socialSameAs } from '@/lib/seo';
 import { buildPageMetadata } from '@/lib/page-metadata';
@@ -22,6 +23,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function LocaleHomePage() {
   let settings = DEFAULT_SITE_SETTINGS;
   try { settings = await fetchSiteSettings(); } catch {}
+  let destinations: CityMenuItem[] = [];
+  try { destinations = (await fetchCityMenu()) ?? []; } catch {}
   return (
     <>
       <JsonLd
@@ -38,7 +41,7 @@ export default async function LocaleHomePage() {
       />
       <JsonLd data={transportationServiceSchema()} />
       <JsonLd data={faqSchema()} />
-      <WebsiteLandingClient settings={settings} />
+      <WebsiteLandingClient settings={settings} destinations={destinations} />
     </>
   );
 }
