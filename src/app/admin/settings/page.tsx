@@ -93,7 +93,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="sticky top-14 z-10 -mx-4 mb-4 border-b border-slate-800 bg-slate-950/85 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+      <div className="sticky top-14 z-10 -mx-4 mb-4 border-b border-slate-200 dark:border-slate-800 bg-slate-950/85 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
         <PageHeader
           title="Settings"
           description="Website appearance, hero, contact, payments and SEO."
@@ -252,7 +252,7 @@ function ColorField({
           type="color"
           value={HEX.test(value) ? value : '#000000'}
           onChange={(e) => onChange(e.target.value)}
-          className="h-9 w-10 shrink-0 cursor-pointer rounded-lg border border-slate-700 bg-slate-900 p-1"
+          className="h-9 w-10 shrink-0 cursor-pointer rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-1"
         />
         <Input
           value={value}
@@ -270,9 +270,9 @@ function ToggleRow({
   label, hint, checked, onChange,
 }: { label: string; hint?: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-lg border border-slate-800 px-3 py-2.5">
+    <div className="flex items-center justify-between gap-4 rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-2.5">
       <div>
-        <div className="text-sm text-slate-200">{label}</div>
+        <div className="text-sm text-slate-800 dark:text-slate-200">{label}</div>
         {hint && <div className="text-[11px] text-slate-500">{hint}</div>}
       </div>
       <Switch checked={checked} onChange={onChange} />
@@ -293,13 +293,13 @@ function UploadTile({
   const ref = useRef<HTMLInputElement>(null);
   return (
     <div className="space-y-1">
-      <div className="mb-1 block text-xs font-medium text-slate-300">{label}</div>
+      <div className="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-300">{label}</div>
       {value ? (
         <div className="relative inline-block">
           <img
             src={assetUrl(value)}
             alt=""
-            className={`rounded-lg border border-slate-800 object-contain ${wide ? 'max-h-40 w-full' : 'h-20 w-20'}`}
+            className={`rounded-lg border border-slate-200 dark:border-slate-800 object-contain ${wide ? 'max-h-40 w-full' : 'h-20 w-20'}`}
           />
           <button
             type="button"
@@ -313,7 +313,7 @@ function UploadTile({
         <button
           type="button"
           onClick={() => ref.current?.click()}
-          className={`flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-700 py-8 text-slate-400 hover:border-slate-600 hover:text-slate-200 ${wide ? 'w-full' : 'w-full'}`}
+          className={`flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 dark:border-slate-700 py-8 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-200 ${wide ? 'w-full' : 'w-full'}`}
         >
           <ImagePlus className="h-6 w-6" />
           <span className="text-xs">Upload {label.toLowerCase()}</span>

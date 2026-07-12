@@ -79,7 +79,7 @@ export default function UsersPage() {
           <tbody>
             {users.map((u) => (
               <TR key={u.id}>
-                <TD><span className="text-slate-100">{u.name || '—'}</span></TD>
+                <TD><span className="text-slate-900 dark:text-slate-100">{u.name || '—'}</span></TD>
                 <TD>{u.email}</TD>
                 <TD><Badge tone="sky">{u.role}</Badge></TD>
                 <TD>
@@ -91,7 +91,7 @@ export default function UsersPage() {
                   <div className="flex justify-end gap-1">
                     <button
                       onClick={() => setEdit(u)}
-                      className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-100"
+                      className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
                       title="Edit"
                     >
                       <Pencil className="h-4 w-4" />
@@ -99,7 +99,7 @@ export default function UsersPage() {
                     {u.isActive ? (
                       <button
                         onClick={() => setDeact(u)}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-red-400"
+                        className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-400"
                         title="Deactivate"
                       >
                         <UserX className="h-4 w-4" />
@@ -107,7 +107,7 @@ export default function UsersPage() {
                     ) : (
                       <button
                         onClick={() => reactivate(u)}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-emerald-400"
+                        className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-emerald-400"
                         title="Reactivate"
                       >
                         <UserCheck className="h-4 w-4" />

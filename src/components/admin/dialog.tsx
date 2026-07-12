@@ -22,7 +22,7 @@ export function Modal({
         <RxDialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=open]:fade-in" />
         <RxDialog.Content
           className={cn(
-            'fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-slate-800 bg-slate-900 p-5 text-slate-100 shadow-2xl',
+            'fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 text-slate-900 dark:text-slate-100 shadow-2xl',
             width,
           )}
         >
@@ -30,12 +30,12 @@ export function Modal({
             <div>
               <RxDialog.Title className="text-base font-semibold">{title}</RxDialog.Title>
               {description && (
-                <RxDialog.Description className="mt-0.5 text-xs text-slate-400">
+                <RxDialog.Description className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
                   {description}
                 </RxDialog.Description>
               )}
             </div>
-            <RxDialog.Close className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-white">
+            <RxDialog.Close className="rounded-lg p-1 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white">
               <X className="h-4 w-4" />
             </RxDialog.Close>
           </div>
@@ -59,7 +59,7 @@ export function ConfirmDialog({
   const [busy, setBusy] = React.useState(false);
   return (
     <Modal open={open} onOpenChange={onOpenChange} title={title} size="md">
-      <p className="text-sm text-slate-300">{message}</p>
+      <p className="text-sm text-slate-700 dark:text-slate-300">{message}</p>
       <div className="mt-5 flex justify-end gap-2">
         <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
         <Button

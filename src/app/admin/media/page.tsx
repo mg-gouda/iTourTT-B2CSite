@@ -78,7 +78,7 @@ export default function MediaPage() {
           if (e.dataTransfer.files?.length) uploadMany(e.dataTransfer.files);
         }}
         className={`flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed py-12 text-center transition ${
-          dragging ? 'border-sky-500/60 bg-sky-500/5 text-slate-200' : 'border-slate-700 text-slate-400 hover:border-slate-600 hover:text-slate-200'
+          dragging ? 'border-sky-500/60 bg-sky-500/5 text-slate-800 dark:text-slate-200' : 'border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-200'
         }`}
       >
         {uploading ? <Spinner /> : <UploadCloud className="h-7 w-7" />}
@@ -105,7 +105,7 @@ export default function MediaPage() {
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {items.map((m, i) => (
               <Panel key={`${m.url}-${i}`} className="group overflow-hidden">
-                <div className="relative aspect-video bg-slate-950">
+                <div className="relative aspect-video bg-slate-50 dark:bg-slate-950">
                   <img src={assetUrl(m.url)} alt={m.name} className="h-full w-full object-cover" />
                   <button
                     onClick={() => removeAt(i)}
@@ -116,7 +116,7 @@ export default function MediaPage() {
                   </button>
                 </div>
                 <div className="flex items-center justify-between gap-2 p-2">
-                  <span className="truncate text-xs text-slate-400" title={m.name}>{m.name}</span>
+                  <span className="truncate text-xs text-slate-500 dark:text-slate-400" title={m.name}>{m.name}</span>
                   <Button variant="ghost" onClick={() => copy(m.url)} className="h-7 shrink-0 px-2 py-1 text-xs">
                     <Copy className="h-3.5 w-3.5" /> Copy URL
                   </Button>

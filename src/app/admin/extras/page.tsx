@@ -8,6 +8,7 @@ import {
   Select, Switch, EmptyState, Spinner, Badge,
 } from '@/components/admin/ui';
 import { Modal, ConfirmDialog } from '@/components/admin/dialog';
+import { TranslationPanel } from '@/components/admin/translation-panel';
 import { Plus, Pencil, Trash2, ImagePlus, X } from 'lucide-react';
 
 interface Extra {
@@ -104,17 +105,17 @@ export default function ExtrasPage() {
                 <TD>
                   <div className="flex items-center gap-3">
                     {r.imageUrl && (
-                      <img src={assetUrl(r.imageUrl)} alt="" className="h-9 w-9 shrink-0 rounded-md border border-slate-800 object-cover" />
+                      <img src={assetUrl(r.imageUrl)} alt="" className="h-9 w-9 shrink-0 rounded-md border border-slate-200 dark:border-slate-800 object-cover" />
                     )}
                     <div>
-                      <div className="text-slate-100">{r.name}</div>
+                      <div className="text-slate-900 dark:text-slate-100">{r.name}</div>
                       {r.description && <div className="mt-0.5 line-clamp-1 text-xs text-slate-500">{r.description}</div>}
                     </div>
                   </div>
                 </TD>
                 <TD>
-                  <span className="text-slate-100">{r.price}</span>{' '}
-                  <span className="text-xs text-slate-400">{r.currency}</span>
+                  <span className="text-slate-900 dark:text-slate-100">{r.price}</span>{' '}
+                  <span className="text-xs text-slate-500 dark:text-slate-400">{r.currency}</span>
                 </TD>
                 <TD>
                   <button onClick={() => toggleStatus(r)} title="Toggle status">
@@ -123,10 +124,10 @@ export default function ExtrasPage() {
                 </TD>
                 <TD>
                   <div className="flex justify-end gap-1">
-                    <button onClick={() => setEditing(r)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-sky-400" title="Edit">
+                    <button onClick={() => setEditing(r)} className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-sky-400" title="Edit">
                       <Pencil className="h-4 w-4" />
                     </button>
-                    <button onClick={() => setDel(r)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-red-400" title="Delete">
+                    <button onClick={() => setDel(r)} className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-400" title="Delete">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -244,7 +245,7 @@ function ExtraModal({
           <Field label="Image">
             {f.imageUrl ? (
               <div className="relative w-fit">
-                <img src={assetUrl(f.imageUrl)} alt="" className="h-28 rounded-lg border border-slate-800 object-cover" />
+                <img src={assetUrl(f.imageUrl)} alt="" className="h-28 rounded-lg border border-slate-200 dark:border-slate-800 object-cover" />
                 <button
                   onClick={() => set('imageUrl', '')}
                   className="absolute right-1.5 top-1.5 rounded-md bg-black/60 p-1 text-white hover:bg-black/80"
@@ -255,7 +256,7 @@ function ExtraModal({
             ) : (
               <button
                 onClick={() => fileRef.current?.click()}
-                className="flex w-full flex-col items-center gap-2 rounded-lg border border-dashed border-slate-700 py-6 text-slate-400 hover:border-slate-600 hover:text-slate-200"
+                className="flex w-full flex-col items-center gap-2 rounded-lg border border-dashed border-slate-300 dark:border-slate-700 py-6 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-200"
               >
                 <ImagePlus className="h-6 w-6" />
                 <span className="text-xs">Upload image</span>
@@ -288,7 +289,7 @@ function ExtraModal({
                 {vehicles.map((v) => {
                   const on = f.allowedVehicleTypeIds.includes(v.id);
                   return (
-                    <label key={v.id} className="flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+                    <label key={v.id} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                       <input
                         type="checkbox"
                         checked={on}
@@ -308,6 +309,20 @@ function ExtraModal({
           </Field>
         </div>
       </div>
+
+      {target && target !== 'new' && (
+        <div className="mt-4">
+          <TranslationPanel
+            entity="extra"
+            basePath={`/extras/${target.id}`}
+            id={target.id}
+            fields={[
+              { key: 'name', label: 'Name', type: 'input' },
+              { key: 'description', label: 'Description', type: 'textarea' },
+            ]}
+          />
+        </div>
+      )}
 
       <div className="mt-5 flex justify-end gap-2">
         <Button variant="outline" onClick={onClose}>Cancel</Button>

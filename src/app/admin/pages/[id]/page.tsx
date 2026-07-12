@@ -8,6 +8,7 @@ import {
   PageHeader, Button, Panel, Field, Input, Textarea, Switch, Spinner,
 } from '@/components/admin/ui';
 import { RichEditor } from '@/components/admin/rich-editor';
+import { TranslationPanel } from '@/components/admin/translation-panel';
 import { ArrowLeft, Save } from 'lucide-react';
 
 interface PageForm {
@@ -123,6 +124,20 @@ export default function PageEditor() {
               </Field>
             </div>
           </Panel>
+
+          <TranslationPanel
+            entity="static_page"
+            basePath={`/admin/pages/${id}`}
+            id={id as string}
+            disabled={isNew}
+            disabledHint="Save the page first, then add translations for each language."
+            fields={[
+              { key: 'title', label: 'Title', type: 'input' },
+              { key: 'content', label: 'Content', type: 'html' },
+              { key: 'metaTitle', label: 'Meta title', type: 'input' },
+              { key: 'metaDescription', label: 'Meta description', type: 'textarea' },
+            ]}
+          />
         </div>
 
         {/* Sidebar */}

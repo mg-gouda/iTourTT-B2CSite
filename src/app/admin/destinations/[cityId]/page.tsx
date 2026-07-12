@@ -8,6 +8,7 @@ import {
   PageHeader, Button, Panel, Field, Input, Textarea, Switch, Spinner,
 } from '@/components/admin/ui';
 import { RichEditor } from '@/components/admin/rich-editor';
+import { TranslationPanel } from '@/components/admin/translation-panel';
 import { ArrowLeft, ImagePlus, Plus, Save, Trash2, X } from 'lucide-react';
 
 interface BodySection { heading: string; body: string }
@@ -155,7 +156,7 @@ export default function CityPageEditor() {
             <h3 className="mb-3 text-sm font-semibold">Hero image</h3>
             {form.heroImageUrl ? (
               <div className="relative">
-                <img src={assetUrl(form.heroImageUrl)} alt="" className="w-full rounded-lg border border-slate-800" />
+                <img src={assetUrl(form.heroImageUrl)} alt="" className="w-full rounded-lg border border-slate-200 dark:border-slate-800" />
                 <button
                   onClick={() => set('heroImageUrl', '')}
                   className="absolute right-2 top-2 rounded-md bg-black/60 p-1 text-white hover:bg-black/80"
@@ -166,7 +167,7 @@ export default function CityPageEditor() {
             ) : (
               <button
                 onClick={() => fileRef.current?.click()}
-                className="flex w-full flex-col items-center gap-2 rounded-lg border border-dashed border-slate-700 py-8 text-slate-400 hover:border-slate-600 hover:text-slate-200"
+                className="flex w-full flex-col items-center gap-2 rounded-lg border border-dashed border-slate-300 dark:border-slate-700 py-8 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-200"
               >
                 <ImagePlus className="h-6 w-6" />
                 <span className="text-xs">Upload image</span>
@@ -202,7 +203,7 @@ export default function CityPageEditor() {
             ) : (
               <div className="space-y-3">
                 {form.bodyJson.map((b, i) => (
-                  <div key={i} className="rounded-lg border border-slate-800 p-3">
+                  <div key={i} className="rounded-lg border border-slate-200 dark:border-slate-800 p-3">
                     <div className="mb-2 flex items-center gap-2">
                       <Input
                         value={b.heading}
@@ -211,7 +212,7 @@ export default function CityPageEditor() {
                       />
                       <button
                         onClick={() => removeBody(i)}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-red-400"
+                        className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-400"
                         title="Remove section"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -241,7 +242,7 @@ export default function CityPageEditor() {
             ) : (
               <div className="space-y-3">
                 {form.faqJson.map((q, i) => (
-                  <div key={i} className="rounded-lg border border-slate-800 p-3">
+                  <div key={i} className="rounded-lg border border-slate-200 dark:border-slate-800 p-3">
                     <div className="mb-2 flex items-center gap-2">
                       <Input
                         value={q.question}
@@ -250,7 +251,7 @@ export default function CityPageEditor() {
                       />
                       <button
                         onClick={() => removeFaq(i)}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-red-400"
+                        className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-400"
                         title="Remove question"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -279,6 +280,19 @@ export default function CityPageEditor() {
               </Field>
             </div>
           </Panel>
+
+          <TranslationPanel
+            entity="city_page"
+            basePath={`/city-pages/${cityId}`}
+            id={cityId as string}
+            fields={[
+              { key: 'heroHeadline', label: 'Hero headline', type: 'input' },
+              { key: 'introText', label: 'Intro text', type: 'textarea' },
+              { key: 'contentHtml', label: 'Content', type: 'html' },
+              { key: 'metaTitle', label: 'Meta title', type: 'input' },
+              { key: 'metaDescription', label: 'Meta description', type: 'textarea' },
+            ]}
+          />
         </div>
 
         {/* Sidebar */}

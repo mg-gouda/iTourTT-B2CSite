@@ -99,9 +99,9 @@ export default function PricingPage() {
             {rows.map((r) => (
               <TR key={r.id}>
                 <TD>
-                  <span className="text-slate-100">{r.fromZone?.name ?? zoneName(r.fromZoneId)}</span>
+                  <span className="text-slate-900 dark:text-slate-100">{r.fromZone?.name ?? zoneName(r.fromZoneId)}</span>
                   <span className="mx-1.5 text-slate-600">→</span>
-                  <span className="text-slate-100">{r.toZone?.name ?? zoneName(r.toZoneId)}</span>
+                  <span className="text-slate-900 dark:text-slate-100">{r.toZone?.name ?? zoneName(r.toZoneId)}</span>
                 </TD>
                 <TD>{r.vehicleType?.name ?? vehName(r.vehicleTypeId)}</TD>
                 <TD>
@@ -116,9 +116,9 @@ export default function PricingPage() {
                       className="h-8 w-24 px-2 py-1"
                       type="number"
                     />
-                    <span className="text-xs text-slate-400">{r.currency}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{r.currency}</span>
                     {editing[r.id] !== undefined && editing[r.id] !== String(r.price) && (
-                      <button onClick={() => savePrice(r)} className="rounded-md p-1 text-emerald-400 hover:bg-slate-800" title="Save">
+                      <button onClick={() => savePrice(r)} className="rounded-md p-1 text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800" title="Save">
                         <Check className="h-4 w-4" />
                       </button>
                     )}
@@ -126,7 +126,7 @@ export default function PricingPage() {
                 </TD>
                 <TD>
                   <div className="flex justify-end">
-                    <button onClick={() => setDel(r)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-red-400" title="Delete">
+                    <button onClick={() => setDel(r)} className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-400" title="Delete">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>

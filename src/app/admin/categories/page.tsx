@@ -7,6 +7,7 @@ import {
   PageHeader, Button, Table, THead, TH, TR, TD, Field, Input, EmptyState, Spinner,
 } from '@/components/admin/ui';
 import { Modal, ConfirmDialog } from '@/components/admin/dialog';
+import { TranslationPanel } from '@/components/admin/translation-panel';
 import { Plus, Pencil, Trash2 } from 'lucide-react';
 
 interface Category { id: string; name: string; slug?: string }
@@ -65,12 +66,12 @@ export default function CategoriesPage() {
           <tbody>
             {cats.map((c) => (
               <TR key={c.id}>
-                <TD className="font-medium text-slate-100">{c.name}</TD>
+                <TD className="font-medium text-slate-900 dark:text-slate-100">{c.name}</TD>
                 <TD className="text-xs text-slate-500">/{c.slug}</TD>
                 <TD>
                   <div className="flex items-center justify-end gap-1">
-                    <button onClick={() => openEdit(c)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-sky-400"><Pencil className="h-4 w-4" /></button>
-                    <button onClick={() => setDel(c)} className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
+                    <button onClick={() => openEdit(c)} className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-sky-400"><Pencil className="h-4 w-4" /></button>
+                    <button onClick={() => setDel(c)} className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-400"><Trash2 className="h-4 w-4" /></button>
                   </div>
                 </TD>
               </TR>
@@ -91,6 +92,16 @@ export default function CategoriesPage() {
             <Input value={form.slug} onChange={(e) => setForm((f) => ({ ...f, slug: slugify(e.target.value) }))} />
           </Field>
         </div>
+        {edit && (
+          <div className="mt-4">
+            <TranslationPanel
+              entity="blog_category"
+              basePath={`/blog-categories/${edit.id}`}
+              id={edit.id}
+              fields={[{ key: 'name', label: 'Name', type: 'input' }]}
+            />
+          </div>
+        )}
         <div className="mt-5 flex justify-end gap-2">
           <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
           <Button onClick={save}>Save</Button>

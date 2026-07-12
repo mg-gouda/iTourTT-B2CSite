@@ -59,7 +59,7 @@ export function RichEditor({
       onClick={on}
       className={cn(
         'flex h-8 w-8 items-center justify-center rounded-md transition',
-        active ? 'bg-sky-500/20 text-sky-300' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100',
+        active ? 'bg-sky-500/20 text-sky-300' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100',
       )}
     >
       {children}
@@ -79,22 +79,22 @@ export function RichEditor({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-900">
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-slate-800 bg-slate-900/80 px-2 py-1.5">
+    <div className="overflow-hidden rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900">
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-slate-200 dark:border-slate-800 bg-slate-900/80 px-2 py-1.5">
         <Btn title="Bold" on={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')}><Bold className="h-4 w-4" /></Btn>
         <Btn title="Italic" on={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')}><Italic className="h-4 w-4" /></Btn>
         <Btn title="Strike" on={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')}><Strikethrough className="h-4 w-4" /></Btn>
-        <span className="mx-1 h-5 w-px bg-slate-800" />
+        <span className="mx-1 h-5 w-px bg-slate-100 dark:bg-slate-800" />
         <Btn title="Heading 2" on={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })}><Heading2 className="h-4 w-4" /></Btn>
         <Btn title="Heading 3" on={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })}><Heading3 className="h-4 w-4" /></Btn>
         <Btn title="Bullet list" on={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')}><List className="h-4 w-4" /></Btn>
         <Btn title="Ordered list" on={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')}><ListOrdered className="h-4 w-4" /></Btn>
         <Btn title="Quote" on={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')}><Quote className="h-4 w-4" /></Btn>
         <Btn title="Code block" on={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')}><Code className="h-4 w-4" /></Btn>
-        <span className="mx-1 h-5 w-px bg-slate-800" />
+        <span className="mx-1 h-5 w-px bg-slate-100 dark:bg-slate-800" />
         <Btn title="Link" on={addLink} active={editor.isActive('link')}><LinkIcon className="h-4 w-4" /></Btn>
         <Btn title="Image" on={addImage}><ImageIcon className="h-4 w-4" /></Btn>
-        <span className="mx-1 h-5 w-px bg-slate-800" />
+        <span className="mx-1 h-5 w-px bg-slate-100 dark:bg-slate-800" />
         <Btn title="Undo" on={() => editor.chain().focus().undo().run()}><Undo className="h-4 w-4" /></Btn>
         <Btn title="Redo" on={() => editor.chain().focus().redo().run()}><Redo className="h-4 w-4" /></Btn>
       </div>

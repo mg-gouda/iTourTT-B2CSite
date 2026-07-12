@@ -13,7 +13,7 @@ function StatTile({
   return (
     <Link
       href={href}
-      className="group rounded-xl border border-slate-800 bg-slate-900 p-4 transition hover:border-slate-700 hover:bg-slate-900/70"
+      className="group rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 transition hover:border-slate-400 dark:hover:border-slate-700 hover:bg-slate-900/70"
     >
       <div className="flex items-center justify-between">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500/15 text-sky-400">
@@ -22,7 +22,7 @@ function StatTile({
         <ArrowUpRight className="h-4 w-4 text-slate-600 transition group-hover:text-slate-400" />
       </div>
       <div className="mt-3 text-2xl font-semibold tabular-nums">{value}</div>
-      <div className="text-xs text-slate-400">{label}</div>
+      <div className="text-xs text-slate-500 dark:text-slate-400">{label}</div>
     </Link>
   );
 }
@@ -53,7 +53,7 @@ export default function AdminDashboard() {
     <div className="mx-auto max-w-6xl space-y-6">
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Manage content, pricing and settings for transferra.ae.
         </p>
       </div>
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
         <StatTile label="Price rows" value={counts.prices} href="/admin/pricing" icon={Tag} />
       </div>
 
-      <div className="rounded-xl border border-slate-800 bg-slate-900 p-5">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
         <h2 className="mb-3 text-sm font-semibold">Quick actions</h2>
         <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
           {[
@@ -81,9 +81,9 @@ export default function AdminDashboard() {
               <Link
                 key={a.href}
                 href={a.href}
-                className="flex items-center gap-2.5 rounded-lg border border-slate-800 px-3 py-2.5 text-sm text-slate-300 transition hover:border-slate-700 hover:bg-slate-800"
+                className="flex items-center gap-2.5 rounded-lg border border-slate-200 dark:border-slate-800 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 transition hover:border-slate-400 dark:hover:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
-                <Icon className="h-4 w-4 text-slate-400" />
+                <Icon className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                 {a.label}
               </Link>
             );

@@ -8,6 +8,7 @@ import {
   EmptyState, Spinner,
 } from '@/components/admin/ui';
 import { Modal } from '@/components/admin/dialog';
+import { TranslationPanel } from '@/components/admin/translation-panel';
 import { Pencil } from 'lucide-react';
 
 interface PageSeo {
@@ -52,15 +53,15 @@ export default function SeoPage() {
             {rows.map((r) => (
               <TR key={r.pageKey}>
                 <TD>
-                  <span className="font-medium text-slate-100">{r.pageKey}</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-100">{r.pageKey}</span>
                 </TD>
                 <TD>
-                  <span className="line-clamp-1 text-slate-300">
+                  <span className="line-clamp-1 text-slate-700 dark:text-slate-300">
                     {r.metaTitle || <span className="text-slate-600">—</span>}
                   </span>
                 </TD>
                 <TD>
-                  <span className="line-clamp-1 text-xs text-slate-400">
+                  <span className="line-clamp-1 text-xs text-slate-500 dark:text-slate-400">
                     {r.metaDescription || <span className="text-slate-600">—</span>}
                   </span>
                 </TD>
@@ -69,7 +70,7 @@ export default function SeoPage() {
                     <button
                       title="Edit"
                       onClick={() => setEditing(r)}
-                      className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-sky-400"
+                      className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-sky-400"
                     >
                       <Pencil className="h-4 w-4" />
                     </button>
@@ -150,6 +151,19 @@ function EditSeoModal({
           />
         </Field>
       </div>
+      {row && (
+        <div className="mt-4">
+          <TranslationPanel
+            entity="page_seo"
+            basePath={`/page-seo/${row.pageKey}`}
+            id={row.pageKey}
+            fields={[
+              { key: 'metaTitle', label: 'Meta title', type: 'input' },
+              { key: 'metaDescription', label: 'Meta description', type: 'textarea' },
+            ]}
+          />
+        </div>
+      )}
       <div className="mt-5 flex justify-end gap-2">
         <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
         <Button onClick={save} disabled={saving}>Save</Button>

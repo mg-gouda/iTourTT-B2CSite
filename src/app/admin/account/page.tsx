@@ -66,12 +66,12 @@ export default function AccountPage() {
 
       <Panel className="mb-5 p-5">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-800 text-slate-300">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
             {me.name?.[0]?.toUpperCase() ?? 'A'}
           </div>
           <div>
             <div className="font-medium">{me.name}</div>
-            <div className="text-sm text-slate-400">{me.email}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400">{me.email}</div>
           </div>
         </div>
       </Panel>
@@ -89,7 +89,7 @@ export default function AccountPage() {
 
         {me.twoFactorEnabled ? (
           <div className="space-y-3">
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               Your account is protected with an authenticator app.
             </p>
             <Button variant="danger" onClick={disable}>
@@ -98,7 +98,7 @@ export default function AccountPage() {
           </div>
         ) : phase === 'idle' ? (
           <div className="space-y-3">
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               Add a second step at sign-in using an authenticator app (Google Authenticator, Authy, 1Password).
             </p>
             <Button onClick={startSetup} disabled={busy}>
@@ -107,7 +107,7 @@ export default function AccountPage() {
           </div>
         ) : phase === 'setup' ? (
           <div className="space-y-4">
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               1. Scan this QR code with your authenticator app (or enter the key manually).
             </p>
             <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -116,7 +116,7 @@ export default function AccountPage() {
                 <div className="text-xs text-slate-500">Manual key</div>
                 <button
                   onClick={() => { navigator.clipboard.writeText(secret); toast.success('Key copied'); }}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 px-2.5 py-1.5 font-mono text-xs text-slate-200 hover:bg-slate-800"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 dark:border-slate-700 px-2.5 py-1.5 font-mono text-xs text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
                 >
                   {secret} <Copy className="h-3 w-3" />
                 </button>
@@ -139,11 +139,11 @@ export default function AccountPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            <p className="text-sm text-slate-300">
+            <p className="text-sm text-slate-700 dark:text-slate-300">
               Save these recovery codes somewhere safe. Each can be used once if you lose your device.
             </p>
-            <div className="grid grid-cols-2 gap-2 rounded-lg border border-slate-800 bg-slate-950 p-3 font-mono text-sm sm:grid-cols-2">
-              {recovery.map((c) => <div key={c} className="text-slate-300">{c}</div>)}
+            <div className="grid grid-cols-2 gap-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-3 font-mono text-sm sm:grid-cols-2">
+              {recovery.map((c) => <div key={c} className="text-slate-700 dark:text-slate-300">{c}</div>)}
             </div>
             <div className="flex gap-2">
               <Button

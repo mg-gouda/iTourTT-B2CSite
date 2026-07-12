@@ -244,8 +244,8 @@ export default function TranslationsPage() {
       ) : (
         <Panel className="p-4">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-sm text-slate-300">
-              <span className="font-medium text-slate-100">
+            <div className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
+              <span className="font-medium text-slate-900 dark:text-slate-100">
                 {selectedItem ? cfg.itemLabel(selectedItem) : itemId}
               </span>
               <Badge tone="sky">{locale}</Badge>

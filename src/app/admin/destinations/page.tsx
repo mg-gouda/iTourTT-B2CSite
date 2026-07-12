@@ -76,7 +76,7 @@ export default function DestinationsPage() {
               return (
                 <TR key={c.id}>
                   <TD>
-                    <div className="font-medium text-slate-100">{c.name}</div>
+                    <div className="font-medium text-slate-900 dark:text-slate-100">{c.name}</div>
                     {page?.slug && <div className="text-xs text-slate-500">/{page.slug}</div>}
                   </TD>
                   <TD><Badge tone={tone}>{label}</Badge></TD>
@@ -85,7 +85,7 @@ export default function DestinationsPage() {
                       <button
                         title={page ? 'Edit page' : 'Create page'}
                         onClick={() => router.push(`/admin/destinations/${c.id}`)}
-                        className="rounded-md p-1.5 text-slate-400 hover:bg-slate-800 hover:text-sky-400"
+                        className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-sky-400"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>

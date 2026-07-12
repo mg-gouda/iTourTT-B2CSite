@@ -8,6 +8,7 @@ import {
   PageHeader, Button, Panel, Field, Input, Textarea, Switch, Label, Spinner,
 } from '@/components/admin/ui';
 import { RichEditor } from '@/components/admin/rich-editor';
+import { TranslationPanel } from '@/components/admin/translation-panel';
 import { ArrowLeft, ImagePlus, Save, X } from 'lucide-react';
 
 interface Category { id: string; name: string }
@@ -126,6 +127,21 @@ export default function PostEditor() {
               </Field>
             </div>
           </Panel>
+
+          <TranslationPanel
+            entity="blog_post"
+            basePath={`/blog/${id}`}
+            id={id as string}
+            disabled={isNew}
+            disabledHint="Save the post first, then add translations for each language."
+            fields={[
+              { key: 'title', label: 'Title', type: 'input' },
+              { key: 'excerpt', label: 'Excerpt', type: 'textarea' },
+              { key: 'contentHtml', label: 'Content', type: 'html' },
+              { key: 'metaTitle', label: 'Meta title', type: 'input' },
+              { key: 'metaDescription', label: 'Meta description', type: 'textarea' },
+            ]}
+          />
         </div>
 
         {/* Sidebar */}
@@ -154,7 +170,7 @@ export default function PostEditor() {
             <h3 className="mb-3 text-sm font-semibold">Featured image</h3>
             {form.coverImageUrl ? (
               <div className="relative">
-                <img src={assetUrl(form.coverImageUrl)} alt="" className="w-full rounded-lg border border-slate-800" />
+                <img src={assetUrl(form.coverImageUrl)} alt="" className="w-full rounded-lg border border-slate-200 dark:border-slate-800" />
                 <button
                   onClick={() => set('coverImageUrl', '')}
                   className="absolute right-2 top-2 rounded-md bg-black/60 p-1 text-white hover:bg-black/80"
@@ -165,7 +181,7 @@ export default function PostEditor() {
             ) : (
               <button
                 onClick={() => fileRef.current?.click()}
-                className="flex w-full flex-col items-center gap-2 rounded-lg border border-dashed border-slate-700 py-8 text-slate-400 hover:border-slate-600 hover:text-slate-200"
+                className="flex w-full flex-col items-center gap-2 rounded-lg border border-dashed border-slate-300 dark:border-slate-700 py-8 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-200"
               >
                 <ImagePlus className="h-6 w-6" />
                 <span className="text-xs">Upload image</span>
@@ -189,7 +205,7 @@ export default function PostEditor() {
                 {cats.map((c) => {
                   const on = form.categoryIds.includes(c.id);
                   return (
-                    <label key={c.id} className="flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+                    <label key={c.id} className="flex cursor-pointer items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                       <input
                         type="checkbox"
                         checked={on}
