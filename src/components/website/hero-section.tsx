@@ -25,7 +25,15 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
     .map((u) => resolveAssetUrl(u))
     .filter(Boolean) as string[];
   const hasImage = heroImgs.length > 0;
-  const imgBase = 'w-full object-cover shadow-lg ring-1 ring-black/5';
+
+  // A hero image with a 25% black filter overlay on top.
+  const HeroImg = ({ src, className, priority }: { src: string; className?: string; priority?: boolean }) => (
+    <div className={`relative w-full overflow-hidden shadow-lg ring-1 ring-black/5 ${className ?? ''}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={src} alt="" fetchPriority={priority ? 'high' : undefined} loading="eager" className="h-full w-full object-cover" />
+      <div aria-hidden="true" className="absolute inset-0 bg-black/25" />
+    </div>
+  );
 
   const trustTicks = [
     t('features.noFeesTitle'),   // No Hidden Fees
@@ -73,21 +81,20 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
               className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] opacity-20 blur-2xl"
               style={{ background: `radial-gradient(60% 60% at 70% 30%, ${primary}, transparent)` }}
             />
-            {/* eslint-disable @next/next/no-img-element */}
             {heroImgs.length >= 3 ? (
               // 3-image collage: one tall image + two stacked.
               <div className="grid aspect-[4/3] grid-cols-2 grid-rows-2 gap-3">
-                <img src={heroImgs[0]} alt="" fetchPriority="high" loading="eager" className={`${imgBase} col-span-1 row-span-2 h-full rounded-3xl`} />
-                <img src={heroImgs[1]} alt="" loading="eager" className={`${imgBase} h-full rounded-2xl`} />
-                <img src={heroImgs[2]} alt="" loading="eager" className={`${imgBase} h-full rounded-2xl`} />
+                <HeroImg src={heroImgs[0]} priority className="col-span-1 row-span-2 h-full rounded-3xl" />
+                <HeroImg src={heroImgs[1]} className="h-full rounded-2xl" />
+                <HeroImg src={heroImgs[2]} className="h-full rounded-2xl" />
               </div>
             ) : heroImgs.length === 2 ? (
               <div className="grid aspect-[4/3] grid-cols-2 gap-3">
-                <img src={heroImgs[0]} alt="" fetchPriority="high" loading="eager" className={`${imgBase} h-full rounded-3xl`} />
-                <img src={heroImgs[1]} alt="" loading="eager" className={`${imgBase} h-full rounded-3xl`} />
+                <HeroImg src={heroImgs[0]} priority className="h-full rounded-3xl" />
+                <HeroImg src={heroImgs[1]} className="h-full rounded-3xl" />
               </div>
             ) : heroImgs.length === 1 ? (
-              <img src={heroImgs[0]} alt="" fetchPriority="high" loading="eager" width={1200} height={900} className={`${imgBase} aspect-[4/3] rounded-3xl`} />
+              <HeroImg src={heroImgs[0]} priority className="aspect-[4/3] rounded-3xl" />
             ) : (
               <div
                 className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl text-white/90 shadow-xl"
@@ -98,7 +105,6 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
                 </span>
               </div>
             )}
-            {/* eslint-enable @next/next/no-img-element */}
           </div>
         </div>
 
