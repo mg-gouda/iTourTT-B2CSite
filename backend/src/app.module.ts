@@ -46,6 +46,7 @@ import { UserPreferencesModule } from './user-preferences/user-preferences.modul
 import { WebsiteContentModule } from './website-content/website-content.module.js';
 import { ContactMessagesModule } from './contact-messages/contact-messages.module.js';
 import { PartnerClientModule } from './partner-client/partner-client.module.js';
+import { JobSyncModule } from './job-sync/job-sync.module.js';
 
 @Module({
   imports: [
@@ -93,6 +94,7 @@ import { PartnerClientModule } from './partner-client/partner-client.module.js';
     WebsiteContentModule,
     ContactMessagesModule,
     PartnerClientModule,
+    JobSyncModule,
   ],
   controllers: [AppController],
   providers: [

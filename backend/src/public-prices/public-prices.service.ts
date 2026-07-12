@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import ExcelJS from 'exceljs';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { UpsertPublicPricesDto, PublicPriceItemDto } from './dto/upsert-public-prices.dto.js';
+import { PartnerClientService } from '../partner-client/partner-client.service.js';
 import type { ServiceType, Currency, TransferType } from '../../generated/prisma/enums.js';
 
 const INCLUDE = {
@@ -12,7 +13,11 @@ const INCLUDE = {
 
 @Injectable()
 export class PublicPricesService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(PublicPricesService.name);
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly partnerClient: PartnerClientService,
+  ) {}
 
   async findAll(filters: {
     serviceType?: string;
@@ -36,8 +41,8 @@ export class PublicPricesService {
   }
 
   async bulkUpsert(dto: UpsertPublicPricesDto) {
-    return this.prisma.$transaction(async (tx) => {
-      const results: any[] = [];
+    const results = await this.prisma.$transaction(async (tx) => {
+      const rows: any[] = [];
       for (const item of dto.items) {
         const result = await tx.publicPriceItem.upsert({
           where: {
@@ -72,10 +77,22 @@ export class PublicPricesService {
           },
           include: INCLUDE,
         });
-        results.push(result);
+        rows.push(result);
       }
-      return results;
+      return rows;
     });
+
+    // Sync the same prices to iTourTT for job costing (B2C owns pricing, iTourTT
+    // keeps a synced copy). Best-effort — a failed push never fails the local save.
+    try {
+      await this.partnerClient.pushPricing(dto.items as unknown[]);
+      this.logger.log(`Synced ${dto.items.length} price(s) to iTourTT`);
+    } catch (err) {
+      this.logger.error(
+        `Price sync to iTourTT failed (${dto.items.length} item(s)): ${(err as Error).message}`,
+      );
+    }
+    return results;
   }
 
   async updateOne(id: string, item: Partial<PublicPriceItemDto>) {

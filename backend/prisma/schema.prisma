@@ -965,6 +965,7 @@ model GuestBooking {
   trafficJobId         String?            @unique @map("traffic_job_id")
   partnerJobRef        String?            @map("partner_job_ref")
   partnerSyncStatus    String?            @default("PENDING") @map("partner_sync_status")
+  partnerJobStatus     String?            @map("partner_job_status")
   b2cClientId          String?            @map("b2c_client_id")
   amendedAt            DateTime?          @map("amended_at")
   createdAt            DateTime           @default(now()) @map("created_at")
