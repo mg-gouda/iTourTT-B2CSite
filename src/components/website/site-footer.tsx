@@ -65,18 +65,21 @@ function SocialLinks({ settings }: { settings: SiteSettings }) {
 function ContactList({ settings }: { settings: SiteSettings }) {
   const items = [
     {
+      type: 'email',
       value: settings.contactEmail,
       Icon: Mail,
       href: `mailto:${settings.contactEmail}`,
       color: 'text-blue-400',
     },
     {
+      type: 'phone',
       value: settings.contactPhone,
       Icon: Phone,
       href: `tel:${settings.contactPhone?.replace(/\s/g, '')}`,
       color: 'text-green-400',
     },
     {
+      type: 'whatsapp',
       value: settings.contactWhatsapp,
       Icon: MessageCircle,
       href: `https://wa.me/${settings.contactWhatsapp?.replace(/[^0-9]/g, '')}`,
@@ -86,8 +89,8 @@ function ContactList({ settings }: { settings: SiteSettings }) {
 
   return (
     <ul className="space-y-3 text-sm">
-      {items.map(({ value, Icon, href, color }) => (
-        <li key={value} className="flex items-center gap-2">
+      {items.map(({ type, value, Icon, href, color }) => (
+        <li key={type} className="flex items-center gap-2">
           <Icon className={`h-4 w-4 shrink-0 ${color}`} />
           <a
             href={href}

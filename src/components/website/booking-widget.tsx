@@ -327,7 +327,7 @@ function SearchableSelect({
             <div className="px-3 py-6 text-center text-xs text-gray-400">{emptyText}</div>
           ) : (
             groups.map((g, gi) => (
-              <div key={g.name ?? gi}>
+              <div key={`${g.name ?? 'group'}-${gi}`}>
                 {g.name && (
                   <p className="px-3 pb-1 pt-2 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
                     {g.name}
