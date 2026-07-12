@@ -48,6 +48,7 @@ export class BlogService {
         tags: dto.tags ?? [],
         metaTitle: dto.metaTitle,
         metaDescription: dto.metaDescription,
+        seo: dto.seo as any,
         categories: dto.categoryIds?.length
           ? { connect: dto.categoryIds.map((id) => ({ id })) }
           : undefined,
@@ -87,6 +88,7 @@ export class BlogService {
         tags: dto.tags ?? existing.tags,
         metaTitle: dto.metaTitle,
         metaDescription: dto.metaDescription,
+        seo: dto.seo as any,
         categories: dto.categoryIds
           ? { set: dto.categoryIds.map((cid) => ({ id: cid })) }
           : undefined,

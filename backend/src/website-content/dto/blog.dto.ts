@@ -1,11 +1,31 @@
 import {
   IsArray,
+  IsBoolean,
   IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+
+/** Yoast-style SEO extras stored on the entity's `seo` JSON column. */
+export class SeoMetaDto {
+  @IsOptional() @IsString() @MaxLength(120) focusKeyphrase?: string;
+  @IsOptional() @IsString() @MaxLength(500) canonicalUrl?: string;
+  @IsOptional() @IsBoolean() robotsNoindex?: boolean;
+  @IsOptional() @IsBoolean() robotsNofollow?: boolean;
+  @IsOptional() @IsString() @MaxLength(200) ogTitle?: string;
+  @IsOptional() @IsString() @MaxLength(400) ogDescription?: string;
+  @IsOptional() @IsString() ogImage?: string;
+  @IsOptional() @IsString() @MaxLength(200) twitterTitle?: string;
+  @IsOptional() @IsString() @MaxLength(400) twitterDescription?: string;
+  @IsOptional() @IsString() twitterImage?: string;
+  @IsOptional() @IsString() @MaxLength(40) schemaType?: string;
+  @IsOptional() @IsBoolean() cornerstone?: boolean;
+  @IsOptional() @IsString() @MaxLength(200) breadcrumbTitle?: string;
+}
 
 export class UpsertBlogPostDto {
   // Required on create; optional on update (service enforces).
@@ -26,6 +46,8 @@ export class UpsertBlogPostDto {
 
   @IsOptional() @IsString() @MaxLength(180) metaTitle?: string;
   @IsOptional() @IsString() @MaxLength(320) metaDescription?: string;
+
+  @IsOptional() @ValidateNested() @Type(() => SeoMetaDto) seo?: SeoMetaDto;
 }
 
 export class UpsertBlogCategoryDto {

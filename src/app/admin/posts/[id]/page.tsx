@@ -9,6 +9,7 @@ import {
 } from '@/components/admin/ui';
 import { RichEditor } from '@/components/admin/rich-editor';
 import { TranslationPanel } from '@/components/admin/translation-panel';
+import { SeoPanel, type SeoMeta } from '@/components/admin/seo-panel';
 import { ArrowLeft, ImagePlus, Save, X } from 'lucide-react';
 
 interface Category { id: string; name: string }
@@ -16,6 +17,7 @@ interface PostForm {
   title: string; slug: string; excerpt: string; coverImageUrl: string;
   contentHtml: string; author: string; status: 'DRAFT' | 'PUBLISHED';
   tags: string[]; categoryIds: string[]; metaTitle: string; metaDescription: string;
+  seo: SeoMeta;
 }
 
 const slugify = (s: string) =>
@@ -24,6 +26,7 @@ const slugify = (s: string) =>
 const EMPTY: PostForm = {
   title: '', slug: '', excerpt: '', coverImageUrl: '', contentHtml: '',
   author: '', status: 'DRAFT', tags: [], categoryIds: [], metaTitle: '', metaDescription: '',
+  seo: { schemaType: 'BlogPosting' },
 };
 
 export default function PostEditor() {
@@ -47,6 +50,7 @@ export default function PostEditor() {
           author: p.author ?? '', status: p.status ?? 'DRAFT',
           tags: p.tags ?? [], categoryIds: (p.categories ?? []).map((c: any) => c.id ?? c.categoryId) ?? [],
           metaTitle: p.metaTitle ?? '', metaDescription: p.metaDescription ?? '',
+          seo: p.seo ?? { schemaType: 'BlogPosting' },
         });
       }).catch((e) => toast.error(e.message)).finally(() => setLoading(false));
     }
@@ -116,17 +120,19 @@ export default function PostEditor() {
           />
           <RichEditor value={form.contentHtml} onChange={(html) => set('contentHtml', html)} />
 
-          <Panel className="p-4">
-            <h3 className="mb-3 text-sm font-semibold">SEO</h3>
-            <div className="space-y-3">
-              <Field label="Meta title" hint={`${form.metaTitle.length}/180`}>
-                <Input maxLength={180} value={form.metaTitle} onChange={(e) => set('metaTitle', e.target.value)} />
-              </Field>
-              <Field label="Meta description" hint={`${form.metaDescription.length}/320`}>
-                <Textarea maxLength={320} value={form.metaDescription} onChange={(e) => set('metaDescription', e.target.value)} />
-              </Field>
-            </div>
-          </Panel>
+          <SeoPanel
+            content={{ title: form.title, contentHtml: form.contentHtml, author: form.author, coverImageUrl: assetUrl(form.coverImageUrl) }}
+            metaTitle={form.metaTitle}
+            metaDescription={form.metaDescription}
+            slug={form.slug}
+            onMeta={(patch) => {
+              if (patch.slug !== undefined) setSlugTouched(true);
+              setForm((f) => ({ ...f, ...patch }));
+            }}
+            seo={form.seo}
+            onSeo={(patch) => setForm((f) => ({ ...f, seo: { ...f.seo, ...patch } }))}
+            pathPrefix="/blog/"
+          />
 
           <TranslationPanel
             entity="blog_post"

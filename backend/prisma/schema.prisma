@@ -2204,6 +2204,10 @@ model BlogPost {
   // ── SEO ──
   metaTitle       String? @map("meta_title")
   metaDescription String? @map("meta_description")
+  // Yoast-style extras: { focusKeyphrase, canonicalUrl, robotsNoindex, robotsNofollow,
+  //   ogTitle, ogDescription, ogImage, twitterTitle, twitterDescription, twitterImage,
+  //   schemaType, cornerstone, breadcrumbTitle }
+  seo             Json?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
