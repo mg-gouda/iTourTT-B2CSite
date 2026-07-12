@@ -9,6 +9,7 @@ import { EmailService } from '../email/email.service.js';
 import { GuestBookingsService } from '../guest-bookings/guest-bookings.service.js';
 import { B2CService } from '../b2c/b2c.service.js';
 import { PaymentsService } from '../payments/payments.service.js';
+import { PartnerClientService } from '../partner-client/partner-client.service.js';
 import { QuoteRequestDto } from './dto/quote-request.dto.js';
 import { CreateGuestBookingDto } from './dto/create-guest-booking.dto.js';
 import { VehicleQuotesRequestDto } from './dto/vehicle-quotes-request.dto.js';
@@ -41,7 +42,111 @@ export class PublicApiService {
     private readonly guestBookingsService: GuestBookingsService,
     private readonly b2cService: B2CService,
     private readonly paymentsService: PaymentsService,
+    private readonly partnerClient: PartnerClientService,
   ) {}
+
+  /**
+   * Push a confirmed local guest booking to iTourTT as an operational job
+   * (replaces the old local convertToJob — jobs live in iTourTT, not the B2C DB).
+   * Resilient: on failure the booking stays as partnerSyncStatus=FAILED and is
+   * retried by the sync poller; the booking is never lost.
+   */
+  private async pushBookingToPartner(booking: {
+    id: string;
+    bookingRef: string;
+    serviceType: string;
+    jobDate: Date;
+    pickupTime: Date | null;
+    fromZoneId: string;
+    toZoneId: string;
+    hotelId: string | null;
+    originAirportId: string | null;
+    destinationAirportId: string | null;
+    flightNo: string | null;
+    carrier: string | null;
+    terminal: string | null;
+    paxCount: number;
+    vehicleTypeId: string;
+    guestName: string;
+    guestEmail: string;
+    guestPhone: string;
+    guestCountry: string | null;
+    paymentMethod: string;
+    total: unknown;
+    currency: string;
+    extras: unknown;
+    notes: string | null;
+    pickupPlaceId: string | null;
+    pickupLat: unknown;
+    pickupLng: unknown;
+    pickupAddress: string | null;
+    dropoffPlaceId: string | null;
+    dropoffLat: unknown;
+    dropoffLng: unknown;
+    dropoffAddress: string | null;
+  }): Promise<void> {
+    const snapshotItems = Array.isArray((booking.extras as any)?.items)
+      ? ((booking.extras as any).items as ExtraSnapshotItem[])
+      : [];
+    try {
+      const result = await this.partnerClient.createJob({
+        b2cBookingRef: booking.bookingRef,
+        serviceType: booking.serviceType,
+        jobDate: booking.jobDate.toISOString().slice(0, 10),
+        pickupTime: booking.pickupTime ? booking.pickupTime.toISOString() : null,
+        fromZoneId: booking.fromZoneId,
+        toZoneId: booking.toZoneId,
+        originAirportId: booking.originAirportId,
+        destinationAirportId: booking.destinationAirportId,
+        hotelId: booking.hotelId,
+        paxCount: booking.paxCount,
+        vehicleTypeId: booking.vehicleTypeId,
+        flightNo: booking.flightNo,
+        carrier: booking.carrier,
+        terminal: booking.terminal,
+        guestName: booking.guestName,
+        guestEmail: booking.guestEmail,
+        guestPhone: booking.guestPhone,
+        guestCountry: booking.guestCountry,
+        paymentMethod: booking.paymentMethod,
+        total: Number(booking.total),
+        currency: booking.currency,
+        extras: snapshotItems.map((it) => ({
+          extraId: it.extraId,
+          name: it.name,
+          qty: it.qty,
+          unitAmount: it.unitAmount,
+          currency: it.currency,
+        })),
+        notes: booking.notes,
+        pickupPlaceId: booking.pickupPlaceId,
+        pickupLat: booking.pickupLat != null ? Number(booking.pickupLat) : null,
+        pickupLng: booking.pickupLng != null ? Number(booking.pickupLng) : null,
+        pickupAddress: booking.pickupAddress,
+        dropoffPlaceId: booking.dropoffPlaceId,
+        dropoffLat: booking.dropoffLat != null ? Number(booking.dropoffLat) : null,
+        dropoffLng: booking.dropoffLng != null ? Number(booking.dropoffLng) : null,
+        dropoffAddress: booking.dropoffAddress,
+      });
+      await this.prisma.guestBooking.update({
+        where: { id: booking.id },
+        data: {
+          partnerJobRef: result.jobRef,
+          partnerSyncStatus: 'SYNCED',
+          bookingStatus: 'CONVERTED' as GuestBookingStatus,
+        },
+      });
+      this.logger.log(`Pushed booking ${booking.bookingRef} → iTourTT job ${result.jobRef}`);
+    } catch (err) {
+      await this.prisma.guestBooking.update({
+        where: { id: booking.id },
+        data: { partnerSyncStatus: 'FAILED' },
+      });
+      this.logger.error(
+        `Partner push failed for ${booking.bookingRef}: ${(err as Error).message} — kept for retry`,
+      );
+    }
+  }
 
   // ─── Contact form ─────────────────────────────────────────
 
@@ -917,17 +1022,14 @@ export class PublicApiService {
       this.logger.error(`Failed to create B2C account for ${booking.guestEmail}: ${err.message}`);
     }
 
-    // Auto-convert to traffic job so it appears in dispatch & traffic jobs pool
+    // Push to iTourTT as an operational job via the partner seam (jobs live in
+    // iTourTT, not the B2C DB). Booking is already saved locally — a push failure
+    // only marks it FAILED for retry, never loses it.
     try {
-      const systemUser = await this.prisma.user.findFirst({
-        where: { role: 'ADMIN', isActive: true },
-        select: { id: true },
-      });
-      if (systemUser) {
-        await this.guestBookingsService.convertToJob(booking.id, systemUser.id);
-        this.logger.log(`Auto-converted guest booking ${booking.bookingRef} to traffic job`);
+      {
+        await this.pushBookingToPartner(booking as any);
 
-        // 2-Way: create + convert the RETURN (departure) leg, sharing the group.
+        // 2-Way: create + push the RETURN (departure) leg, sharing the group.
         if (isRoundTrip && returnPriceItem) {
           const retRef = await this.generateGroupedRef(yy, mm, dd);
           const returnDate = dto.returnDate ?? dto.jobDate;
@@ -974,14 +1076,14 @@ export class PublicApiService {
               b2cClientId,
             },
           });
-          await this.guestBookingsService.convertToJob(returnBooking.id, systemUser.id);
+          await this.pushBookingToPartner(returnBooking as any);
           this.logger.log(
-            `Auto-converted RETURN leg ${returnBooking.bookingRef} (group ${groupRef})`,
+            `Pushed RETURN leg ${returnBooking.bookingRef} (group ${groupRef}) to iTourTT`,
           );
         }
       }
     } catch (err) {
-      this.logger.error(`Failed to auto-convert booking ${booking.bookingRef}: ${err.message}`);
+      this.logger.error(`Failed to push booking ${booking.bookingRef} to iTourTT: ${err.message}`);
     }
 
     // For online payments, open a hosted-checkout session and hand the guest a

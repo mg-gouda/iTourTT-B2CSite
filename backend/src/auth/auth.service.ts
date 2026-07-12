@@ -15,6 +15,17 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { EmailService } from '../email/email.service.js';
 import type { AuthResponseDto } from './dto/auth-response.dto.js';
 import type { User } from '../../generated/prisma/client.js';
+import {
+  generateTotpSecret,
+  verifyTotp,
+  otpauthUri,
+  generateRecoveryCodes,
+} from '../common/utils/totp.util.js';
+
+export interface TwoFactorChallenge {
+  twoFactorRequired: true;
+  challengeToken: string;
+}
 
 const RESET_TOKEN_EXPIRY_MINUTES = 60;
 // Session lifetime mirrors the refresh token window (7 days)
@@ -43,7 +54,10 @@ export class AuthService {
    *     423 Locked response is returned. The user must contact an administrator to have
    *     their password reset. Use this only when account-sharing must be hard-blocked.
    */
-  async login(identifier: string, password: string): Promise<AuthResponseDto> {
+  async login(
+    identifier: string,
+    password: string,
+  ): Promise<AuthResponseDto | TwoFactorChallenge> {
     const user = await this.validateUser(identifier, password);
 
     // ── Concurrent-session guard (REP & DRIVER only) ─────────────────────────
@@ -94,6 +108,22 @@ export class AuthService {
     }
     // ─────────────────────────────────────────────────────────────────────────
 
+    // 2FA step-up: if enabled, don't issue a full session yet. Return a short-
+    // lived challenge the client exchanges (with a TOTP/recovery code) at
+    // /auth/2fa/verify. Password was already validated above.
+    if (user.twoFactorEnabled) {
+      const challengeToken = await this.jwtService.signAsync(
+        { sub: user.id, twoFactorPending: true },
+        { secret: this.configService.get<string>('JWT_SECRET'), expiresIn: '5m' },
+      );
+      return { twoFactorRequired: true, challengeToken };
+    }
+
+    return this.issueSession(user);
+  }
+
+  /** Mint session + tokens for an authenticated user (shared by login & 2FA verify). */
+  private async issueSession(user: User): Promise<AuthResponseDto> {
     // Load role reference for JWT
     const userWithRole = await this.prisma.user.findUnique({
       where: { id: user.id },
@@ -387,6 +417,110 @@ export class AuthService {
         refreshToken: null,
         sessionId: null,
         sessionExpiresAt: null,
+      },
+    });
+  }
+
+  // ─── Two-Factor Authentication (TOTP) ────────────────────────────────────
+
+  /**
+   * Begin 2FA enrolment: mint a secret (not yet enabled) and return the
+   * otpauth:// URI for the user to scan into an authenticator app.
+   */
+  async setupTwoFactor(userId: string): Promise<{ secret: string; otpauthUri: string }> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('User not found');
+    const secret = generateTotpSecret();
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorSecret: secret, twoFactorEnabled: false },
+    });
+    return { secret, otpauthUri: otpauthUri(secret, user.email) };
+  }
+
+  /**
+   * Finish enrolment: verify the first code against the pending secret, flip
+   * twoFactorEnabled on, and issue one-time recovery codes (shown once).
+   */
+  async enableTwoFactor(userId: string, code: string): Promise<{ recoveryCodes: string[] }> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.twoFactorSecret) {
+      throw new BadRequestException('Start 2FA setup first');
+    }
+    if (!verifyTotp(user.twoFactorSecret, code)) {
+      throw new UnauthorizedException('Invalid authenticator code');
+    }
+    const recoveryCodes = generateRecoveryCodes();
+    const hashed = await Promise.all(recoveryCodes.map((c) => this.hashPassword(c)));
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorEnabled: true, twoFactorRecoveryCodes: hashed },
+    });
+    return { recoveryCodes };
+  }
+
+  /**
+   * Login step 2: exchange the challenge token + a TOTP or recovery code for a
+   * full session. A used recovery code is consumed.
+   */
+  async verifyTwoFactor(
+    challengeToken: string,
+    code: string,
+  ): Promise<AuthResponseDto> {
+    let payload: { sub: string; twoFactorPending?: boolean };
+    try {
+      payload = await this.jwtService.verifyAsync(challengeToken, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired 2FA challenge');
+    }
+    if (!payload.twoFactorPending) {
+      throw new UnauthorizedException('Invalid 2FA challenge');
+    }
+    const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
+    if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
+      throw new UnauthorizedException('2FA not enabled');
+    }
+
+    if (verifyTotp(user.twoFactorSecret, code)) {
+      return this.issueSession(user);
+    }
+    // Fall back to a one-time recovery code.
+    for (const hash of user.twoFactorRecoveryCodes) {
+      if (await this.comparePassword(code.trim(), hash)) {
+        await this.prisma.user.update({
+          where: { id: user.id },
+          data: {
+            twoFactorRecoveryCodes: user.twoFactorRecoveryCodes.filter((h) => h !== hash),
+          },
+        });
+        return this.issueSession(user);
+      }
+    }
+    throw new UnauthorizedException('Invalid authenticator or recovery code');
+  }
+
+  /** Turn 2FA off after re-verifying a current code. */
+  async disableTwoFactor(userId: string, code: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
+      throw new BadRequestException('2FA is not enabled');
+    }
+    const ok =
+      verifyTotp(user.twoFactorSecret, code) ||
+      (
+        await Promise.all(
+          user.twoFactorRecoveryCodes.map((h) => this.comparePassword(code.trim(), h)),
+        )
+      ).some(Boolean);
+    if (!ok) throw new UnauthorizedException('Invalid code');
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        twoFactorEnabled: false,
+        twoFactorSecret: null,
+        twoFactorRecoveryCodes: [],
       },
     });
   }
