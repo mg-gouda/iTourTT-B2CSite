@@ -36,8 +36,8 @@ const ENTITY_CFG: Record<Entity, EntityCfg> = {
   city_page: {
     label: 'City pages',
     listPath: '/city-pages',
-    itemId: (it) => it.id,
-    itemLabel: (it) => it.city?.name ?? it.name ?? it.slug ?? it.id,
+    itemId: (it) => it.cityId ?? it.id,
+    itemLabel: (it) => it.cityName ?? it.city?.name ?? it.name ?? it.slug ?? it.cityId ?? it.id,
     transBase: (id) => `/city-pages/${encodeURIComponent(id)}`,
     fields: [
       { key: 'heroHeadline', label: 'Hero headline', type: 'input' },
@@ -219,9 +219,9 @@ export default function TranslationsPage() {
             ) : (
               <Select value={itemId} onChange={(e) => setItemId(e.target.value)}>
                 <option value="">Select…</option>
-                {items.map((it) => {
+                {items.map((it, idx) => {
                   const id = cfg.itemId(it);
-                  return <option key={id} value={id}>{cfg.itemLabel(it)}</option>;
+                  return <option key={id ?? idx} value={id ?? ''}>{cfg.itemLabel(it)}</option>;
                 })}
               </Select>
             )}
