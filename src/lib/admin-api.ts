@@ -81,3 +81,31 @@ export const api = {
   patch: <T>(path: string, body?: unknown) => request<T>('PATCH', path, body),
   del: <T>(path: string) => request<T>('DELETE', path),
 };
+
+export const API_URL = API_BASE;
+
+/** Upload a file (multipart) to a backend endpoint that returns { url } (raw or wrapped). */
+export async function uploadFile(
+  path: string,
+  file: File,
+  field = 'file',
+): Promise<string> {
+  const fd = new FormData();
+  fd.append(field, file);
+  const headers: Record<string, string> = {};
+  const t = adminToken.get();
+  if (t) headers['Authorization'] = `Bearer ${t}`;
+  const res = await fetch(`${API_BASE}/api${path}`, { method: 'POST', headers, body: fd });
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (!res.ok) throw new ApiError(res.status, data?.message ?? 'Upload failed');
+  const url = data?.url ?? data?.data?.url;
+  return url as string;
+}
+
+/** Absolute URL for a stored /uploads/... path. */
+export function assetUrl(path?: string | null): string {
+  if (!path) return '';
+  if (/^https?:\/\//.test(path)) return path;
+  return `${API_BASE}${path}`;
+}

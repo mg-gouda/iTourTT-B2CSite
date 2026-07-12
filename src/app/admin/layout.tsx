@@ -4,6 +4,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { adminToken } from '@/lib/admin-api';
 import { AdminShell } from '@/components/admin/admin-shell';
+import { Toaster } from 'sonner';
 
 // Client-side guard: /admin/login renders bare; everything else requires a token.
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -32,5 +33,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </div>
     );
   }
-  return <AdminShell>{children}</AdminShell>;
+  return (
+    <>
+      <AdminShell>{children}</AdminShell>
+      <Toaster theme="dark" position="bottom-right" richColors />
+    </>
+  );
 }
