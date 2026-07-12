@@ -15,6 +15,8 @@ import {
   UpsertBlogPostTranslationDto,
   UpsertPageSeoTranslationDto,
   UpsertStaticPageTranslationDto,
+  UpsertBlogCategoryTranslationDto,
+  UpsertB2cExtraTranslationDto,
   TranslateRequestDto,
 } from './dto/translation.dto.js';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard.js';
@@ -161,6 +163,64 @@ export class TranslationsAdminController {
     );
   }
 
+  // ── Blog categories ──
+  @Get('blog-categories/:id/translations')
+  @Permissions('website-content.blog')
+  async listCategory(@Param('id') id: string) {
+    return new ApiResponse(await this.service.listBlogCategoryTranslations(id));
+  }
+
+  @Put('blog-categories/:id/translations/:locale')
+  @Permissions('website-content.blog')
+  async putCategory(
+    @Param('id') id: string,
+    @Param('locale') locale: string,
+    @Body() dto: UpsertBlogCategoryTranslationDto,
+  ) {
+    return new ApiResponse(
+      await this.service.upsertBlogCategoryTranslation(id, locale, dto),
+      'Saved.',
+    );
+  }
+
+  @Delete('blog-categories/:id/translations/:locale')
+  @Permissions('website-content.blog')
+  async deleteCategory(@Param('id') id: string, @Param('locale') locale: string) {
+    return new ApiResponse(
+      await this.service.deleteBlogCategoryTranslation(id, locale),
+      'Deleted.',
+    );
+  }
+
+  // ── Booking extras ──
+  @Get('extras/:id/translations')
+  @Permissions('extras')
+  async listExtra(@Param('id') id: string) {
+    return new ApiResponse(await this.service.listExtraTranslations(id));
+  }
+
+  @Put('extras/:id/translations/:locale')
+  @Permissions('extras')
+  async putExtra(
+    @Param('id') id: string,
+    @Param('locale') locale: string,
+    @Body() dto: UpsertB2cExtraTranslationDto,
+  ) {
+    return new ApiResponse(
+      await this.service.upsertExtraTranslation(id, locale, dto),
+      'Saved.',
+    );
+  }
+
+  @Delete('extras/:id/translations/:locale')
+  @Permissions('extras')
+  async deleteExtra(@Param('id') id: string, @Param('locale') locale: string) {
+    return new ApiResponse(
+      await this.service.deleteExtraTranslation(id, locale),
+      'Deleted.',
+    );
+  }
+
   // ── Auto-translate (Claude) ──
   @Post('translate')
   @Permissions(
@@ -168,6 +228,7 @@ export class TranslationsAdminController {
     'website-content.blog',
     'website-content.pageSeo',
     'website-content.pages',
+    'extras',
   )
   async autoTranslate(@Body() dto: TranslateRequestDto) {
     return new ApiResponse(await this.translate.translateEntity(dto));

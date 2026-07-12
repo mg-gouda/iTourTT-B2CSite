@@ -12,6 +12,8 @@ import {
   UpsertBlogPostTranslationDto,
   UpsertPageSeoTranslationDto,
   UpsertStaticPageTranslationDto,
+  UpsertBlogCategoryTranslationDto,
+  UpsertB2cExtraTranslationDto,
 } from './dto/translation.dto.js';
 
 /** Validate a :locale route param into a supported Locale or 400. */
@@ -225,6 +227,90 @@ export class TranslationsService {
     return { success: true };
   }
 
+  // ─── Blog categories (keyed by category id) ─────────────────────
+
+  private async assertBlogCategory(id: string): Promise<void> {
+    const cat = await this.prisma.blogCategory.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!cat) throw new NotFoundException('Category not found.');
+  }
+
+  async listBlogCategoryTranslations(blogCategoryId: string) {
+    await this.assertBlogCategory(blogCategoryId);
+    const rows = await this.prisma.blogCategoryTranslation.findMany({
+      where: { blogCategoryId },
+    });
+    return { translations: this.byLocale(rows) };
+  }
+
+  async upsertBlogCategoryTranslation(
+    blogCategoryId: string,
+    rawLocale: string,
+    dto: UpsertBlogCategoryTranslationDto,
+  ) {
+    await this.assertBlogCategory(blogCategoryId);
+    const locale = requireLocale(rawLocale);
+    const data = { name: dto.name ?? '' };
+    return this.prisma.blogCategoryTranslation.upsert({
+      where: { blogCategoryId_locale: { blogCategoryId, locale } },
+      create: { blogCategoryId, locale, ...data },
+      update: data,
+    });
+  }
+
+  async deleteBlogCategoryTranslation(blogCategoryId: string, rawLocale: string) {
+    await this.assertBlogCategory(blogCategoryId);
+    const locale = requireLocale(rawLocale);
+    await this.prisma.blogCategoryTranslation.deleteMany({
+      where: { blogCategoryId, locale },
+    });
+    return { success: true };
+  }
+
+  // ─── Booking extras (keyed by extra id) ──────────────────────────
+
+  private async assertExtra(id: string): Promise<void> {
+    const extra = await this.prisma.b2cExtra.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!extra) throw new NotFoundException('Extra not found.');
+  }
+
+  async listExtraTranslations(extraId: string) {
+    await this.assertExtra(extraId);
+    const rows = await this.prisma.b2cExtraTranslation.findMany({
+      where: { extraId },
+    });
+    return { translations: this.byLocale(rows) };
+  }
+
+  async upsertExtraTranslation(
+    extraId: string,
+    rawLocale: string,
+    dto: UpsertB2cExtraTranslationDto,
+  ) {
+    await this.assertExtra(extraId);
+    const locale = requireLocale(rawLocale);
+    const data = { name: dto.name, description: dto.description };
+    return this.prisma.b2cExtraTranslation.upsert({
+      where: { extraId_locale: { extraId, locale } },
+      create: { extraId, locale, ...data },
+      update: data,
+    });
+  }
+
+  async deleteExtraTranslation(extraId: string, rawLocale: string) {
+    await this.assertExtra(extraId);
+    const locale = requireLocale(rawLocale);
+    await this.prisma.b2cExtraTranslation.deleteMany({
+      where: { extraId, locale },
+    });
+    return { success: true };
+  }
+
   // ─── Shared helpers (also used by the auto-translate endpoint) ───
 
   /** Reduce translation rows to a { [locale]: row } map. */
@@ -237,9 +323,25 @@ export class TranslationsService {
 
   /** English source fields for the auto-translate endpoint, by entity. */
   async getEnglishSource(
-    entity: 'city_page' | 'blog_post' | 'page_seo' | 'static_page',
+    entity: 'city_page' | 'blog_post' | 'page_seo' | 'static_page' | 'blog_category' | 'extra',
     id: string,
   ): Promise<Record<string, unknown>> {
+    if (entity === 'blog_category') {
+      const cat = await this.prisma.blogCategory.findUnique({
+        where: { id },
+        select: { name: true },
+      });
+      if (!cat) throw new NotFoundException('Category not found.');
+      return this.stripEmpty(cat);
+    }
+    if (entity === 'extra') {
+      const extra = await this.prisma.b2cExtra.findUnique({
+        where: { id },
+        select: { name: true, description: true },
+      });
+      if (!extra) throw new NotFoundException('Extra not found.');
+      return this.stripEmpty(extra);
+    }
     if (entity === 'static_page') {
       const page = await this.prisma.staticPage.findUnique({
         where: { id },
@@ -292,7 +394,7 @@ export class TranslationsService {
 
   /** Persist an auto-translation result by reusing the matching upsert. */
   async saveTranslation(
-    entity: 'city_page' | 'blog_post' | 'page_seo' | 'static_page',
+    entity: 'city_page' | 'blog_post' | 'page_seo' | 'static_page' | 'blog_category' | 'extra',
     id: string,
     locale: string,
     translation: Record<string, unknown>,
@@ -305,6 +407,12 @@ export class TranslationsService {
     }
     if (entity === 'static_page') {
       return this.upsertStaticPageTranslation(id, locale, translation);
+    }
+    if (entity === 'blog_category') {
+      return this.upsertBlogCategoryTranslation(id, locale, translation);
+    }
+    if (entity === 'extra') {
+      return this.upsertExtraTranslation(id, locale, translation);
     }
     return this.upsertPageSeoTranslation(id, locale, translation);
   }

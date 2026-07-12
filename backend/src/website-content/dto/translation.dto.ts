@@ -14,8 +14,21 @@ export const TRANSLATABLE_ENTITIES = [
   'blog_post',
   'page_seo',
   'static_page',
+  'blog_category',
+  'extra',
 ] as const;
 export type TranslatableEntity = (typeof TRANSLATABLE_ENTITIES)[number];
+
+/** Translation payload for a blog category (only the display name is translated). */
+export class UpsertBlogCategoryTranslationDto {
+  @IsOptional() @IsString() @MaxLength(120) name?: string;
+}
+
+/** Translation payload for a booking extra. */
+export class UpsertB2cExtraTranslationDto {
+  @IsOptional() @IsString() @MaxLength(200) name?: string;
+  @IsOptional() @IsString() description?: string;
+}
 
 /** Translation payload for a destination landing page (English base lives on CityPage). */
 export class UpsertCityPageTranslationDto {

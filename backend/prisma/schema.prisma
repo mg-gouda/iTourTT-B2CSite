@@ -876,6 +876,7 @@ model B2cExtra {
   // If non-empty, this extra can only be carried by these vehicle types (e.g. cargo
   // gear that needs a van). Empty = available on any vehicle.
   allowedVehicleTypes B2cExtraVehicleType[]
+  translations        B2cExtraTranslation[]
 
   @@map("b2c_extras")
 }
@@ -2182,6 +2183,7 @@ model BlogCategory {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   posts BlogPost[] @relation("BlogPostCategories")
+  translations BlogCategoryTranslation[]
 
   @@map("blog_categories")
 }
@@ -2365,4 +2367,31 @@ model ContactMessage {
 
   @@index([isRead, createdAt])
   @@map("contact_messages")
+}
+
+model BlogCategoryTranslation {
+  id             String       @id @default(uuid())
+  blogCategoryId String       @map("blog_category_id")
+  locale         Locale
+  name           String
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+  category       BlogCategory @relation(fields: [blogCategoryId], references: [id], onDelete: Cascade)
+
+  @@unique([blogCategoryId, locale])
+  @@map("blog_category_translations")
+}
+
+model B2cExtraTranslation {
+  id          String   @id @default(uuid())
+  extraId     String   @map("extra_id")
+  locale      Locale
+  name        String?
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  extra       B2cExtra @relation(fields: [extraId], references: [id], onDelete: Cascade)
+
+  @@unique([extraId, locale])
+  @@map("b2c_extra_translations")
 }
