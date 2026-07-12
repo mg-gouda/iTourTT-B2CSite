@@ -72,6 +72,14 @@ export class UpdateWebsiteSettingsDto {
   @IsString()
   heroImageUrl?: string;
 
+  @IsOptional()
+  @IsString()
+  heroImage2Url?: string;
+
+  @IsOptional()
+  @IsString()
+  heroImage3Url?: string;
+
   // ── Features Section ──
   @IsOptional()
   @IsBoolean()

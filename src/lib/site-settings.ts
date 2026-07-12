@@ -82,6 +82,8 @@ export interface SiteSettings {
   heroCta1Text: string;
   heroCta2Text: string;
   heroImageUrl: string | null;
+  heroImage2Url: string | null;
+  heroImage3Url: string | null;
 
   // Features Section
   featuresEnabled: boolean;
@@ -145,6 +147,8 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   heroCta1Text: 'Book Now',
   heroCta2Text: 'Track a Booking',
   heroImageUrl: null,
+  heroImage2Url: null,
+  heroImage3Url: null,
   featuresEnabled: true,
   featuresTitle: 'Why Choose Us?',
   featuresJson: null,

@@ -2068,6 +2068,8 @@ model WebsiteSettings {
   heroCta1Text String  @default("Book Now") @map("hero_cta1_text")
   heroCta2Text String  @default("Track a Booking") @map("hero_cta2_text")
   heroImageUrl String? @map("hero_image_url")
+  heroImage2Url String? @map("hero_image2_url")
+  heroImage3Url String? @map("hero_image3_url")
 
   // ── Features Section ──
   featuresEnabled Boolean @default(true) @map("features_enabled")

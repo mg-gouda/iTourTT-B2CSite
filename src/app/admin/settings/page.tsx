@@ -12,7 +12,7 @@ import { Save, ImagePlus, X } from 'lucide-react';
 const STRING_FIELDS = [
   'siteName',
   'primaryColor', 'accentColor', 'heroGradientFrom', 'heroGradientTo', 'navBgColor', 'footerBgColor',
-  'heroTitle', 'heroSubtitle', 'heroCta1Text', 'heroCta2Text', 'heroImageUrl',
+  'heroTitle', 'heroSubtitle', 'heroCta1Text', 'heroCta2Text', 'heroImageUrl', 'heroImage2Url', 'heroImage3Url',
   'contactEmail', 'contactPhone', 'contactWhatsapp',
   'socialFacebook', 'socialInstagram', 'socialTwitter',
   'metaTitle', 'metaDescription',
@@ -158,13 +158,26 @@ export default function SettingsPage() {
                 <Input value={form.heroCta2Text} onChange={(e) => set('heroCta2Text', e.target.value)} />
               </Field>
             </div>
-            <UploadTile
-              label="Hero image"
-              value={form.heroImageUrl}
-              onPick={(file) => upload('/settings/website/hero-image', file, (u) => set('heroImageUrl', u))}
-              onClear={() => set('heroImageUrl', '')}
-              wide
-            />
+            <div className="grid gap-3 sm:grid-cols-3">
+              <UploadTile
+                label="Hero image 1"
+                value={form.heroImageUrl}
+                onPick={(file) => upload('/settings/website/hero-image', file, (u) => set('heroImageUrl', u))}
+                onClear={() => set('heroImageUrl', '')}
+              />
+              <UploadTile
+                label="Hero image 2"
+                value={form.heroImage2Url}
+                onPick={(file) => upload('/settings/website/hero-image-2', file, (u) => set('heroImage2Url', u))}
+                onClear={() => set('heroImage2Url', '')}
+              />
+              <UploadTile
+                label="Hero image 3"
+                value={form.heroImage3Url}
+                onPick={(file) => upload('/settings/website/hero-image-3', file, (u) => set('heroImage3Url', u))}
+                onClear={() => set('heroImage3Url', '')}
+              />
+            </div>
           </div>
         </Panel>
 

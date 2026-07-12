@@ -302,6 +302,28 @@ export class SettingsController {
     return { url };
   }
 
+  @Post('website/hero-image-2')
+  @UseGuards(RolesGuard, PermissionsGuard)
+  @Roles('ADMIN')
+  @Permissions('company.editSettings')
+  @UseInterceptors(FileInterceptor('file', { storage: uploadStorage }))
+  async uploadHeroImage2(@UploadedFile() file: any) {
+    const url = '/uploads/' + file.filename;
+    await this.settingsService.updateHeroImageSlot(2, url);
+    return { url };
+  }
+
+  @Post('website/hero-image-3')
+  @UseGuards(RolesGuard, PermissionsGuard)
+  @Roles('ADMIN')
+  @Permissions('company.editSettings')
+  @UseInterceptors(FileInterceptor('file', { storage: uploadStorage }))
+  async uploadHeroImage3(@UploadedFile() file: any) {
+    const url = '/uploads/' + file.filename;
+    await this.settingsService.updateHeroImageSlot(3, url);
+    return { url };
+  }
+
   // ──────────────────────────────────────────────
   // GET /settings/google-drive
   // ──────────────────────────────────────────────

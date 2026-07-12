@@ -21,8 +21,11 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
   const heroTitle = locale === 'en' ? settings.heroTitle : t('site.heroTitle');
   const heroSubtitle = locale === 'en' ? settings.heroSubtitle : t('site.heroSubtitle');
   const primary = settings.primaryColor || '#2563eb';
-  const heroImg = resolveAssetUrl(settings.heroImageUrl);
-  const hasImage = !!heroImg;
+  const heroImgs = [settings.heroImageUrl, settings.heroImage2Url, settings.heroImage3Url]
+    .map((u) => resolveAssetUrl(u))
+    .filter(Boolean) as string[];
+  const hasImage = heroImgs.length > 0;
+  const imgBase = 'w-full object-cover shadow-lg ring-1 ring-black/5';
 
   const trustTicks = [
     t('features.noFeesTitle'),   // No Hidden Fees
@@ -70,27 +73,32 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
               className="pointer-events-none absolute -inset-4 -z-10 rounded-[2rem] opacity-20 blur-2xl"
               style={{ background: `radial-gradient(60% 60% at 70% 30%, ${primary}, transparent)` }}
             />
-            {hasImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={heroImg!}
-                alt=""
-                fetchPriority="high"
-                loading="eager"
-                width={1200}
-                height={900}
-                className="aspect-[4/3] w-full rounded-3xl object-cover shadow-xl ring-1 ring-black/5"
-              />
+            {/* eslint-disable @next/next/no-img-element */}
+            {heroImgs.length >= 3 ? (
+              // 3-image collage: one tall image + two stacked.
+              <div className="grid aspect-[4/3] grid-cols-2 grid-rows-2 gap-3">
+                <img src={heroImgs[0]} alt="" fetchPriority="high" loading="eager" className={`${imgBase} col-span-1 row-span-2 h-full rounded-3xl`} />
+                <img src={heroImgs[1]} alt="" loading="eager" className={`${imgBase} h-full rounded-2xl`} />
+                <img src={heroImgs[2]} alt="" loading="eager" className={`${imgBase} h-full rounded-2xl`} />
+              </div>
+            ) : heroImgs.length === 2 ? (
+              <div className="grid aspect-[4/3] grid-cols-2 gap-3">
+                <img src={heroImgs[0]} alt="" fetchPriority="high" loading="eager" className={`${imgBase} h-full rounded-3xl`} />
+                <img src={heroImgs[1]} alt="" loading="eager" className={`${imgBase} h-full rounded-3xl`} />
+              </div>
+            ) : heroImgs.length === 1 ? (
+              <img src={heroImgs[0]} alt="" fetchPriority="high" loading="eager" width={1200} height={900} className={`${imgBase} aspect-[4/3] rounded-3xl`} />
             ) : (
               <div
                 className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl text-white/90 shadow-xl"
                 style={{ background: `linear-gradient(135deg, ${primary}, ${primary}cc)` }}
               >
                 <span className="px-6 text-center text-sm font-medium opacity-80">
-                  Upload a hero image in the admin (Settings → Hero image)
+                  Upload hero images in the admin (Settings → Hero images)
                 </span>
               </div>
             )}
+            {/* eslint-enable @next/next/no-img-element */}
           </div>
         </div>
 

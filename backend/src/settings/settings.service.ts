@@ -423,6 +423,8 @@ export class SettingsService {
     if (dto.heroCta1Text !== undefined) data.heroCta1Text = dto.heroCta1Text;
     if (dto.heroCta2Text !== undefined) data.heroCta2Text = dto.heroCta2Text;
     if (dto.heroImageUrl !== undefined) data.heroImageUrl = dto.heroImageUrl || null;
+    if (dto.heroImage2Url !== undefined) data.heroImage2Url = dto.heroImage2Url || null;
+    if (dto.heroImage3Url !== undefined) data.heroImage3Url = dto.heroImage3Url || null;
     if (dto.featuresEnabled !== undefined) data.featuresEnabled = dto.featuresEnabled;
     if (dto.featuresTitle !== undefined) data.featuresTitle = dto.featuresTitle;
     if (dto.featuresJson !== undefined) data.featuresJson = dto.featuresJson;
@@ -549,6 +551,20 @@ export class SettingsService {
         siteName: WEBSITE_DEFAULTS.siteName,
         heroImageUrl: fileUrl,
       },
+    });
+  }
+
+  async updateHeroImageSlot(slot: 2 | 3, fileUrl: string) {
+    const field = slot === 2 ? 'heroImage2Url' : 'heroImage3Url';
+    const existing = await this.prisma.websiteSettings.findFirst();
+    if (existing) {
+      return this.prisma.websiteSettings.update({
+        where: { id: existing.id },
+        data: { [field]: fileUrl },
+      });
+    }
+    return this.prisma.websiteSettings.create({
+      data: { siteName: WEBSITE_DEFAULTS.siteName, [field]: fileUrl },
     });
   }
 
