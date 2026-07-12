@@ -129,6 +129,12 @@ function DatePicker({ value, onChange, minDate, primaryColor, placeholder }: {
   const [open, setOpen] = useState(false);
   const [viewMonth, setViewMonth] = useState<Date>(value ? new Date(value + 'T12:00:00') : new Date());
   const selected = value ? new Date(value + 'T12:00:00') : null;
+  // Mount gate: the calendar uses new Date() (per-render "today"/current month) and
+  // a Radix Popover (useId) — both break hydration. Render a static trigger on the
+  // server + first client render, then the interactive picker after mount.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const today = startOfDay(new Date());
 
   const days = eachDayOfInterval({
@@ -138,14 +144,19 @@ function DatePicker({ value, onChange, minDate, primaryColor, placeholder }: {
 
   const isDisabled = (d: Date) => minDate ? isBefore(startOfDay(d), startOfDay(minDate)) : false;
 
+  const triggerButton = (
+    <button type="button" className="w-full truncate text-left">
+      {selected
+        ? <span className="text-sm font-medium" style={{ color: C_TEXT }}>{format(selected, 'EEE, dd MMM yyyy')}</span>
+        : <span className="text-sm" style={{ color: C_MUTED }}>{placeholder}</span>}
+    </button>
+  );
+  if (!mounted) return triggerButton;
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button type="button" className="w-full truncate text-left">
-          {selected
-            ? <span className="text-sm font-medium" style={{ color: C_TEXT }}>{format(selected, 'EEE, dd MMM yyyy')}</span>
-            : <span className="text-sm" style={{ color: C_MUTED }}>{placeholder}</span>}
-        </button>
+        {triggerButton}
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white rounded-2xl shadow-2xl border border-gray-100" align="start" sideOffset={8}>
         <div className="p-4 w-[280px]">
@@ -200,6 +211,8 @@ function TimePicker({ value, onChange, primaryColor, placeholder }: {
 }) {
   const t = useWT();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'));
   const minutes = ['00','05','10','15','20','25','30','35','40','45','50','55'];
   const [selH, selM] = value ? value.split(':') : ['', ''];
@@ -220,15 +233,20 @@ function TimePicker({ value, onChange, primaryColor, placeholder }: {
 
   const pick = (h: string, m: string) => { if (h && m) { onChange(`${h}:${m}`); setOpen(false); } };
 
+  const triggerButton = (
+    <button type="button" className="flex items-center gap-1 whitespace-nowrap text-left">
+      {value
+        ? <span className="text-sm font-medium" style={{ color: C_TEXT }}>{value}</span>
+        : <span className="text-sm" style={{ color: C_MUTED }}>{placeholder}</span>}
+      <ChevronDown className="h-3.5 w-3.5 shrink-0" style={{ color: C_MUTED }} />
+    </button>
+  );
+  if (!mounted) return triggerButton;
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button type="button" className="flex items-center gap-1 whitespace-nowrap text-left">
-          {value
-            ? <span className="text-sm font-medium" style={{ color: C_TEXT }}>{value}</span>
-            : <span className="text-sm" style={{ color: C_MUTED }}>{placeholder}</span>}
-          <ChevronDown className="h-3.5 w-3.5 shrink-0" style={{ color: C_MUTED }} />
-        </button>
+        {triggerButton}
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 bg-white rounded-2xl shadow-2xl border border-gray-100" align="start" sideOffset={8}>
         <div className="flex">
@@ -282,6 +300,12 @@ function SearchableSelect({
   const t = useWT();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
+  // Radix Popover uses useId → any upstream server/client tree difference shifts
+  // its aria-controls and breaks hydration. Render an identical static trigger on
+  // the server + first client render (no Popover, no useId), then mount the real
+  // interactive popover — so hydration always matches.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const selected = options.find((o) => o.value === value);
 
@@ -302,17 +326,26 @@ function SearchableSelect({
 
   const close = () => { setOpen(false); setQuery(''); };
 
+  // The trigger button, rendered identically whether static (pre-mount) or inside
+  // the Popover — so the hydrated markup matches.
+  const triggerButton = (
+    <button type="button" disabled={disabled}
+      className="flex w-full items-center justify-between gap-1 text-left disabled:cursor-not-allowed disabled:opacity-50">
+      <span className="truncate text-sm"
+        style={{ color: selected ? C_TEXT : C_MUTED, fontWeight: selected ? 500 : 400 }}>
+        {selected ? selected.label : placeholder}
+      </span>
+      <ChevronsUpDown className="h-3.5 w-3.5 shrink-0" style={{ color: C_MUTED }} />
+    </button>
+  );
+
+  // SSR + first client render: static trigger only (no Radix Popover / useId).
+  if (!mounted) return triggerButton;
+
   return (
     <Popover open={open} onOpenChange={(v) => (v ? setOpen(true) : close())}>
       <PopoverTrigger asChild disabled={disabled}>
-        <button type="button" disabled={disabled}
-          className="flex w-full items-center justify-between gap-1 text-left disabled:cursor-not-allowed disabled:opacity-50">
-          <span className="truncate text-sm"
-            style={{ color: selected ? C_TEXT : C_MUTED, fontWeight: selected ? 500 : 400 }}>
-            {selected ? selected.label : placeholder}
-          </span>
-          <ChevronsUpDown className="h-3.5 w-3.5 shrink-0" style={{ color: C_MUTED }} />
-        </button>
+        {triggerButton}
       </PopoverTrigger>
       <PopoverContent align="start" sideOffset={8}
         className="w-[var(--radix-popover-trigger-width)] min-w-56 p-0">
