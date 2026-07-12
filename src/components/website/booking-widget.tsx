@@ -359,6 +359,12 @@ export function BookingWidget({ settings }: BookingWidgetProps) {
   const router = useRouter();
   const store = useBookingStore();
 
+  // Rehydrate the persisted booking after mount (store uses skipHydration) so
+  // the server and first client render match — avoids the Radix hydration mismatch.
+  useEffect(() => {
+    useBookingStore.persist.rehydrate();
+  }, []);
+
   const [activeTab, setActiveTab] = useState<Tab>('AIRPORT');
   const [locations, setLocations] = useState<LocationNode[]>([]);
   const [placeMsg, setPlaceMsg] = useState('');

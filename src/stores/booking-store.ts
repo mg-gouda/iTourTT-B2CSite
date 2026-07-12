@@ -170,6 +170,11 @@ export const useBookingStore = create<BookingState>()(
       ),
       // Don't persist actions or the post-booking account secret.
       partialize: ({ setField, setQuote, setCustomExtraQty, reset, accountPassword, ...rest }) => rest,
+      // Defer rehydration until after mount so the server and the client's FIRST
+      // render match (SSR has no sessionStorage). The widget calls
+      // useBookingStore.persist.rehydrate() in a mount effect. Prevents the
+      // Radix Popover aria-controls / disabled hydration mismatch.
+      skipHydration: true,
     },
   ),
 );
