@@ -34,14 +34,15 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const load = async () => {
-      const safe = async (fn: () => Promise<number>) => {
-        try { return String(await fn()); } catch { return '—'; }
+      const len = (v: any) => (Array.isArray(v) ? v.length : Array.isArray(v?.data) ? v.data.length : 0);
+      const safe = async (path: string) => {
+        try { return String(len(await api.get<any>(path))); } catch { return '—'; }
       };
       const [posts, pages, destinations, prices] = await Promise.all([
-        safe(async () => (await api.get<any[]>('/public/blog')).length),
-        safe(async () => (await api.get<any[]>('/public/pages')).length),
-        safe(async () => (await api.get<any[]>('/public/city-pages')).length),
-        safe(async () => (await api.get<any[]>('/public-prices')).length),
+        safe('/blog'),
+        safe('/admin/pages'),
+        safe('/city-pages'),
+        safe('/public-prices'),
       ]);
       setCounts({ posts, pages, destinations, prices });
     };
