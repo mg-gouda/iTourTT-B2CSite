@@ -42,8 +42,7 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
             src={settings.heroImageUrl!}
             alt=""
             aria-hidden="true"
-            // @ts-expect-error — fetchpriority is valid HTML; React 19 forwards it
-            fetchpriority="high"
+            fetchPriority="high"
             loading="eager"
             width={1920}
             height={1080}
