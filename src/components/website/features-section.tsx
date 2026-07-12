@@ -100,6 +100,16 @@ export function FeaturesSection({ settings }: FeaturesSectionProps) {
               <p className="mt-3 text-[15px] leading-relaxed text-[var(--muted-foreground)]">
                 {anchor.description}
               </p>
+              {anchor.icon === 'plane' && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src="/flight-schedule.jpg"
+                  alt=""
+                  loading="lazy"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                  className="mt-6 w-full rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              )}
             </div>
           </div>
 
