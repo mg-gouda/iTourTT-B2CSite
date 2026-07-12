@@ -1,9 +1,18 @@
 import type { NextConfig } from "next";
 
-// Backend API host used for CSP (images, fonts, API calls).
-const API_HOST = process.env.NEXT_PUBLIC_API_URL
-  ? new URL(process.env.NEXT_PUBLIC_API_URL).host
-  : "fulvago.itourtt.cloud";
+// Backend API origins used for CSP (images, fonts, API calls). Includes the
+// admin API (B2C backend) and the public API. Full origins so scheme (http in
+// local dev, https in prod) matches the actual fetch.
+const API_ORIGINS = (() => {
+  const urls = [
+    process.env.NEXT_PUBLIC_ADMIN_API_URL,
+    process.env.NEXT_PUBLIC_API_URL,
+  ].filter(Boolean) as string[];
+  const origins = urls.map((u) => new URL(u).origin);
+  if (origins.length === 0) origins.push("https://fulvago.itourtt.cloud");
+  return Array.from(new Set(origins));
+})();
+const API_CONNECT = API_ORIGINS.join(" ");
 
 const nextConfig: NextConfig = {
   output: "standalone",
@@ -39,8 +48,8 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              `img-src 'self' data: blob: https://${API_HOST} https://maps.gstatic.com https://maps.googleapis.com https://*.googleapis.com`,
-              `connect-src 'self' https://${API_HOST} https://maps.googleapis.com https://places.googleapis.com`,
+              `img-src 'self' data: blob: ${API_CONNECT} https://maps.gstatic.com https://maps.googleapis.com https://*.googleapis.com`,
+              `connect-src 'self' ${API_CONNECT} https://maps.googleapis.com https://places.googleapis.com`,
               "frame-src 'self'",
               "media-src 'self'",
               "frame-ancestors 'self'",

@@ -16,6 +16,7 @@ const NAV: { group: string; items: { href: string; label: string; icon: any }[] 
     group: 'Content',
     items: [
       { href: '/admin/posts', label: 'Posts', icon: FileText },
+      { href: '/admin/categories', label: 'Categories', icon: Tag },
       { href: '/admin/pages', label: 'Pages', icon: Files },
       { href: '/admin/destinations', label: 'Destinations', icon: MapPin },
       { href: '/admin/media', label: 'Media', icon: ImageIcon },
@@ -119,10 +120,10 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
           <div className="ml-auto flex items-center gap-3">
-            <div className="text-right leading-tight">
+            <Link href="/admin/account" className="rounded-lg px-2 py-1 text-right leading-tight transition hover:bg-slate-800">
               <div className="text-sm font-medium">{user?.name ?? 'Admin'}</div>
               <div className="text-[11px] text-slate-400">{user?.email}</div>
-            </div>
+            </Link>
             <button
               onClick={logout}
               className="flex items-center gap-1.5 rounded-lg border border-slate-800 px-2.5 py-1.5 text-xs text-slate-300 hover:bg-slate-800"
