@@ -212,7 +212,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       {/* Desktop sidebar */}
       <aside
         className={cn(
-          'sticky top-0 hidden h-screen shrink-0 border-r border-border bg-card transition-[width] duration-200 ease-out md:block',
+          'sticky top-0 hidden h-screen shrink-0 border-r border-border bg-slate-200 dark:bg-card transition-[width] duration-200 ease-out md:block',
           collapsed ? 'w-14' : 'w-60',
         )}
       >
@@ -223,7 +223,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-          <aside className="absolute left-0 top-0 h-full w-64 border-r border-border bg-card shadow-xl animate-fade-in">
+          <aside className="absolute left-0 top-0 h-full w-64 border-r border-border bg-slate-200 dark:bg-card shadow-xl animate-fade-in">
             {sidebar(true)}
           </aside>
         </div>
@@ -231,7 +231,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
-        <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-border bg-card/95 px-3 backdrop-blur-sm sm:px-5">
+        <header className="sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-border bg-slate-100/95 dark:bg-card/95 px-3 backdrop-blur-sm sm:px-5">
           <button
             className="rounded-md p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground md:hidden"
             aria-label="Open menu"
@@ -307,8 +307,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
         <main className="min-w-0 flex-1 p-4 sm:p-6">{children}</main>
 
-        <footer className="flex h-14 shrink-0 flex-wrap items-center justify-end gap-3 border-t border-border bg-card/95 px-5 text-xs text-muted-foreground backdrop-blur-sm">
+        <footer className="flex h-14 shrink-0 flex-wrap items-center justify-end gap-3 border-t border-border bg-slate-100/95 dark:bg-card/95 px-5 text-xs text-muted-foreground backdrop-blur-sm">
           <span>Transferra Admin</span>
+          <span className="text-border">|</span>
+          <span>
+            Developed by{" "}
+            <a href="https://wa.me/+201002805139" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              Mohamed Gouda
+            </a>
+          </span>
           <span className="text-border">|</span>
           <span>iTour B2C</span>
         </footer>
