@@ -124,7 +124,7 @@ export default function ExtrasPage() {
                 </TD>
                 <TD>
                   <div className="flex justify-end gap-1">
-                    <button onClick={() => setEditing(r)} className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-[#135e96]" title="Edit">
+                    <button onClick={() => setEditing(r)} className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary" title="Edit">
                       <Pencil className="h-4 w-4" />
                     </button>
                     <button onClick={() => setDel(r)} className="rounded-md p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-red-400" title="Delete">

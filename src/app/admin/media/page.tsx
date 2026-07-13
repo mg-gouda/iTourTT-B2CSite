@@ -78,7 +78,7 @@ export default function MediaPage() {
           if (e.dataTransfer.files?.length) uploadMany(e.dataTransfer.files);
         }}
         className={`flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed py-12 text-center transition ${
-          dragging ? 'border-[#2271b1] bg-[#e5f0f8] text-slate-800 dark:text-slate-200' : 'border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-200'
+          dragging ? 'border-primary bg-primary/10 text-slate-800 dark:text-slate-200' : 'border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-slate-600 hover:text-slate-800 dark:hover:text-slate-200'
         }`}
       >
         {uploading ? <Spinner /> : <UploadCloud className="h-7 w-7" />}

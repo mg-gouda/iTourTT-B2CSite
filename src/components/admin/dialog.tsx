@@ -20,34 +20,27 @@ export function Modal({
     <RxDialog.Root open={open} onOpenChange={onOpenChange}>
       <RxDialog.Portal>
         <RxDialog.Overlay
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.7)', zIndex: 100010 }}
+          className="fixed inset-0 z-[100010] bg-black/60 backdrop-blur-sm data-[state=open]:animate-fade-in"
         />
         <RxDialog.Content
-          className="wpwrap"
-          style={{
-            position: 'fixed', left: '50%', top: '50%', transform: 'translate(-50%,-50%)',
-            width: 'calc(100vw - 2rem)', maxWidth: maxW, maxHeight: '90vh', overflowY: 'auto',
-            background: '#fff', border: '1px solid #c3c4c7', boxShadow: '0 3px 6px rgba(0,0,0,.3)',
-            zIndex: 100011,
-          }}
+          className="fixed left-1/2 top-1/2 z-[100011] max-h-[90vh] w-[calc(100vw-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto scrollbar-thin rounded-lg border border-border bg-card text-card-foreground p-5 shadow-xl data-[state=open]:animate-fade-in"
+          style={{ maxWidth: maxW }}
         >
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16, padding: '12px 16px', borderBottom: '1px solid #c3c4c7' }}>
-            <div>
-              <RxDialog.Title style={{ margin: 0, fontSize: 15, fontWeight: 600, color: '#1d2327' }}>{title}</RxDialog.Title>
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-1">
+              <RxDialog.Title className="text-base font-semibold text-foreground">{title}</RxDialog.Title>
               {description && (
-                <RxDialog.Description style={{ margin: '2px 0 0', fontSize: 13, color: '#646970' }}>
-                  {description}
-                </RxDialog.Description>
+                <RxDialog.Description className="text-xs text-muted-foreground">{description}</RxDialog.Description>
               )}
             </div>
             <RxDialog.Close
-              style={{ background: 'transparent', border: 0, cursor: 'pointer', color: '#646970', padding: 2, lineHeight: 0 }}
+              className="rounded-sm text-muted-foreground opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               aria-label="Close"
             >
-              <X style={{ width: 18, height: 18 }} />
+              <X className="size-4" />
             </RxDialog.Close>
           </div>
-          <div style={{ padding: 16 }}>{children}</div>
+          {children}
         </RxDialog.Content>
       </RxDialog.Portal>
     </RxDialog.Root>
@@ -62,13 +55,13 @@ export function ConfirmDialog({
   title: string;
   message: string;
   confirmLabel?: string;
-  onConfirm: () => void | Promise<void>;
+  onConfirm: () => unknown | Promise<unknown>;
 }) {
   const [busy, setBusy] = React.useState(false);
   return (
     <Modal open={open} onOpenChange={onOpenChange} title={title} size="md">
-      <p style={{ fontSize: 13, color: '#3c434a', margin: 0 }}>{message}</p>
-      <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+      <p className="text-sm text-muted-foreground">{message}</p>
+      <div className="mt-5 flex justify-end gap-2">
         <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
         <Button
           variant="danger"

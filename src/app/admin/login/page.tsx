@@ -84,7 +84,7 @@ export default function AdminLoginPage() {
 
       <div className="relative z-10 flex min-h-screen items-center justify-center p-4">
         {/* Compact glass card */}
-        <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-2xl backdrop-blur-xl">
+        <div className="w-full max-w-sm animate-fade-in rounded-2xl border border-white/10 bg-white/[0.06] p-6 shadow-2xl backdrop-blur-xl">
           <div className="mb-5 flex flex-col items-center text-center">
             <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-sky-500/20 ring-1 ring-sky-400/30">
               <ShieldCheck className="h-5 w-5 text-sky-400" />

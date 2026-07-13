@@ -1,0 +1,100 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   iTour Reservations LITE — admin theme (ported like-for-like)
+   Slate/sky shadcn palette, dark by default + a light toggle. Scoped to the
+   admin subtree via `html.itour-admin` so the public site is untouched. The
+   B2C app already maps shadcn utilities (bg-card, text-muted-foreground,
+   bg-primary/15, …) through @theme inline, so we only override the token
+   VALUES here — the utilities pick them up automatically, portals included.
+   ───────────────────────────────────────────────────────────────────────── */
+
+html.itour-admin {
+  color-scheme: dark;
+  --radius: 0.6rem;
+
+  /* Dark — slate-950/900 with sky/cyan accent (ResLite .dark) */
+  --background: hsl(222 47% 8%);
+  --foreground: hsl(210 40% 96%);
+  --card: hsl(222 44% 12%);
+  --card-foreground: hsl(210 40% 96%);
+  --popover: hsl(222 44% 12%);
+  --popover-foreground: hsl(210 40% 96%);
+  --primary: hsl(199 89% 52%);
+  --primary-foreground: hsl(222 47% 8%);
+  --secondary: hsl(217 33% 18%);
+  --secondary-foreground: hsl(210 40% 96%);
+  --muted: hsl(217 33% 17%);
+  --muted-foreground: hsl(215 20% 65%);
+  --accent: hsl(188 94% 43%);
+  --accent-foreground: hsl(222 47% 8%);
+  --destructive: hsl(0 72% 51%);
+  --border: hsl(217 33% 20%);
+  --input: hsl(217 33% 20%);
+  --ring: hsl(199 89% 52%);
+}
+
+html.itour-admin.theme-light {
+  color-scheme: light;
+
+  /* Light peer (ResLite :root) */
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(222 47% 11%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222 47% 11%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222 47% 11%);
+  --primary: hsl(199 89% 48%);
+  --primary-foreground: hsl(210 40% 98%);
+  --secondary: hsl(210 40% 96%);
+  --secondary-foreground: hsl(222 47% 11%);
+  --muted: hsl(210 40% 96%);
+  --muted-foreground: hsl(215 16% 47%);
+  --accent: hsl(199 89% 48%);
+  --accent-foreground: hsl(210 40% 98%);
+  --destructive: hsl(0 72% 51%);
+  --border: hsl(214 32% 91%);
+  --input: hsl(214 32% 91%);
+  --ring: hsl(199 89% 48%);
+}
+
+/* The public site paints the body with `.dark body { background:#341539 }` and
+   forces black table-header text via `:root thead th`. Inside admin, both must
+   follow the slate tokens instead (these selectors out-specify the public ones). */
+html.itour-admin body {
+  background-color: var(--background);
+}
+html.itour-admin thead th,
+html.itour-admin thead td {
+  color: var(--muted-foreground);
+}
+
+/* Utilities the ported components rely on (ResLite globals). */
+html.itour-admin .scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+html.itour-admin ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+html.itour-admin ::-webkit-scrollbar-track {
+  background: transparent;
+}
+html.itour-admin ::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* fade-in used by dialogs + the mobile drawer. Scoped so it can't clash with
+   tw-animate-css. Honors reduced-motion. */
+@keyframes itour-admin-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+html.itour-admin .animate-fade-in {
+  animation: itour-admin-fade-in 0.2s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.itour-admin .animate-fade-in { animation: none; }
+}

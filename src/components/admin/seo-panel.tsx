@@ -109,7 +109,7 @@ export function SeoPanel({
               className={cn(
                 'flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition',
                 tab === t.k
-                  ? 'bg-[#e5f0f8] text-[#135e96] dark:text-[#2271b1]'
+                  ? 'bg-primary/10 text-primary dark:text-primary'
                   : 'text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800',
               )}
             >
@@ -141,14 +141,14 @@ export function SeoPanel({
                 <Label>Google preview</Label>
                 <div className="flex gap-1">
                   <button type="button" onClick={() => setDevice('desktop')}
-                    className={cn('rounded p-1', device === 'desktop' ? 'text-[#2271b1]' : 'text-slate-400')}><Globe className="h-4 w-4" /></button>
+                    className={cn('rounded p-1', device === 'desktop' ? 'text-primary' : 'text-slate-400')}><Globe className="h-4 w-4" /></button>
                   <button type="button" onClick={() => setDevice('mobile')}
-                    className={cn('rounded p-1', device === 'mobile' ? 'text-[#2271b1]' : 'text-slate-400')}><Smartphone className="h-4 w-4" /></button>
+                    className={cn('rounded p-1', device === 'mobile' ? 'text-primary' : 'text-slate-400')}><Smartphone className="h-4 w-4" /></button>
                 </div>
               </div>
               <div className="rounded-lg border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-950">
                 <div className="truncate text-xs text-[#4d5156] dark:text-slate-400">{url}</div>
-                <div className="text-[18px] leading-tight text-[#1a0dab] dark:text-[#2271b1]">
+                <div className="text-[18px] leading-tight text-[#1a0dab] dark:text-primary">
                   {truncatePx(previewTitle, titlePx, titleFont)}
                 </div>
                 <div className="mt-0.5 text-[13px] leading-snug text-[#4d5156] dark:text-slate-400">
@@ -183,7 +183,7 @@ export function SeoPanel({
 
         {tab === 'ai' && (
           <div className="space-y-3">
-            <p className="rounded-lg bg-[#e5f0f8] px-3 py-2 text-xs text-[#2271b1] dark:text-[#2271b1]">
+            <p className="rounded-lg bg-primary/10 px-3 py-2 text-xs text-primary dark:text-primary">
               Optimizes for AI answer engines (Google AI Overviews, ChatGPT, Perplexity): lead with a
               direct answer, pack in concrete facts, use question headings, and add author + schema.
             </p>

@@ -137,7 +137,7 @@ export function WebsiteLandingClient({ settings, destinations = [] }: LandingCli
           </div>
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {AIRPORTS.map((airport) => {
-              const img = destImage.get(airport.slug);
+              const img = airport.slug ? destImage.get(airport.slug) : undefined;
               const card = (
                 <div
                   className={`group relative flex h-44 flex-col justify-end overflow-hidden rounded-2xl p-5 transition-transform duration-200 hover:-translate-y-1${img ? '' : ' placeholder-gradient'}`}

@@ -26,12 +26,11 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
     .filter(Boolean) as string[];
   const hasImage = heroImgs.length > 0;
 
-  // A hero image with a 25% black filter overlay on top.
+  // A plain hero image (no per-image tint — the tint lives on the section bg).
   const HeroImg = ({ src, className, priority }: { src: string; className?: string; priority?: boolean }) => (
     <div className={`relative w-full overflow-hidden shadow-lg ring-1 ring-black/5 ${className ?? ''}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={src} alt="" fetchPriority={priority ? 'high' : undefined} loading="eager" className="h-full w-full object-cover" />
-      <div aria-hidden="true" className="absolute inset-0 bg-black/25" />
     </div>
   );
 
@@ -43,7 +42,9 @@ export function HeroSection({ settings, children }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden bg-[var(--background)]">
-      <div className="mx-auto max-w-6xl px-4 pt-12 sm:pt-16">
+      {/* 25% black wash over the whole hero container (behind images + booking widget). */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-black/25" />
+      <div className="relative mx-auto max-w-6xl px-4 pt-12 sm:pt-16">
         <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
           {/* ── Text column ── */}
           <div className="max-w-xl text-center lg:text-start">
