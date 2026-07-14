@@ -4,7 +4,8 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci
+# fall back to npm install so cross-platform optional deps resolve on alpine
+RUN npm ci || npm install
 COPY . .
 RUN npx prisma generate
 RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build

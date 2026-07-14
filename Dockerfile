@@ -4,7 +4,9 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+# npm ci is strict about the lockfile; fall back to npm install so cross-platform
+# optional deps (e.g. @emnapi musl variants) resolve on alpine.
+RUN npm ci || npm install
 
 COPY . .
 
