@@ -31,3 +31,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+# deploy data artifacts (PII/hashes — never commit)
+deploy/b2c_seed.sql
+deploy/uploads-media.tgz
