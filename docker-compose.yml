@@ -1,21 +1,58 @@
-# B2C site — standalone deployment on the B2C VPS (31.97.45.33).
-# Build + run:  NEXT_PUBLIC_API_URL=https://fulvago.itourtt.cloud docker compose up -d --build
+# B2C standalone — 3 services on the B2C VPS (31.97.45.33 / transferra.ae).
+# Host nginx terminates TLS and routes (see deploy/nginx-transferra.conf):
+#   /            → web:3000      (Next.js)
+#   /api, /uploads → backend:3002 (NestJS)
+#
+# Bring up:
+#   B2C_DB_PASSWORD=... NEXT_PUBLIC_API_URL=https://transferra.ae docker compose up -d --build
+# (or put those two in a root `.env` next to this file).
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: b2c-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: b2c_db
+      POSTGRES_USER: b2c
+      POSTGRES_PASSWORD: ${B2C_DB_PASSWORD:?set B2C_DB_PASSWORD}
+    volumes:
+      - b2c-pgdata:/var/lib/postgresql/data
+    # not published to the host — only `backend` reaches it over the compose network
+
+  backend:
+    build: ./backend
+    image: itourtt-b2c-backend:latest
+    container_name: b2c-backend
+    restart: unless-stopped
+    depends_on: [postgres]
+    env_file: ./backend/.env.production
+    environment:
+      # override any host in the env_file — point Prisma at the compose postgres
+      DATABASE_URL: postgres://b2c:${B2C_DB_PASSWORD}@postgres:5432/b2c_db
+      PORT: 3002
+    volumes:
+      - b2c-uploads:/app/uploads
+    ports:
+      - "127.0.0.1:3002:3002"
+
   web:
     build:
       context: .
       args:
-        # Baked into the client bundle at build time.
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://fulvago.itourtt.cloud}
+        # baked into the client bundle at build time (browser calls same-origin /api)
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://transferra.ae}
     image: itourtt-b2c:latest
     container_name: itourtt-b2c
     restart: unless-stopped
+    depends_on: [backend]
     environment:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      # Used at runtime for SSR.
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://fulvago.itourtt.cloud}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://transferra.ae}
     ports:
-      # Exposed on localhost only; nginx on the host terminates TLS and proxies.
       - "127.0.0.1:3000:3000"
+
+volumes:
+  b2c-pgdata:
+  b2c-uploads:
