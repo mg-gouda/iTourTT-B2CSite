@@ -1,6 +1,9 @@
 node_modules
 .next
 .git
+backend
+deploy
+scripts
 .gitignore
 npm-debug.log*
 .env
