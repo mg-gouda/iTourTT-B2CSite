@@ -1,10 +1,10 @@
-# B2C standalone — 3 services on the B2C VPS (31.97.45.33 / transferra.ae).
+# B2C standalone — 3 services on the B2C VPS (31.97.45.33 / transfera.ae).
 # Host nginx terminates TLS and routes (see deploy/nginx-transferra.conf):
 #   /            → web:3000      (Next.js)
 #   /api, /uploads → backend:3002 (NestJS)
 #
 # Bring up:
-#   B2C_DB_PASSWORD=... NEXT_PUBLIC_API_URL=https://transferra.ae docker compose up -d --build
+#   B2C_DB_PASSWORD=... NEXT_PUBLIC_API_URL=https://transfera.ae docker compose up -d --build
 # (or put those two in a root `.env` next to this file).
 services:
   postgres:
@@ -40,7 +40,7 @@ services:
       context: .
       args:
         # baked into the client bundle at build time (browser calls same-origin /api)
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://transferra.ae}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://transfera.ae}
     image: itourtt-b2c:latest
     container_name: itourtt-b2c
     restart: unless-stopped
@@ -49,7 +49,7 @@ services:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: 0.0.0.0
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://transferra.ae}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://transfera.ae}
     ports:
       - "127.0.0.1:3000:3000"
 
